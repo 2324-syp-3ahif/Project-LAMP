@@ -3,28 +3,38 @@
 ## 1. Ausgangslage
 
 ### 1.1. Ist-Situation
-In unserem Projekt wollen wir einen neuen Standard für To-do Websites schaffen. Auf unserer Website wird man Tasks unter Themen erstellen und diese in einen Kalender speichern können. <br>
-Im Moment gibt es bereits sehr viele verschiedene Notes Websites, die auch To-Do Funktionen anbieten (zum Beispiel Google Keep). <br>
-Ohne unserem To-Do Tool wird die Menschheit weiterhin an unübersichtlichen Designs und nicht vollständig ausgearbeiteten Funktionen unserer Konkurrenz verzweifeln. <br>
-Bei unserer Applikation handelt es sich um den digitalen Vermerk von essenziellen Informationen, die sich für die Organisation als Schüler, Schülerinnen und Unternehmen als unerlässlich erweisen. 
+Über die letzten Jahre haben wir alle verschiedene To-Do Apps ausprobiert. Beispiel sind Notion, Google-Keep und Microsoft-ToDo.
+Notion ist für uns zu komplex, da es nicht nur eine To-Do App ist, sondern auch eine App für Notizen und Projekte. Deshalb haben wir meistens nur Microsoft-ToDo oder Google Keep benutzt.
+<br>
+Beide Apps verfügen über ein simples Design, welches sowohl in hell und dunkel verfügbar ist. Zudem sind sie sehr einfach zu bedienen, sowohl das erstellen von neuen Listen, sowie Tasks ist intuitiv. Auch Kollaborationen mit anderen Personen sind bei beiden Apps möglich.
+
+Microsoft-ToDo brilliert vor allem durch auch das befriedigende Abhacken nach dem Erledigen einer Task und ihre vielen verschiedenen Sortieralgorithmen in den Listen.
+
+Google Keep hingegen brilliert durch die Möglichkeit, Notizen mit Bildern, Zeichnungen und Sprachaufnahmen zu erstellen.
+
 
 ### 1.2. Verbesserungspotenziale
-Bei unserer zukünftigen Konkurrenz sind uns viele verbesserungswürdige Merkmale ins Auge gesprungen.  
+Bei unserer zukünftigen Konkurrenz sind uns einige verbesserungswürdige Merkmale ins Auge gesprungen.  
+
+Bei Beiden stört uns: 
+- Es gibt keine Integration eines Kalenders
+- Man kann keine einzelnen Notizen mit einem Kennwort schützen
+- Man kann keine Prioritäten zu Aufgaben hinzufüge
 
 Bei Google Keep stört uns folgendes:
-- man kann keine einzelnen Notizen mit einem Kennwort schützen
-- es gibt keine verschiedenen Sortieralgorithmen der Themen
-- man kann keine Abgabefrist zu einzelnen To-Dos hinzufügen
-- man kann nicht viele Informationen zu einem To-Do hinzufügen, ohne, dass es unübersichtlich wird
-
-Zudem stört uns an Microsoft To-Do:
-- klobiges Design (sehr kantig)
-- keine gute Integration in einen Kalender
-- keine Events
-- To-Dos werden bei Kollaborationen bei beiden abgehakt
+- Man kann nicht viele Informationen zu einem To-Do hinzufügen, ohne, dass es unübersichtlich wird
+- Man kann keine Tasks zwischen verschiedenen Listen verschieben
+- Es ist ursprünglich eine Notiz-App deshalb:
+  - kann man keine Abgabefrist zu einzelnen To-Dos hinzufügen.
+  - gibt es keine verschiedenen Sortieralgorithmen der Tasks.
+  
+Bei stört uns an Microsoft To-Do:
+- Das Design 
+- Es gibt keine Events (Events sind wie To-Dos, nur, dass sie nicht abgehakt werden können z.B. Schularbeiten, Geburtstage, etc.)
+- To-Dos werden bei Kollaborationen mit anderen Personen bei beiden abgehakt
 
 ## 2. Zielsetzung
-Bei unserem Projekt wird es unter Oberthemen Listen geben, in denen seperate Tasks von Benutzern angelegt werden können.<br>
+Bei unserem Projekt wird es unter Oberthemen Listen geben, in denen separate Tasks von Benutzern angelegt werden können.<br>
 Zudem wird es verschiedene Sortieralgorithmen geben, wie nach der Erstellzeit, nach der Priorität und nach dem, zuletzt angesehenen.<br>
 Einer Task soll man ein Ablaufdatum und eine Priorität zuordnen können. <br>
 Ein Login System wird es auch geben, damit das Zugreifen auf Tasks von verschiedenen Endgeräten aus möglich ist.<br>
