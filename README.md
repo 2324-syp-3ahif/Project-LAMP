@@ -1,5 +1,11 @@
 # Project LAMP
 
+## Team-Mitglieder
+- <i>L</i> uca Haas
+- <i>A</i> ndreas Huber
+- <i>M</i> elanie Dohr
+- <i>P</i> hilip Raab
+
 ## 1. Ausgangslage
 
 ### 1.1. Ist-Situation
