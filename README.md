@@ -68,7 +68,7 @@ Feature Set:
     - Gelb wenn das Fälligkeitsdatum bald ist
     - Grün wenn eine Task erledigt wurde
 
-![LAMP Mindmap](LAMP_Mindmap.jpg)
+![LAMP Mindmap](./pictures/LAMP_Mindmap.jpg)
 
 ## 3. Chancen und Risiken
 Bei unserem Projekt gibt es das Risiko, dass es keine Use Cases für unsere Websites gibt, was die Chance beinhaltet, dass man neue Use Cases findet.<br>
