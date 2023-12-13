@@ -70,19 +70,50 @@ Feature Set:
 
 ![LAMP Mindmap](./pictures/LAMP_Mindmap.jpg)
 
-## 3. Chancen und Risiken
-Bei unserem Projekt gibt es das Risiko, dass es keine Use Cases für unsere Websites gibt, was die Chance beinhaltet, dass man neue Use Cases findet.<br>
-Zudem können wir aus Furcht vor einem schlechten Design ein besonders gutes Design schaffen.<br>
-Außerdem könnte es zeitlich knapp werden, was allerdings die Chance beinhaltet, dass wir unter Zeitdruck effizienter arbeiten.<br>
-Ein weiteres Risiko, mit dem man rechnen muss, ist, dass wir zu wenig Personen sind, was aber unserer Meinung nach zu einem sehr guten Team führen kann.<br>
-Ein Risiko ist auch, dass uns technisches Wissen fehlen kann, wodurch wir allerdings viel neues lernen können.
+## 3. Funktionale Anforderungen
 
-## 4. Planung
-Unser Team besteht aus vier engagierten, kreativen und kompetenten Personen. <br>
-Wir haben nicht vor, Geld für unser Projekt in die Hand zu nehmen.
+### 3.1. Use Case Überblick
+Das Use Case Diagramm beinhaltet alle Use Cases unseres Projekts. Wir haben sie dann folgendermaßen aufgeteilt:
 
-1. Meilenstein am 10. Februar: fertig mit Analyse, Planung und Design
-2. Meilenstein am 15. April: Login System, Tasks, Listen, Tags
-3. Meilenstein am 17. Juni: Team-Kollaborationen möglich, Farbcodierung, Sortiermöglichkeiten, Kalender
+Luca Haas: Kalender ansehen und Event hinzufügen
+Andreas Huber: Login und Tag erstellen
+Melanie Dohr: Liste erstellen/ändern
+Philip Raab: Task erstellen/ändern
 
-Mögliche Bonus Features nach den Meilensteinen falls noch Zeit bleibt.
+![UML Use Case Diagramm](./pictures/UseCase_Diagramm.png)
+
+### 3.2. Kalender ansehen 
+
+#### 3.2.1. GUI-Design
+
+#### 3.2.2. Workflow
+
+### 3.3. Event hinzufüägen
+
+#### 3.3.1. GUI-Design
+
+#### 3.3.2. Workflow
+
+### 3.4. Login
+
+#### 3.4.1. GUI-Design
+
+#### 3.4.2. Workflow
+
+### 3.5. Tag erstellen
+
+#### 3.5.1. GUI-Design
+
+#### 3.5.2. Workflow
+
+### 3.6. Liste erstellen/ändern
+
+#### 3.6.1. GUI-Design
+
+#### 3.6.2. Workflow
+
+### 3.7. Task erstellen/ändern
+
+#### 3.7.1. GUI-Design
+
+#### 3.7.2. Workflow
