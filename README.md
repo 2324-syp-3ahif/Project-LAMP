@@ -109,6 +109,9 @@ Philip Raab: Task erstellen/ändern
 ### 3.6. Liste erstellen/ändern
 
 #### 3.6.1. GUI-Design
+![View Task Lists on Main Page](./pictures/ViewTasklistsOnMainPage.png)
+![Create Task List on Main Page](./pictures/CreateTaskListOnMainPage.png)
+![Create Task List Dropdown](./pictures/CreateTaskListOnMainPageDropdown.png)
 
 #### 3.6.2. Workflow
 
