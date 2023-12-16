@@ -97,12 +97,17 @@ Philip Raab: Task erstellen/ändern
 ### 3.4. Login
 
 #### 3.4.1. GUI-Design
+![Login Page](https://github.com/2324-syp-3ahif/Project-LAMP/assets/114642827/70558194-5102-4c24-bac2-3263e1acd56f)
+![Sign Up Page](https://github.com/2324-syp-3ahif/Project-LAMP/assets/114642827/b4794a6f-dde7-4e15-8664-ab82816dfb4c)
 
 #### 3.4.2. Workflow
 
 ### 3.5. Tag erstellen
 
 #### 3.5.1. GUI-Design
+![Beispiel Tag erstellen](https://github.com/2324-syp-3ahif/Project-LAMP/assets/114642827/473e94ce-6afb-43ce-867a-9054ca4a07e7)
+![Beispiel Tag wurde erstellt](https://github.com/2324-syp-3ahif/Project-LAMP/assets/114642827/6530ca68-f586-4691-a571-91faa77e1b6b)
+![Biespiel Tag wurde gelöscht](https://github.com/2324-syp-3ahif/Project-LAMP/assets/114642827/aafd2482-678b-4248-92c9-9cc7ee991071)
 
 #### 3.5.2. Workflow
 
