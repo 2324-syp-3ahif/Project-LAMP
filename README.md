@@ -83,12 +83,15 @@ Philip Raab: Task erstellen/ändern
 ![UML Use Case Diagramm](./pictures/UseCase_Diagramm.png)
 
 ### 3.2. Kalender ansehen 
+![calendar view](https://github.com/2324-syp-3ahif/Project-LAMP/assets/114491239/b8e7a383-84b6-4c0b-96e5-d5400bc8cbff)
 
 #### 3.2.1. GUI-Design
 
 #### 3.2.2. Workflow
 
-### 3.3. Event hinzufüägen
+### 3.3. Event hinzufügen
+![adding events](https://github.com/2324-syp-3ahif/Project-LAMP/assets/114491239/955a7fac-3670-42e7-a9ca-e002e29c7f8c)
+
 
 #### 3.3.1. GUI-Design
 
