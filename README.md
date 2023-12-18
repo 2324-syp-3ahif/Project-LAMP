@@ -83,14 +83,14 @@ Philip Raab: Task erstellen/ändern
 ![UML Use Case Diagramm](./pictures/UseCase_Diagramm.png)
 
 ### 3.2. Kalender ansehen 
-![calendar view](https://github.com/2324-syp-3ahif/Project-LAMP/assets/114491239/b8e7a383-84b6-4c0b-96e5-d5400bc8cbff)
+![calendar view](./pictures/GUIMockups/Calendar.png)
 
 #### 3.2.1. GUI-Design
 
 #### 3.2.2. Workflow
 
 ### 3.3. Event hinzufügen
-![adding events](https://github.com/2324-syp-3ahif/Project-LAMP/assets/114491239/955a7fac-3670-42e7-a9ca-e002e29c7f8c)
+![adding events](./pictures/GUIMockups/CreateEvent.png)
 
 
 #### 3.3.1. GUI-Design
@@ -100,26 +100,26 @@ Philip Raab: Task erstellen/ändern
 ### 3.4. Login
 
 #### 3.4.1. GUI-Design
-![Login Page](https://github.com/2324-syp-3ahif/Project-LAMP/assets/114642827/70558194-5102-4c24-bac2-3263e1acd56f)
-![Sign Up Page](https://github.com/2324-syp-3ahif/Project-LAMP/assets/114642827/b4794a6f-dde7-4e15-8664-ab82816dfb4c)
+![Login Page](./pictures/GUIMockups/Login.png)
+![Sign Up Page](./pictures/GUIMockups/SignUp.png)
 
 #### 3.4.2. Workflow
 
 ### 3.5. Tag erstellen
 
 #### 3.5.1. GUI-Design
-![Beispiel Tag erstellen](https://github.com/2324-syp-3ahif/Project-LAMP/assets/114642827/473e94ce-6afb-43ce-867a-9054ca4a07e7)
-![Beispiel Tag wurde erstellt](https://github.com/2324-syp-3ahif/Project-LAMP/assets/114642827/6530ca68-f586-4691-a571-91faa77e1b6b)
-![Biespiel Tag wurde gelöscht](https://github.com/2324-syp-3ahif/Project-LAMP/assets/114642827/aafd2482-678b-4248-92c9-9cc7ee991071)
+![Beispiel Tag erstellen](./pictures/GUIMockups/ExampleTagTest.png)
+![Beispiel Tag wurde erstellt](./pictures/GUIMockups/ExampleTagCreated.png)
+![Biespiel Tag wurde gelöscht](./pictures/GUIMockups/ExampleTagDeleted.png)
 
 #### 3.5.2. Workflow
 
 ### 3.6. Liste erstellen/ändern
 
 #### 3.6.1. GUI-Design
-![View Task Lists on Main Page](./pictures/ViewTasklistsOnMainPage.png)
-![Create Task List on Main Page](./pictures/CreateTaskListOnMainPage.png)
-![Create Task List Dropdown](./pictures/CreateTaskListOnMainPageDropdown.png)
+![View Task Lists on Main Page](./pictures/GUIMockups/ViewTasklistsOnMainPage.png)
+![Create Task List on Main Page](./pictures/GUIMockups/CreateTaskListOnMainPage.png)
+![Create Task List Dropdown](./pictures/GUIMockups/CreateTaskListOnMainPageDropdown.png)
 
 #### 3.6.2. Workflow
 
