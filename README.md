@@ -83,17 +83,16 @@ Philip Raab: Task erstellen/ändern
 ![UML Use Case Diagramm](./pictures/UseCase_Diagramm.png)
 
 ### 3.2. Kalender ansehen 
-![calendar view](./pictures/GUIMockups/Calendar.png)
 
 #### 3.2.1. GUI-Design
+![calendar view](./pictures/GUIMockups/Calendar.png)
 
 #### 3.2.2. Workflow
 
 ### 3.3. Event hinzufügen
-![adding events](./pictures/GUIMockups/CreateEvent.png)
-
 
 #### 3.3.1. GUI-Design
+![adding events](./pictures/GUIMockups/CreateEvent.png)
 
 #### 3.3.2. Workflow
 
@@ -126,5 +125,5 @@ Philip Raab: Task erstellen/ändern
 ### 3.7. Task erstellen/ändern
 
 #### 3.7.1. GUI-Design
-
+![Create Task](./pictures/GUIMockups/CreateTaskOnMainPage.png)
 #### 3.7.2. Workflow
