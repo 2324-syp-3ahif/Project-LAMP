@@ -98,6 +98,13 @@ Philip Raab: Task erstellen/ändern
 ![Create Task List Dropdown](./pictures/GUIMockups/CreateTaskListOnMainPageDropdown.png)
 
 #### 3.3.2. Workflow
+Beim Erstellen einer Tasklist (= Liste an Tasks) muss man einen Titel angeben. Das Hinzufügen einer Beschreibung und Tags, das Auswählen einer Priorität und Sortierordnung und das Einladen von Kollaboratoren ist ebenfalls möglich. Falls man dies allerdings nicht macht, wird eine Standardoption ausgewählt.
+
+Das Hinzufügen von Kollaboratoren funktioniert über einen Einladungslink per E-Mail. Das Auswählen der Priorität funktioniert über ein Dropdown, und die Sorting Order sind klickbare Buttons. Das Hinzufügen von Tags funktioniert über den Namen des Tags, den man entweder bereits zuvor erstellt hat oder dadurch jetzt erstellt.
+
+Beim Ansehen einer Tasklist werden die einzelnen Teile angezeigt. Zudem kann man über ein "+" Tasks hinzufügen. Beim auflisten der Tasks werden jene rot markiert, deren Datum bereits war und jene grau markiert und durchgestrichen, die bereits erledigt wurden. Zudem werden die Tasks gelb markiert, deren Ablaufdatum bald ist.
+
+Zu einer genaueren Ansicht kommt man, sobald man auf eine Task drückt.
 
 ### 3.4. Task erstellen/ändern
 
