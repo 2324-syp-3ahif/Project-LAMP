@@ -82,48 +82,48 @@ Philip Raab: Task erstellen/ändern
 
 ![UML Use Case Diagramm](./pictures/UseCase_Diagramm.png)
 
-### 3.2. Kalender ansehen 
+### 3.2. Login
 
 #### 3.2.1. GUI-Design
-![calendar view](./pictures/GUIMockups/Calendar.png)
-
-#### 3.2.2. Workflow
-
-### 3.3. Event hinzufügen
-
-#### 3.3.1. GUI-Design
-![adding events](./pictures/GUIMockups/CreateEvent.png)
-
-#### 3.3.2. Workflow
-
-### 3.4. Login
-
-#### 3.4.1. GUI-Design
 ![Login Page](./pictures/GUIMockups/Login.png)
 ![Sign Up Page](./pictures/GUIMockups/SignUp.png)
 
-#### 3.4.2. Workflow
+#### 3.2.2. Workflow
 
-### 3.5. Tag erstellen
+### 3.3. Liste erstellen/ändern
 
-#### 3.5.1. GUI-Design
-![Beispiel Tag erstellen](./pictures/GUIMockups/ExampleTagTest.png)
-![Beispiel Tag wurde erstellt](./pictures/GUIMockups/ExampleTagCreated.png)
-![Biespiel Tag wurde gelöscht](./pictures/GUIMockups/ExampleTagDeleted.png)
-
-#### 3.5.2. Workflow
-
-### 3.6. Liste erstellen/ändern
-
-#### 3.6.1. GUI-Design
+#### 3.3.1. GUI-Design
 ![View Task Lists on Main Page](./pictures/GUIMockups/ViewTasklistsOnMainPage.png)
 ![Create Task List on Main Page](./pictures/GUIMockups/CreateTaskListOnMainPage.png)
 ![Create Task List Dropdown](./pictures/GUIMockups/CreateTaskListOnMainPageDropdown.png)
 
+#### 3.3.2. Workflow
+
+### 3.4. Task erstellen/ändern
+
+#### 3.4.1. GUI-Design
+![Create Task](./pictures/GUIMockups/CreateTaskOnMainPage.png)
+#### 3.4.2. Workflow
+
+### 3.5. Kalender ansehen 
+
+#### 3.5.1. GUI-Design
+![calendar view](./pictures/GUIMockups/Calendar.png)
+
+#### 3.5.2. Workflow
+
+### 3.6. Event hinzufügen
+
+#### 3.6.1. GUI-Design
+![adding events](./pictures/GUIMockups/CreateEvent.png)
+
 #### 3.6.2. Workflow
 
-### 3.7. Task erstellen/ändern
+### 3.7. Tag erstellen
 
 #### 3.7.1. GUI-Design
-![Create Task](./pictures/GUIMockups/CreateTaskOnMainPage.png)
+![Beispiel Tag erstellen](./pictures/GUIMockups/ExampleTagTest.png)
+![Beispiel Tag wurde erstellt](./pictures/GUIMockups/ExampleTagCreated.png)
+![Biespiel Tag wurde gelöscht](./pictures/GUIMockups/ExampleTagDeleted.png)
+
 #### 3.7.2. Workflow
