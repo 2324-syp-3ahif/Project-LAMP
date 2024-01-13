@@ -89,6 +89,17 @@ Philip Raab: Task erstellen/ändern
 ![Sign Up Page](./pictures/GUIMockups/SignUp.png)
 
 #### 3.2.2. Workflow
+Login: 
+
+Man gibt den Benutzernamen und das Passwort in die dafür vorgesehenen Felder auf der Login-Seite ein.
+Die Website überprüft, ob die eingegebene Email existiert und ob das eingegebene Passwort korrekt ist.
+Wenn alles stimmt, wirst du auf die Main Page weitergeleitet.
+Falls die Email noch nicht existiert hat man sich noch nicht registriert und man kann ganz einfach auf den Sign Up Button klicken um zur Sign Up Seite weitergeleitet zu werden.
+
+Sign Up:
+
+Der Sign Up funktioniert grundlegend gleich, wie der Login, jedoch wird hier auch noch der Name der Person gefordert.
+Darauffolgend kann man sich, wenn der Sign Up erfolgreich war, im Login anmelden.
 
 ### 3.3. Liste erstellen/ändern
 
