@@ -145,3 +145,6 @@ Zu einer genaueren Ansicht kommt man, sobald man auf eine Task drückt.
 ![Biespiel Tag wurde gelöscht](./pictures/GUIMockups/ExampleTagDeleted.png)
 
 #### 3.7.2. Workflow
+
+Das Erstellen eines Tags ist sehr simpel. Man gibt den Namen des zu erstellen wollenden Tags ein und klickt auf das "+" um den Tag zu erstellen.
+Mit dem Stift kann man den Namen eines Tags je nach Belieben umbenennen und mit dem Mülleimer kann man einen Tag simpel wieder löschen.
