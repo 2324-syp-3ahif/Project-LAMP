@@ -100,6 +100,7 @@ Darauffolgend kann man sich, wenn der Sign Up erfolgreich war, im Login anmelden
 
 #### 3.3.1. GUI-Design
 ![View Task Lists on Main Page](./pictures/GUIMockups/ViewTasklistsOnMainPage.png)
+![Delete Popup](./pictures/GUIMockups/DeletePopUp.png)
 ![Create Task List on Main Page](./pictures/GUIMockups/CreateTaskListOnMainPage.png)
 ![Create Task List Dropdown](./pictures/GUIMockups/CreateTaskListOnMainPageDropdown.png)
 
@@ -108,7 +109,7 @@ Beim Erstellen einer Tasklist (= Liste an Tasks) muss man einen Titel angeben. D
 
 Das Hinzufügen von Kollaboratoren funktioniert über einen Einladungslink per E-Mail. Das Auswählen der Priorität funktioniert über ein Dropdown, und die Sorting Order sind klickbare Buttons. Das Hinzufügen von Tags funktioniert über den Namen des Tags, den man entweder bereits zuvor erstellt hat oder dadurch jetzt erstellt.
 
-Beim Ansehen einer Tasklist werden die einzelnen Teile angezeigt. Zudem kann man über ein "+" Tasks hinzufügen. Beim auflisten der Tasks werden jene rot markiert, deren Datum bereits war und jene grau markiert und durchgestrichen, die bereits erledigt wurden. Zudem werden die Tasks gelb markiert, deren Ablaufdatum bald ist.
+Beim Ansehen einer Tasklist werden die einzelnen Teile angezeigt. Zudem kann man über ein "+" Tasks hinzufügen. Beim auflisten der Tasks werden jene rot markiert, deren Datum bereits war und jene grau markiert und durchgestrichen, die bereits erledigt wurden. Zudem werden die Tasks gelb markiert, deren Ablaufdatum bald ist. Man kann auch nachträglich Tags hinzufügen, zudem kann man mit dem Drücken eines Papierkorb-Buttons die gesamte Tasklist löschen, wobei dann ein Pop-Up erscheint, ob man das wirklich löschen will. 
 
 Zu einer genaueren Ansicht kommt man, sobald man auf eine Task drückt.
 
