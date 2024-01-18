@@ -114,7 +114,7 @@ Beim Erstellen einer Tasklist (= Liste an Tasks) muss man einen Titel angeben. D
 
 Das Hinzufügen von Kollaboratoren funktioniert über einen Einladungslink per E-Mail. Das Auswählen der Priorität funktioniert über ein Dropdown, und die Sorting Order sind klickbare Buttons. Das Hinzufügen von Tags funktioniert über den Namen des Tags, den man entweder bereits zuvor erstellt hat oder dadurch jetzt erstellt.
 
-Beim Ansehen einer Tasklist werden die einzelnen Teile angezeigt. Zudem kann man über ein "+" Tasks hinzufügen. Beim auflisten der Tasks werden jene rot markiert, deren Datum bereits war und jene grau markiert und durchgestrichen, die bereits erledigt wurden. Zudem werden die Tasks gelb markiert, deren Ablaufdatum bald ist. Man kann auch nachträglich Tags hinzufügen, zudem kann man mit dem Drücken eines Papierkorb-Buttons die gesamte Tasklist löschen, wobei dann ein Pop-Up erscheint, ob man das wirklich löschen will. 
+Beim Ansehen einer Tasklist werden die einzelnen Teile angezeigt. Zudem kann man über ein "+" Tasks hinzufügen. Beim Auflisten der Tasks werden jene rot markiert, deren Fälligkeitsdatum verstrichen ist, während diejenigen grau markiert und durchgestrichen werden, die bereits erledigt wurden. Zudem werden die Tasks gelb markiert, deren Ablaufdatum bald ist. Man kann auch nachträglich Tags hinzufügen. Zudem ist durch das Drücken eines Papierkorb-Buttons das Löschen der gesamten Tasklist möglich, wobei dann ein Pop-Up erscheint, ob man das wirklich löschen will. 
 
 Zu einer genaueren Ansicht kommt man, sobald man auf eine Task drückt.
 
@@ -130,13 +130,13 @@ Zu einer genaueren Ansicht kommt man, sobald man auf eine Task drückt.
 ![calendar view](./pictures/GUIMockups/Calendar.png)
 
 #### 3.5.2. Workflow
-Die Ansicht des Kalenders ist einfach gestalltet.
+Die Ansicht des Kalenders ist einfach aufgebaut.
 Er wird in einer Wochenansicht angezeigt. 
-In jedem, als Spalte gestaltetem, Tag werden Events in rot und Tasks in weiß angezeigt. 
-Auf ersten Blick ist dabei erkennlich wie sie heißen, wann sie starten, bzw bei Events auch wann sie enden.
+In jedem, als Spalte gestaltetem, Tag werden Events rot und Tasks weiß angezeigt. 
+Auf ersten Blick ist dabei erkennlich wie sie heißen, wann sie starten, bzw. bei Events auch wann sie enden.
 Beim Klick auf ein Event kommt man zum Menü "Edit Event". 
-Mit dem Klick auf eine eingetragene Task wird man auf das Taskfenster(3.4) verwiesen. 
-Neben dem Zeitrahmen der heutigen Woche(links oben) befinden sich Pfeile um durch die Wochen zu navigieren.
+Mit dem Klick auf eine eingetragene Task wird man auf das Taskfenster (siehe 3.4) verwiesen. 
+Neben dem Zeitrahmen der heutigen Woche(links oben) befinden sich Pfeile, um durch die Wochen zu navigieren.
 Außerdem gibt es die Buttons: New Task, New Event
 Diese weisen einen auf ein Erstellungsfenster der jeweiligen Kategorie weiter.
 
@@ -149,7 +149,7 @@ Diese weisen einen auf ein Erstellungsfenster der jeweiligen Kategorie weiter.
 Beim Erstellen eines Events gibt es folgende Auswahlmöglichkeiten:
 - Name: Der Name des Events, welcher auch in der Kalenderansicht angezeigt wird
 - Datum des Events: Tag an dem sich das Event abhält
-- Full day: Sollte Full day aktiviert sein, ist es nicht möglich Start und End zu verändern und das Event findet von 0:00 bis 23:59 statt
+- Full day: Sollte Full day aktiviert sein, ist es nicht möglich Start und End zu verändern. Das Event findet von 0:00 bis 23:59 Uhr statt
 - Description: Eine Beschreibung des Events
 Mit "Create" wird das Event sofort in den Kalender integriert.
 
