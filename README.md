@@ -75,6 +75,11 @@ Feature Set:
 ### 3.1. Use Case Überblick
 Das Use Case Diagramm beinhaltet alle Use Cases unseres Projekts. Wir haben sie dann folgendermaßen aufgeteilt:
 
+Luca Haas: Kalender und Event<br>
+Andreas Huber: Login und Tags<br>
+Melanie Dohr: Liste an Tasks Ansicht + Erstellung<br>
+Philip Raab: Task Ansicht + Erstellung
+
 ![UML Use Case Diagramm](./pictures/UseCase_Diagramm.png)
 
 ### 3.2. Login
