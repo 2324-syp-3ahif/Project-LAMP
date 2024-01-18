@@ -130,6 +130,15 @@ Zu einer genaueren Ansicht kommt man, sobald man auf eine Task drückt.
 ![calendar view](./pictures/GUIMockups/Calendar.png)
 
 #### 3.5.2. Workflow
+Die Ansicht des Kalenders ist einfach gestalltet.
+Er wird in einer Wochenansicht angezeigt. 
+In jedem, als Spalte gestaltetem, Tag werden Events in rot und Tasks in weiß angezeigt. 
+Auf ersten Blick ist dabei erkennlich wie sie heißen, wann sie starten, bzw bei Events auch wann sie enden.
+Beim Klick auf ein Event kommt man zum Menü "Edit Event". 
+Mit dem Klick auf eine eingetragene Task wird man auf das Taskfenster(3.4) verwiesen. 
+Neben dem Zeitrahmen der heutigen Woche(links oben) befinden sich Pfeile um durch die Wochen zu navigieren.
+Außerdem gibt es die Buttons: New Task, New Event
+Diese weisen einen auf ein Erstellungsfenster der jeweiligen Kategorie weiter.
 
 ### 3.6. Event hinzufügen
 
@@ -137,15 +146,35 @@ Zu einer genaueren Ansicht kommt man, sobald man auf eine Task drückt.
 ![adding events](./pictures/GUIMockups/CreateEvent.png)
 
 #### 3.6.2. Workflow
+Beim Erstellen eines Events gibt es folgende Auswahlmöglichkeiten:
+- Name: Der Name des Events, welcher auch in der Kalenderansicht angezeigt wird
+- Datum des Events: Tag an dem sich das Event abhält
+- Full day: Sollte Full day aktiviert sein, ist es nicht möglich Start und End zu verändern und das Event findet von 0:00 bis 23:59 statt
+- Description: Eine Beschreibung des Events
+Mit "Create" wird das Event sofort in den Kalender integriert.
 
-### 3.7. Tag erstellen
+### 3.7. Event bearbeiten
 
 #### 3.7.1. GUI-Design
+![adding events](./pictures/GUIMockups/EditEvent.png)
+
+#### 3.7.2. Workflow
+Beim Bearbeiten eines Events gibt es folgende Auswahlmöglichkeiten:
+- Name: Der Name des Events, welcher auch in der Kalenderansicht angezeigt wird
+- Datum des Events: Tag an dem sich das Event abhält
+- Full day: Sollte Full day aktiviert sein, ist es nicht möglich Start und End zu verändern und das Event findet von 0:00 bis 23:59 statt
+- Description: Eine Beschreibung des Events
+Mit "Save" werden zu ändernde Daten sofort richig in der Kalendaransicht angezeigt.
+Mit dem Mistkübel kann das Event gelöscht werden und wird somit nicht mehr angezeigt.
+
+### 3.8. Tag erstellen
+
+#### 3.8.1. GUI-Design
 ![Beispiel Tag erstellen](./pictures/GUIMockups/ExampleTagTest.png)
 ![Beispiel Tag wurde erstellt](./pictures/GUIMockups/ExampleTagCreated.png)
 ![Biespiel Tag wurde gelöscht](./pictures/GUIMockups/ExampleTagDeleted.png)
 
-#### 3.7.2. Workflow
+#### 3.8.2. Workflow
 
 Das Erstellen eines Tags ist sehr simpel. Man gibt den Namen des zu erstellenden Tags ein und klickt auf das "+" um den Tag zu kreieren.
 Mit dem Stift kann man den Namen eines Tags je nach Belieben umbenennen und mit dem Papierkorb kann man einen Tag simpel wieder löschen.
