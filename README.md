@@ -75,11 +75,6 @@ Feature Set:
 ### 3.1. Use Case Überblick
 Das Use Case Diagramm beinhaltet alle Use Cases unseres Projekts. Wir haben sie dann folgendermaßen aufgeteilt:
 
-Luca Haas: Kalender ansehen und Event hinzufügen
-Andreas Huber: Login und Tag erstellen
-Melanie Dohr: Liste erstellen/ändern
-Philip Raab: Task erstellen/ändern
-
 ![UML Use Case Diagramm](./pictures/UseCase_Diagramm.png)
 
 ### 3.2. Login
@@ -92,13 +87,13 @@ Philip Raab: Task erstellen/ändern
 Login: 
 
 Man gibt den Benutzernamen und das Passwort in die dafür vorgesehenen Felder auf der Login-Seite ein.
-Die Website überprüft, ob die eingegebene Email existiert und ob das eingegebene Passwort korrekt ist.
-Wenn alles stimmt, wirst du auf die Main Page weitergeleitet.
-Falls die Email noch nicht existiert hat man sich noch nicht registriert und man kann ganz einfach auf den Sign Up Button klicken um zur Sign Up Seite weitergeleitet zu werden.
+Die Website überprüft, ob die eingegebene Email existiert und ob das Passwort korrekt ist.
+Wenn alles stimmt, wird man auf die Main Page weitergeleitet.
+Falls die Email noch nicht existiert, hat man sich noch nicht registriert und man kann ganz  auf den Sign Up Button klicken um zur Sign Up Seite weitergeleitet zu werden.
 
 Sign Up:
 
-Der Sign Up funktioniert grundlegend gleich, wie der Login, jedoch wird hier auch noch der Name der Person gefordert.
+Der Sign Up funktioniert grundlegend gleich wie der Login, jedoch wird hier auch noch der Name der Person gefordert.
 Darauffolgend kann man sich, wenn der Sign Up erfolgreich war, im Login anmelden.
 
 ### 3.3. Liste erstellen/ändern
@@ -146,5 +141,5 @@ Zu einer genaueren Ansicht kommt man, sobald man auf eine Task drückt.
 
 #### 3.7.2. Workflow
 
-Das Erstellen eines Tags ist sehr simpel. Man gibt den Namen des zu erstellen wollenden Tags ein und klickt auf das "+" um den Tag zu erstellen.
-Mit dem Stift kann man den Namen eines Tags je nach Belieben umbenennen und mit dem Mülleimer kann man einen Tag simpel wieder löschen.
+Das Erstellen eines Tags ist sehr simpel. Man gibt den Namen des zu erstellenden Tags ein und klickt auf das "+" um den Tag zu kreieren.
+Mit dem Stift kann man den Namen eines Tags je nach Belieben umbenennen und mit dem Papierkorb kann man einen Tag simpel wieder löschen.
