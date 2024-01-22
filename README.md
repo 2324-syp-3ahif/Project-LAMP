@@ -214,3 +214,6 @@ Mit dem Mistkübel kann das Event gelöscht werden und wird somit nicht mehr ang
 
 Das Erstellen eines Tags ist sehr simpel. Man gibt den Namen des zu erstellenden Tags ein und klickt auf das "+" um den Tag zu kreieren.
 Mit dem Stift kann man den Namen eines Tags je nach Belieben umbenennen und mit dem Papierkorb kann man einen Tag simpel wieder löschen.
+
+## 4. Nicht-funktionale Anforderungen
+Nach sorgfältiger Überlegung sind wir zu dem Entschluss gekommen, dass uns keine nicht-funktionalen Anforderungen bekannt sind.
