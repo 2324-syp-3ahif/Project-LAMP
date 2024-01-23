@@ -6,6 +6,58 @@
 - <i>M</i> elanie Dohr
 - <i>P</i> hilip Raab
 
+# Inhaltsverzeichnis
+1. [Ausgangslage](#1-ausgangslage)
+    1. [Ist-Situation](#11-ist-situation)
+    2. [Verbesserungspotentiale](#12-verbesserungspotenziale)
+2. [Zielsetzung](#2-zielsetzung)
+3. [Funktionale Anforderungen](#3-funktionale-anforderungen)
+    1. [Use Case Diagramm](#31-use-case-überblick)
+    2. [Login](#32-login)
+        1. [GUI-Design](#321-gui-design)
+        2. [Workflow](#322-workflow)
+    3. [Tasklist](#33-tasklists)
+        1. [Alle Tasklists ansehen](#331-alle-tasklists-ansehen)
+            1. [GUI-Design](#3311-gui-design)
+            2. [Workflow](#3312-workflow)
+        2. [Nach Tag filtern](#332-nach-tag-filtern)
+            1. [GUI-Design](#3321-gui-design)
+            2. [Workflow](#3322-workflow)
+        3. [Tasklist erstellen](#333-tasklist-erstellen)
+            1. [GUI-Design](#3331-gui-design)
+            2. [Workflow](#3332-workflow)
+        4. [Tasklist - erweiterte Ansicht](#334-tasklist---erweiterte-ansicht)
+            1. [GUI-Design](#3341-gui-design)
+            2. [Workflow](#3342-workflow)
+        5. [Löschen einer Tasklist](#335-löschen-einer-tasklist)
+            1. [GUI-Design](#3351-gui-design)
+            2. [Workflow](#3352-workflow)
+        6. [Tasklist Error](#336-versuchen-tasklist-anzusehen-während-jemand-anderes-sie-bearbeitet)
+            1. [GUI-Design](#3361-gui-design)
+            2. [Workflow](#3362-workflow)
+            3. [ACD](#3363-acd)
+    4. [Task](#34-task)
+        1. [Task erstellen](#341-task-erstellen)
+            1. [GUI-Design](#3411-gui-design)
+            2. [Workflow](#3412-workflow)
+        2. [Task ändern](#342-task-ändern)
+            1. [GUI-Design](#3421-gui-design)
+            2. [Workflow](#3422-workflow)
+    5. [Kalender](#35-kalender-ansehen)
+        1. [GUI-Design](#351-gui-design)
+        2. [Workflow](#352-workflow)
+    6. [Event](#36-event-hinzufügen)
+        1. [Event hinzufügen](#361-event-hinzufügen)
+            1. [GUI-Design](#3611-gui-design)
+            2. [Workflow](#3612-workflow)
+        2. [Event ändern](#362-event-bearbeiten)
+            1. [GUI-Design](#3621-gui-design)
+            2. [Workflow](#3622-workflow)
+    7. [Tag](#37-tag-erstellen)
+        1. [GUI-Design](#371-gui-design)
+        2. [Workflow](#372-workflow)
+4. [Nicht funktionale Anforderungen](#4-nicht-funktionale-anforderungen)
+
 ## 1. Ausgangslage
 
 ### 1.1. Ist-Situation
@@ -109,7 +161,7 @@ Darauffolgend kann man sich, wenn der Sign Up erfolgreich war, im Login anmelden
 ![View Task Lists on Main Page](./pictures/GUIMockups/ViewTasklistsOnMainPage.png)
 
 ##### 3.3.1.2. Workflow
-Auf der Main Page werden alle Tasklists verkürzt angezeigt. Eine Tasklist ist dabei eine Liste an Tasks. Bei der verkürzten Ansicht kann man den Titel, die Tags und die Beschreibung der Tasklist sehen.
+Auf der Main Page werden alle Tasklists verkürzt angezeigt. Eine Tasklist ist dabei eine Liste an Tasks. Bei der verkürzten Ansicht kann man den Titel, die Tags und die Beschreibung der Tasklist sehen. Man kann die Tasklists nach Tag filtern und eine Sortiermöglichkeit (Creation Date, Priority, Last View) auswählen.
 
 #### 3.3.2. Nach Tag filtern
 
@@ -146,26 +198,37 @@ Sobald man auf eine Tasklist drückt, kommt man zu einer erweiterten Ansicht. Be
 ##### 3.3.5.2. Workflow
 Durch das Drücken eines Papierkorb-Buttons das Löschen der gesamten Tasklist möglich, wobei dann ein Pop-Up erscheint, ob man das wirklich will. 
 
-### 3.4. Task erstellen
+#### 3.3.6. Versuchen Tasklist anzusehen, während jemand anderes sie bearbeitet
 
-#### 3.4.1. GUI-Design
+##### 3.3.6.1. GUI-Design
+![View Tasklist - Error](./pictures/GUIMockups/ViewTasklistError.png)
+
+##### 3.3.6.2. Workflow
+Wenn man versucht, eine Tasklist zu bearbeiten, während dies schon jemand anderer tut, bekommt man eine Fehlermeldung.
+
+##### 3.3.6.3. ACD
+
+### 3.4. Task
+#### 3.4.1. Task erstellen
+
+##### 3.4.1.1. GUI-Design
 ![Create Task](./pictures/GUIMockups/CreateTaskOnMainPage.png)
-#### 3.4.2. Workflow
+##### 3.4.1.2. Workflow
 Nachdem man auf das "+" zum Hinzufügen einer neuen Task geklickt hat, erscheint ein Fenster. In diesem kann man den Namen, die Beschreibung, das Fälligkeitsdatum mit der zugehörigen Tageszeit und die Priorität eingeben. Zum Abschließen dieses Prozesses muss man nur noch auf "Save" klicken.
 
-### 3.5. Task ändern
+#### 3.4.2. Task ändern
 
-#### 3.5.1. GUI-Design
+##### 3.4.2.1. GUI-Design
 ![Create Task](./pictures/GUIMockups/EditTaskOnMainPage.png)
-#### 3.5.2. Workflow
+##### 3.4.2.2. Workflow
 Um eine Task zu ändern, braucht man nur darauf zu klicken. Danach "klappt" sich die Task nach unten auf und man kann die Beschreibung, die Priorität und den Fälligkeitszeitpunkt sehen. Um nun ein Element der Task zu ändern, klickt man einfach darauf. Überall kann man dann einfach den neuen Wert eingeben, außer bei der Priorität ist wie immer ein Dropdownmenü. Zum Speichern muss man einfach irgendwo außerhalb des Task klicken.
 
-### 3.6. Kalender ansehen 
+### 3.5. Kalender ansehen 
 
-#### 3.6.1. GUI-Design
+#### 3.5.1. GUI-Design
 ![calendar view](./pictures/GUIMockups/Calendar.png)
 
-#### 3.6.2. Workflow
+#### 3.5.2. Workflow
 Die Ansicht des Kalenders ist einfach aufgebaut.
 Er wird in einer Wochenansicht angezeigt. 
 In jedem, als Spalte gestaltetem, Tag werden Events rot und Tasks weiß angezeigt. 
@@ -176,12 +239,14 @@ Neben dem Zeitrahmen der heutigen Woche(links oben) befinden sich Pfeile, um dur
 Außerdem gibt es die Buttons: New Task, New Event
 Diese weisen einen auf ein Erstellungsfenster der jeweiligen Kategorie weiter.
 
-### 3.7. Event hinzufügen
+### 3.6. Event
 
-#### 3.7.1. GUI-Design
+#### 3.6.1 Event hinzufügen
+
+##### 3.6.1.1. GUI-Design
 ![adding events](./pictures/GUIMockups/CreateEvent.png)
 
-#### 3.7.2. Workflow
+##### 3.6.1.2. Workflow
 Beim Erstellen eines Events gibt es folgende Auswahlmöglichkeiten:
 - Name: Der Name des Events, welcher auch in der Kalenderansicht angezeigt wird
 - Datum des Events: Tag an dem sich das Event abhält
@@ -189,12 +254,12 @@ Beim Erstellen eines Events gibt es folgende Auswahlmöglichkeiten:
 - Description: Eine Beschreibung des Events
 Mit "Create" wird das Event sofort in den Kalender integriert.
 
-### 3.8. Event bearbeiten
+#### 3.6.2 Event bearbeiten
 
-#### 3.8.1. GUI-Design
+##### 3.6.2.1. GUI-Design
 ![adding events](./pictures/GUIMockups/EditEvent.png)
 
-#### 3.8.2. Workflow
+##### 3.6.2.2. Workflow
 Beim Bearbeiten eines Events gibt es folgende Auswahlmöglichkeiten:
 - Name: Der Name des Events, welcher auch in der Kalenderansicht angezeigt wird
 - Datum des Events: Tag an dem sich das Event abhält
@@ -203,14 +268,14 @@ Beim Bearbeiten eines Events gibt es folgende Auswahlmöglichkeiten:
 Mit "Save" werden zu ändernde Daten sofort richig in der Kalendaransicht angezeigt.
 Mit dem Mistkübel kann das Event gelöscht werden und wird somit nicht mehr angezeigt.
 
-### 3.9. Tag erstellen
+### 3.7. Tag erstellen
 
-#### 3.9.1. GUI-Design
+#### 3.7.1. GUI-Design
 ![Beispiel Tag erstellen](./pictures/GUIMockups/ExampleTagTest.png)
 ![Beispiel Tag wurde erstellt](./pictures/GUIMockups/ExampleTagCreated.png)
 ![Biespiel Tag wurde gelöscht](./pictures/GUIMockups/ExampleTagDeleted.png)
 
-#### 3.9.2. Workflow
+#### 3.7.2. Workflow
 
 Das Erstellen eines Tags ist sehr simpel. Man gibt den Namen des zu erstellenden Tags ein und klickt auf das "+" um den Tag zu kreieren.
 Mit dem Stift kann man den Namen eines Tags je nach Belieben umbenennen und mit dem Papierkorb kann man einen Tag simpel wieder löschen.
