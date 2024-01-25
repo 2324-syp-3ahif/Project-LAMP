@@ -53,8 +53,8 @@
         2. [Event ändern](#362-event-bearbeiten)
             1. [GUI-Design](#3621-gui-design)
             2. [Workflow](#3622-workflow)
-    8. [Tag](#37-tags)
-        1. [Tags erstellen](#371-tags-erstellen)
+    8. [Tags erstellen und löschen](#37-tags-erstellen-und-löschen)
+        1. [Tag erstellen](#371-tag-erstellen)
             1. [GUI-Design](#3711-gui-design)
             2. [Workflow](#3712-workflow)
         2. [Tag erstellt](#372-tag-erstellt)
@@ -63,6 +63,13 @@
         3. [Tag löschen](#373-tag-löschen)
             1. [GUI-Design](#3731-gui-design)
             2. [Workflow](#3732-workflow)
+    9. [Tags selektieren](#38-tags-selektion)
+        1. [Standard Tags](#381-standard-tags)
+            1. [GUI-Design](#3811-gui-design)
+            2. [Workflow](#3812-workflow)
+        2. [Selektieren eines Tags](#382-selektieren-eines-tags)
+            1. [GUI-Design](#3821-gui-design)
+            2. [Workflow](#3822-workflow)
 4. [Nicht funktionale Anforderungen](#4-nicht-funktionale-anforderungen)
 
 ## 1. Ausgangslage
@@ -287,9 +294,9 @@ Beim Bearbeiten eines Events gibt es folgende Auswahlmöglichkeiten:
 Mit "Save" werden zu ändernde Daten sofort richig in der Kalendaransicht angezeigt.
 Mit dem Mistkübel kann das Event gelöscht werden und wird somit nicht mehr angezeigt.
 
-### 3.7 Tags
+### 3.7 Tags erstellen und löschen
 
-#### 3.7.1. Tags erstellen
+#### 3.7.1. Tag erstellen
 
 ##### 3.7.1.1 GUI-Design
 ![Beispiel Tag erstellen](./pictures/GUIMockups/ExampleTagTest.png)
@@ -315,9 +322,24 @@ Wenn man den Tag Schule als unnötig empfinde kann man diesen einfach per Klick 
 Falls man sich entschieden hat das der Tag unnötig war und man den Abfalleimer geklickt hat wurde der Tag nun erflogreich gelöscht.
 #### 3.7.2. Workflow
 
-#### Tags Selektion
+### 3.8 Tags Selektion
 
+#### 3.8.1 Standard Tags
 
+##### 3.8.1.1 GUI-Design
+![Standard Tags](./pictures/GUIMockups/StandardTags.png)
+
+##### Workflow
+Nun gehen wir davon aus, dass wir die beiden Tags, Schule und Freizeit, bereits wie in der Tasklist vorhanden haben.
+Wenn man nun eines Tag auswählen möchte muss man auf einen der Namen eines Tags drücken.
+
+#### 3.8.2 Selektieren eines Tags
+
+##### GUI-Design
+![Select Standard Tags](./pictures/GUIMockups/SelectedStandardTag.png)
+
+##### Workflow
+Falls man sich für den Tag Schule entschieden hat und man auf den Namen geklickt hat, wird dieser Tag als Symbol, dass dieser Tag aktuell ausgewählt ist, hervorgehoben.
 
 ## 4. Nicht-funktionale Anforderungen
 Nach sorgfältiger Überlegung sind wir zu dem Entschluss gekommen, dass uns keine nicht-funktionalen Anforderungen bekannt sind.
