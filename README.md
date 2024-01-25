@@ -13,7 +13,7 @@
 2. [Zielsetzung](#2-zielsetzung)
 3. [Funktionale Anforderungen](#3-funktionale-anforderungen)
     1. [Use Case Diagramm](#31-use-case-überblick)
-    2. [Login](#32-login-and-sign-up-system)
+    2. [Login and Sign Up System](#32-login-and-sign-up-system)
         1. [Login](#321-login)
         2. [Sign Up](#322-sign-up)
     4. [Tasklist](#33-tasklists)
