@@ -134,19 +134,27 @@ Philip Raab: Task Ansicht + Erstellung
 
 ![UML Use Case Diagramm](./pictures/UseCase_Diagramm.png)
 
-### 3.2. Login
+### 3.2.1 Login
 
-#### 3.2.1. GUI-Design
+#### 3.2.1.1 GUI-Design
 ![Login Page](./pictures/GUIMockups/Login.png)
-![Sign Up Page](./pictures/GUIMockups/SignUp.png)
 
-#### 3.2.2. Workflow
+#### 3.2.1.2 Workflow
+
 Login: 
 
 Man gibt den Benutzernamen und das Passwort in die dafür vorgesehenen Felder auf der Login-Seite ein.
 Die Website überprüft, ob die eingegebene Email existiert und ob das Passwort korrekt ist.
 Wenn alles stimmt, wird man auf die Main Page weitergeleitet.
-Falls die Email noch nicht existiert, hat man sich noch nicht registriert und man kann ganz  auf den Sign Up Button klicken um zur Sign Up Seite weitergeleitet zu werden.
+Ansonsten muss man sich registrieren, da man sich noch nicht eingeloggt hat.
+
+### 3.2.2 Sign Up
+
+#### 3.2.2.1 GUI-Design
+
+![Sign Up Page](./pictures/GUIMockups/SignUp.png)
+
+#### 3.2.2.2 Workflow
 
 Sign Up:
 
