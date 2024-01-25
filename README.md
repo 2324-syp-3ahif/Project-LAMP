@@ -53,9 +53,16 @@
         2. [Event ändern](#362-event-bearbeiten)
             1. [GUI-Design](#3621-gui-design)
             2. [Workflow](#3622-workflow)
-    8. [Tag](#37-tag-erstellen)
-        1. [GUI-Design](#371-gui-design)
-        2. [Workflow](#372-workflow)
+    8. [Tag](#37-tags)
+        1. [Tags erstellen](#371-tags-erstellen)
+            1. [GUI-Design](#3711-gui-design)
+            2. [Workflow](#3712-workflow)
+        2. [Tag erstellt](#372-tag-erstellt)
+            1. [GUI-Design](#3721-gui-design)
+            2. [Workflow](#3722-workflow)
+        3. [Tag löschen](#373-tag-löschen)
+            1. [GUI-Design](#3731-gui-design)
+            2. [Workflow](#3732-workflow)
 4. [Nicht funktionale Anforderungen](#4-nicht-funktionale-anforderungen)
 
 ## 1. Ausgangslage
@@ -134,7 +141,7 @@ Philip Raab: Task Ansicht + Erstellung
 
 ![UML Use Case Diagramm](./pictures/UseCase_Diagramm.png)
 
-## 3.2 Login and Sign Up System
+### 3.2 Login and Sign-Up System
 
 #### 3.2.1 Login
 
@@ -280,17 +287,37 @@ Beim Bearbeiten eines Events gibt es folgende Auswahlmöglichkeiten:
 Mit "Save" werden zu ändernde Daten sofort richig in der Kalendaransicht angezeigt.
 Mit dem Mistkübel kann das Event gelöscht werden und wird somit nicht mehr angezeigt.
 
-### 3.7. Tag erstellen
+### 3.7 Tags
 
-#### 3.7.1. GUI-Design
+#### 3.7.1. Tags erstellen
+
+##### 3.7.1.1 GUI-Design
 ![Beispiel Tag erstellen](./pictures/GUIMockups/ExampleTagTest.png)
+
+##### 3.7.1.2 Workflow
+Ausgehend davon, dass die beiden Tags Freizeit und Schule, die bereits genannt wurden noch nicht existieren, können wir uns ganz einfach bspw. den Tag Schule erstellen, indem wir den Namen des Tags eingeben und dann auf das '+' zum hinzufügen klicken.
+
+#### 3.7.2 Tag erstellt
+
+##### 3.7.2.1 GUI-Design
 ![Beispiel Tag wurde erstellt](./pictures/GUIMockups/ExampleTagCreated.png)
+
+##### 3.7.2.2 Workflow
+Wie man nun erkennen kann wurde der Tag Schule wie im Beispiel gezeigt erstellt.
+Wenn man den Tag Schule als unnötig empfinde kann man diesen einfach per Klick auf den Abfalleimer löschen.
+
+#### 3.7.3 Tag löschen
+
+##### GUI-Design
 ![Biespiel Tag wurde gelöscht](./pictures/GUIMockups/ExampleTagDeleted.png)
 
+##### Workflow
+Falls man sich entschieden hat das der Tag unnötig war und man den Abfalleimer geklickt hat wurde der Tag nun erflogreich gelöscht.
 #### 3.7.2. Workflow
 
-Das Erstellen eines Tags ist sehr simpel. Man gibt den Namen des zu erstellenden Tags ein und klickt auf das "+" um den Tag zu kreieren.
-Mit dem Stift kann man den Namen eines Tags je nach Belieben umbenennen und mit dem Papierkorb kann man einen Tag simpel wieder löschen.
+#### Tags Selektion
+
+
 
 ## 4. Nicht-funktionale Anforderungen
 Nach sorgfältiger Überlegung sind wir zu dem Entschluss gekommen, dass uns keine nicht-funktionalen Anforderungen bekannt sind.
