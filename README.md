@@ -13,10 +13,10 @@
 2. [Zielsetzung](#2-zielsetzung)
 3. [Funktionale Anforderungen](#3-funktionale-anforderungen)
     1. [Use Case Diagramm](#31-use-case-überblick)
-    2. [Login](#32-login)
-        1. [GUI-Design](#321-gui-design)
-        2. [Workflow](#322-workflow)
-    3. [Tasklist](#33-tasklists)
+    2. [Login](#32-login-and-sign-up-system)
+        1. [Login](#321-login)
+        2. [Sign Up](#322-sign-up)
+    4. [Tasklist](#33-tasklists)
         1. [Alle Tasklists ansehen](#331-alle-tasklists-ansehen)
             1. [GUI-Design](#3311-gui-design)
             2. [Workflow](#3312-workflow)
@@ -36,24 +36,24 @@
             1. [GUI-Design](#3361-gui-design)
             2. [Workflow](#3362-workflow)
             3. [ACD](#3363-acd)
-    4. [Task](#34-task)
+    5. [Task](#34-task)
         1. [Task erstellen](#341-task-erstellen)
             1. [GUI-Design](#3411-gui-design)
             2. [Workflow](#3412-workflow)
         2. [Task ändern](#342-task-ändern)
             1. [GUI-Design](#3421-gui-design)
             2. [Workflow](#3422-workflow)
-    5. [Kalender](#35-kalender-ansehen)
+    6. [Kalender](#35-kalender-ansehen)
         1. [GUI-Design](#351-gui-design)
         2. [Workflow](#352-workflow)
-    6. [Event](#36-event-hinzufügen)
+    7. [Event](#36-event-hinzufügen)
         1. [Event hinzufügen](#361-event-hinzufügen)
             1. [GUI-Design](#3611-gui-design)
             2. [Workflow](#3612-workflow)
         2. [Event ändern](#362-event-bearbeiten)
             1. [GUI-Design](#3621-gui-design)
             2. [Workflow](#3622-workflow)
-    7. [Tag](#37-tag-erstellen)
+    8. [Tag](#37-tag-erstellen)
         1. [GUI-Design](#371-gui-design)
         2. [Workflow](#372-workflow)
 4. [Nicht funktionale Anforderungen](#4-nicht-funktionale-anforderungen)
@@ -134,12 +134,14 @@ Philip Raab: Task Ansicht + Erstellung
 
 ![UML Use Case Diagramm](./pictures/UseCase_Diagramm.png)
 
-### 3.2.1 Login
+## 3.2 Login and Sign Up System
 
-#### 3.2.1.1 GUI-Design
+#### 3.2.1 Login
+
+##### 3.2.1.1 GUI-Design
 ![Login Page](./pictures/GUIMockups/Login.png)
 
-#### 3.2.1.2 Workflow
+##### 3.2.1.2 Workflow
 
 Login: 
 
@@ -148,9 +150,9 @@ Die Website überprüft, ob die eingegebene Email existiert und ob das Passwort 
 Wenn alles stimmt, wird man auf die Main Page weitergeleitet.
 Ansonsten muss man sich registrieren, da man sich noch nicht eingeloggt hat.
 
-### 3.2.2 Sign Up
+#### 3.2.2 Sign Up
 
-#### 3.2.2.1 GUI-Design
+##### 3.2.2.1 GUI-Design
 
 ![Sign Up Page](./pictures/GUIMockups/SignUp.png)
 
