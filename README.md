@@ -143,7 +143,7 @@ Das Use Case Diagramm beinhaltet alle Use Cases unseres Projekts. Wir haben sie 
 
 Luca Haas: Kalender und Event<br>
 Andreas Huber: Login und Tags<br>
-Melanie Dohr: Liste an Tasks Ansicht + Erstellung<br>
+Melanie Dohr: Tasklist (= Liste an Tasks)<br>
 Philip Raab: Task Ansicht + Erstellung
 
 ![UML Use Case Diagramm](./pictures/UseCase_Diagramm.png)
@@ -162,7 +162,7 @@ Login:
 Man gibt den Benutzernamen und das Passwort in die dafür vorgesehenen Felder auf der Login-Seite ein.
 Die Website überprüft, ob die eingegebene Email existiert und ob das Passwort korrekt ist.
 Wenn alles stimmt, wird man auf die Main Page weitergeleitet.
-Ansonsten muss man sich registrieren, da man sich noch nicht eingeloggt hat.
+Ansonsten muss man sich registrieren, da noch kein Konto existiert.
 
 #### 3.2.2 Sign Up
 
@@ -231,7 +231,7 @@ Durch das Drücken eines Papierkorb-Buttons das Löschen der gesamten Tasklist m
 Wenn man versucht, eine Tasklist zu bearbeiten, während dies schon jemand anderer tut, bekommt man eine Fehlermeldung.
 
 ##### 3.3.6.3. ACD
-![ACD Tasklist editieren](./pictures/ACD_Tasklist_editieren.drawio.png)
+![ACD Tasklist editieren](./pictures/ACD_Tasklist_editieren.png)
 
 ### 3.4. Task
 
@@ -311,7 +311,7 @@ Ausgehend davon, dass die beiden Tags Freizeit und Schule, die bereits genannt w
 
 ##### 3.7.2.2 Workflow
 Wie man nun erkennen kann wurde der Tag Schule wie im Beispiel gezeigt erstellt.
-Wenn man den Tag Schule als unnötig empfinde kann man diesen einfach per Klick auf den Abfalleimer löschen.
+Per Klick auf den Abfalleimer kann man ihn wieder löschen.
 
 #### 3.7.3 Tag löschen
 
