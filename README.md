@@ -46,7 +46,7 @@
     6. [Kalender](#35-kalender-ansehen)
         1. [GUI-Design](#351-gui-design)
         2. [Workflow](#352-workflow)
-    7. [Event](#36-event-hinzufügen)
+    7. [Event](#36-event)
         1. [Event hinzufügen](#361-event-hinzufügen)
             1. [GUI-Design](#3611-gui-design)
             2. [Workflow](#3612-workflow)
