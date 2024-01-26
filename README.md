@@ -237,17 +237,36 @@ Wenn man versucht, eine Tasklist zu bearbeiten, während dies schon jemand ander
 
 #### 3.4.1. Task erstellen
 
-##### 3.4.1.1. GUI-Design
+#### 3.4.1.1 Startseite
+
+##### 3.4.1.1.1. GUI-Design
 ![Create Task](./pictures/GUIMockups/CreateTaskOnMainPage.png)
-##### 3.4.1.2. Workflow
+##### 3.4.1.1.2. Workflow
 Nachdem man auf das "+" zum Hinzufügen einer neuen Task geklickt hat, erscheint ein Fenster. In diesem kann man den Namen, die Beschreibung, das Fälligkeitsdatum mit der zugehörigen Tageszeit und die Priorität eingeben. Zum Abschließen dieses Prozesses muss man nur noch auf "Save" klicken.
+
+#### 3.4.1.2 Calendar
+
+##### 3.4.1.2.1. GUI-Design
+![Create Task](./pictures/GUIMockups/CreateTask.png)
+##### 3.4.1.2.2. Workflow
+Nachdem man auf das "+" zum Hinzufügen einer neuen Task geklickt hat, erscheint ein Fenster. In diesem kann man den Namen, die Beschreibung, das Fälligkeitsdatum mit der zugehörigen Tageszeit und Priorität eingeben. Außerdem muss man diesem nun eine Taskliste zuweisen. Zum Abschließen dieses Prozesses muss man nur noch auf "Create" klicken.
 
 #### 3.4.2. Task ändern
 
-##### 3.4.2.1. GUI-Design
+
+#### 3.4.2.1 Startseite
+
+##### 3.4.2.1.1. GUI-Design
 ![Create Task](./pictures/GUIMockups/EditTaskOnMainPage.png)
-##### 3.4.2.2. Workflow
+##### 3.4.2.1.2. Workflow
 Um eine Task zu ändern, braucht man nur darauf zu klicken. Danach "klappt" sich die Task nach unten auf und man kann die Beschreibung, die Priorität und den Fälligkeitszeitpunkt sehen. Um nun ein Element der Task zu ändern, klickt man einfach darauf. Überall kann man dann einfach den neuen Wert eingeben, außer bei der Priorität ist wie immer ein Dropdownmenü. Zum Speichern muss man einfach irgendwo außerhalb des Task klicken.
+
+#### 3.4.2.1 Calendar
+
+##### 3.4.2.2.1. GUI-Design
+![Create Task](./pictures/GUIMockups/EditTask.png)
+##### 3.4.2.2.2. Workflow
+Um eine Task zu ändern, braucht man nur auf eine drauf drücken. Es öffnet sich ein Popup bei dem man Name, Fälligkeitsdatum, Uhrzeit, Beschreibung, Priorität und Taskliste ändern kann. Mit "Edit" werden die Änderungen gespeichert und man kehrt zur Kalendaransicht zurück.
 
 ### 3.5. Kalender ansehen 
 
