@@ -71,6 +71,10 @@
             1. [GUI-Design](#3821-gui-design)
             2. [Workflow](#3822-workflow)
 4. [Nicht funktionale Anforderungen](#4-nicht-funktionale-anforderungen)
+5. [Mengengerüst](#5-mengengerüst)
+6. [Systemarchitektur](#6-systemarchitektur)
+    1. [Deployment Diagramm](#61-deployment-diagramm)
+    2. [Datenmodell](#62-datenmodell)
 
 ## 1. Ausgangslage
 
@@ -362,3 +366,13 @@ Falls man sich für den Tag Schule entschieden hat und man auf den Namen geklick
 
 ## 4. Nicht-funktionale Anforderungen
 Nach sorgfältiger Überlegung sind wir zu dem Entschluss gekommen, dass uns keine nicht-funktionalen Anforderungen bekannt sind.
+
+## 5. Mengengerüst
+
+## 6. Systemarchitektur
+
+### 6.1. Deployment-Diagramm
+![Deployment Diagramm](./pictures/Deployment_Diagramm.png)
+
+### 6.2. Datenmodell
+
