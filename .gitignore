@@ -4,3 +4,5 @@ coverage
 *.js.map
 !*.config.js
 .idea
+.vscode/settings.json
+pictures/.$UseCase_Diagramm.png.bkp
