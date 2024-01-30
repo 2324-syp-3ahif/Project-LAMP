@@ -1,6 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import {connectToDatabase, createTable, insertTask, selectAllTasks, wow} from "./database-functions";
+import {connectToDatabase, createTable, insertTask, selectAllTasks} from "./database-functions";
 import {Task} from "./model/Task";
 
 dotenv.config();
@@ -31,7 +31,7 @@ app.get('/task', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    wow(connectToDatabase());
+    
 });
 
 app.listen(port, () => {

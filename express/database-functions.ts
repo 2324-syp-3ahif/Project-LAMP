@@ -89,13 +89,12 @@ export function selectTask(id: number): Promise<Task> {
                 console.error('Error executing SELECT statement:', err.message);
                 reject(err);
             } else {
+                disconnectFromDatabase(db);
                 if (rows.length == 0) {
                     reject(err);
                 } else {
-                    
+                    resolve(rows.at(0) as Task);
                 }
-                disconnectFromDatabase(db);
-                resolve(tasks);
             }
         });
     });

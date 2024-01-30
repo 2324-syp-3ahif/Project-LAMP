@@ -1,5 +1,9 @@
+import {Tasklist} from "./Tasklist";
+
 export interface Task {
-    id: number,
-    text: string,
+    name: string,
+    dueDate: Date,
     priority: number,
+    description: string,
+    tasklist: Tasklist,
 }
