@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT || 2000;
 
 app.use(express.json());
-
+app.use(express.static('public'));
 app.post('/task', async (req, res) => {
     const result: boolean = await insertTask([req.body.text, req.body.priority]);
     if (result) {
@@ -31,9 +31,9 @@ app.get('/task', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    
+    res.sendFile(__dirname + '\\public\\index.html');
 });
 
-app.listen(port, () => {
-    console.log(`Listening on https://localhost:${port}`);
+app.listen(2000, () => {
+    console.log(`Listening on http://localhost:2000`);
 })

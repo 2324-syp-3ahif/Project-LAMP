@@ -6,3 +6,5 @@ coverage
 .idea
 .vscode/settings.json
 pictures/.$UseCase_Diagramm.png.bkp
+.env
+package-lock.json
