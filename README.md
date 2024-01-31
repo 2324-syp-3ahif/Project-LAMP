@@ -375,4 +375,4 @@ Nach sorgfältiger Überlegung sind wir zu dem Entschluss gekommen, dass uns kei
 ![Deployment Diagramm](./pictures/Deployment_Diagramm.png)
 
 ### 6.2. Datenmodell
-
+![Datenmodell](./pictures/Datenmodell.png)
