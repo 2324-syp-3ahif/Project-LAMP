@@ -10,8 +10,8 @@ const port = process.env.PORT || 2000;
 
 app.use(express.json());
 
-app.post('/task', (req, res) => {
-    const result: boolean = insertTask([req.body.taskName, req.body.priority]);
+app.post('/task', async (req, res) => {
+    const result: boolean = await insertTask([req.body.text, req.body.priority]);
     if (result) {
         res.send("Successfully inserted row to TASKS");
     } else {

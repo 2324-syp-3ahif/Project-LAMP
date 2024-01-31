@@ -1,4 +1,4 @@
-@hostname=http://localhost:3000
+@hostname=http://localhost:2000
 
 POST {{hostname}}/task
 Content-Type: application/json

@@ -25,19 +25,31 @@ export function disconnectFromDatabase(db: sqlite3.Database) : boolean {
     return true;
 }
 
-export function insertTask([name, priority]: [string, number]) : boolean {
-    const db : sqlite3.Database = connectToDatabase();
-    const query = `INSERT INTO TASKS (id, name, priority) VALUES (${name}, ${priority})`;
-    db.run(query, (err) => {
-        if (err) {
-            console.log("Failed insert!");
-            return false;
-        }
-        console.log("Successfully inserted " + name + " " + priority + " to TASKS");
-    });
-    disconnectFromDatabase(db);
+export async function insertTask([text, priority]: [string, number]): Promise<boolean> {
+    const db: sqlite3.Database = connectToDatabase();
+
+    const query = `INSERT INTO TASKS (text, priority) VALUES (?, ?)`;
+
+    try {
+        await new Promise<void>((resolve, reject) => {
+            db.run(query, [text, priority], (err) => {
+                if (err) {
+                    console.error("Failed insert:", err);
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    } catch (error) {
+        return false;
+    } finally {
+        disconnectFromDatabase(db);
+    }
+
     return true;
 }
+
 
 export function createTable() : boolean {
     const db : sqlite3.Database = connectToDatabase();
