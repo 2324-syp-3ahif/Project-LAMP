@@ -13,3 +13,6 @@ GET {{hostname}}/task
 
 ###
 GET {{hostname}}
+
+###
+GET {{hostname}}/emil
