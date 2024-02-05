@@ -12,3 +12,4 @@ export function checkStringFormat(username: string): boolean{
     const regex = /^[a-zA-Z0-9]{3,}$/;
     return regex.test(username);
 }
+
