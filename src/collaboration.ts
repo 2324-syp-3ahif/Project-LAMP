@@ -19,3 +19,12 @@ export function sendMailToUser(receiver: string, message: string, subj: string):
         }
     });
 }
+
+export function sendInviteMail(receiver: string, listID: number): void {
+    const hashedID: string = utils.hashString(listID.toString());
+    const link: string = `http://localhost:3000/signup?listID=${hashedID}`;
+    const message: string = `Hello my dear friend! You have been invited to join a tasklist on our platform. Please click on the link to sign up.`;
+    sendMailToUser(receiver, message, 'Tasklist Invitation');
+    // save link in local storage for use after signup
+    localStorage.setItem('listID', listID.toString()); 
+}
