@@ -1,3 +1,5 @@
+import * as crypto from 'crypto';
+
 export function checkMailFormat(mail: string): boolean{
     const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     return regex.test(mail);
@@ -13,3 +15,8 @@ export function checkStringFormat(username: string): boolean{
     return regex.test(username);
 }
 
+export function hashString(str: string): string{
+    const hash = crypto.createHash('sha256');
+    hash.update(str);
+    return hash.digest('hex');
+}
