@@ -1,0 +1,65 @@
+body {
+    font-family: sans-serif;
+    background-color: #ECFAFC;
+}
+#navBar{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    flex-direction: row;
+    height: 10px;
+    min-width: 290px;
+}
+#navbar-part-left{
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-start;
+    background: #6096fc;
+}
+@media (max-width: 280px) {
+    #navbar-part-left{
+        display: none;
+    }
+}
+#navbar-part-right{
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
+    background: #6096fc;
+}
+@media (max-width: 280px) {
+    #navbar-part-right{
+        display: none;
+    }
+}
+.navbar-item{
+    align-self: center;
+    text-decoration: none;
+    margin-left: 30px;
+    color: #EEEEEE;
+    font-size: 10px;
+}
+.navbar-item:hover{
+    color: #262628;
+}
+#accountPicture {
+    height: 20px;
+    margin-left: 30px;
+    margin-top: 5px;
+    margin-right: 10px;
+}
+#accountPicture:hover {
+    height: 22px;
+}
+#Logo{
+    height: 30px;
+    margin-left: 10px;
+    margin-top: 1px;
+}
+
+
+
+
+
+
+
