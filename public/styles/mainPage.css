@@ -16,21 +16,11 @@ body {
     justify-content: flex-start;
     background: #6096fc;
 }
-@media (max-width: 280px) {
-    #navbar-part-left{
-        display: none;
-    }
-}
 #navbar-part-right{
     display: flex;
     flex-grow: 1;
     justify-content: flex-end;
     background: #6096fc;
-}
-@media (max-width: 280px) {
-    #navbar-part-right{
-        display: none;
-    }
 }
 .navbar-item{
     align-self: center;
