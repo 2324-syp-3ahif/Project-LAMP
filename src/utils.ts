@@ -20,3 +20,7 @@ export function hashString(str: string): string{
     hash.update(str);
     return hash.digest('hex');
 }
+
+export function generateWarningPopUp(message: string, errorCode: number): void{
+    alert("Error " + errorCode + ":\n" + message);
+}
