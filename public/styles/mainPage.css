@@ -1,6 +1,10 @@
 body {
     font-family: sans-serif;
     background-color: #ECFAFC;
+    padding: 0;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
 }
 
 /* Navbar */
@@ -9,15 +13,24 @@ body {
     font-size: 18px;
     z-index: 10;
     background-color: #6096FC;
-    height: 60px;
 }
 
-.imageInNavbar {
+.dropdown {
+    background-color: #6096FC !important;
+}
+
+.image-navbar {
     height: 40px;
-    margin-left: 10px;
+    margin: 5px 5px 5px 10px;
 }
 
-#accountPicture:hover {
+#account-picture {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+}
+
+#account-picture:hover {
     transform: scale(1.10);
     transition: all 0.3s ease 0s;
 }
