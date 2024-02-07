@@ -51,7 +51,7 @@ app.delete('/task', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    dropTable();
+    //dropTable('temp');
     console.log("Hallo");
     res.sendFile(__dirname + '\\public\\index.html');
 });
