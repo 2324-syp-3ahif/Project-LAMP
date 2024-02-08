@@ -15,4 +15,7 @@ GET {{hostname}}/task
 GET {{hostname}}
 
 ###
-GET {{hostname}}/emil
+GET {{hostname}}/create-tables
+
+###
+GET {{hostname}}/test/2

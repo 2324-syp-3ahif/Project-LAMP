@@ -3,16 +3,24 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 
 import {connectToDatabase} from './database-functions/connect';
-import {createTasklistTable, createTasksTable} from './database-functions/create-tables';
+import {
+    createEventsTable,
+    createTagsTable, createTagTasklistsTable,
+    createTasklistsTable,
+    createTasksTable,
+    createUsersTable, createUserTasklistTable
+} from './database-functions/create-tables';
 import {dropTable} from './database-functions/drop-tables';
 import {insertTask} from './database-functions/insert-data';
 import {deleteTaskById} from './database-functions/delete-data';
-import {selectAllTasks} from "./database-functions/select-data";
 
 import {Task} from "./model/Task";
+import {selectTaskByTaskID, selectTaskByTasklistID, selectTasksByUserID} from "./database-functions/select-data";
+import sqlite3 from "sqlite3";
 
 const app = express();
 const port = process.env.PORT || 2000;
+const db: sqlite3.Database = connectToDatabase();
 
 dotenv.config();
 app.use(cors());
@@ -29,15 +37,6 @@ app.post('/task', async (req, res) => {
 });
 
 app.get('/task', (req, res) => {
-    selectAllTasks().then(tasks => {
-        if (tasks === undefined) {
-            res.status(400);
-        } else {
-            res.send({
-                "tasks": tasks
-            });
-        }
-    });
 
 });
 
@@ -56,9 +55,24 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '\\public\\index.html');
 });
 
-app.get('/emil', (req, res) => {
-    createTasklistTable();
-    res.send("Hallo");
+app.get('/test/:userID', (req, res) => {
+    const taskID: number = parseInt(req.params.userID);
+    selectTaskByTaskID(db, taskID).then(task => {
+        res.status(200).send(task);
+    });
+    res.status(404);
+});
+
+app.get('/create-tables', (req, res) => {
+    dropTable('TASK');
+    createTasksTable();
+    createTasklistsTable();
+    createTagsTable();
+    createUsersTable();
+    createEventsTable();
+    createTagTasklistsTable();
+    createUserTasklistTable();
+    res.send();
 })
 
 app.listen(2000, () => {
