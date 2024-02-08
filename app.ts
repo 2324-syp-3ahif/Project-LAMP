@@ -10,11 +10,13 @@ import {deleteTaskById} from './database-functions/delete-data';
 import {selectAllTasks} from "./database-functions/select-data";
 
 import {Task} from "./model/Task";
+import {todoRouter} from "./routers/router-todo";
 
 const app = express();
 const port = process.env.PORT || 2000;
 
 dotenv.config();
+app.use("/api/todo", todoRouter);
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));

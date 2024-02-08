@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsc ./public/src/sendRequest-test.ts  && npx nodemon app.ts"
+    "dev": "tsc ./public/src/sendRequest-test.ts  && npx nodemon app.ts",
+    "start": "npx nodemon app.ts"
   },
   "keywords": [],
   "author": "",

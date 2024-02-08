@@ -1,14 +1,14 @@
-@hostname=htto://localhost:2000/api
+@hostname=http://localhost:2000/api/todo
 
 GET {{hostname}}
-
-
+###
+GET {{hostname}}/task
 
 
 ### Tasklist
 ###    Get Tasklists by UserID
-GET {{hostname}}/tasklist/1
-###	   Get Tasklist by ID
+GET {{hostname}}/tasklist&userid=1
+
 ###	   Edit Tasklist by ID
 ###	   Delete Tasklist by ID
 ###	   Create Tasklist by UserID
