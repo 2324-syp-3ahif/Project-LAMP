@@ -1,0 +1,28 @@
+@hostname=htto://localhost:2000/api
+
+GET {{hostname}}
+
+
+
+
+### Tasklist
+###    Get Tasklists by UserID
+GET {{hostname}}/tasklist/1
+###	   Get Tasklist by ID
+###	   Edit Tasklist by ID
+###	   Delete Tasklist by ID
+###	   Create Tasklist by UserID
+### Task
+###	   Get Tasks by TasklistID
+###	   Get Tasks by UserID
+###	   Create Task by TasklistID
+###	   Edit Task by ID
+###	   Delete Task by ID
+### Tag
+###	   Get Tags by UserID
+###	   Create Tag by UserID
+###	   Edit Tag by ID
+###	   Delete Tag by ID
+### User
+###	   Get User by ID
+###	   Create User
