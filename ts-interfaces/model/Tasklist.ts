@@ -3,7 +3,7 @@ import {Tag} from "./Tag";
 
 export interface Tasklist {
     tasklistID: number,
-    name: string,
+    title: string,
     description: string,
     sortingOrder: number,
     priority: number,
