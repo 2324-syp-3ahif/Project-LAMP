@@ -1,6 +1,9 @@
 export interface Event {
+    eventID: number,
     name: string,
-    startDate: Date,
-    endDate: Date,
-    description: string
+    startTime: Date,
+    endTime: Date,
+    fullDay: boolean,
+    description: string,
+    userID: number,
 }
