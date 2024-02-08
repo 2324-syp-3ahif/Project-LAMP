@@ -1,6 +1,8 @@
 export class IdNotFoundError extends Error {
-    constructor(message?: string) {
+    constructor(public causer: string,
+                message?: string, ) {
         super(message);
+
         this.name = 'IdNotFoundError';
         this.message = message ?? "";
     }
