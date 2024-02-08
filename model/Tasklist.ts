@@ -2,8 +2,11 @@ import {Task} from "./Task";
 import {Tag} from "./Tag";
 
 export interface Tasklist {
+    tasklistID: number,
     name: string,
-    tags: Tag[],
     description: string,
-    tasks: Task[]
+    sortingOrder: number,
+    priority: number,
+    isLocked: boolean,
+    ownerID: number
 }
