@@ -12,6 +12,7 @@ import {
 } from './database-functions/create-tables';
 import {dropTable} from './database-functions/drop-tables';
 import {insertTask} from './database-functions/insert-data';
+import {selectTaskByTaskID, selectTaskByTasklistID, selectTasksByUserID} from "./database-functions/select-data";
 import {deleteTaskById} from './database-functions/delete-data';
 
 import {Task} from "./model/Task";
@@ -21,6 +22,9 @@ import {eventRouter} from "./routers/router-event";
 import {tagRouter} from "./routers/router-tag";
 import {userRouter} from "./routers/router-user";
 import {selectTaskByTaskID, selectTaskByTasklistID, selectTasksByUserID} from "./database-functions/select-data";
+import {Task} from "./ts-interfaces/model/Task";
+import {IdNotFoundError} from "./ts-interfaces/errors/IdNotFoundError";
+
 import sqlite3 from "sqlite3";
 
 const app = express();
@@ -67,10 +71,15 @@ app.get('/', (req, res) => {
 
 app.get('/test/:userID', (req, res) => {
     const taskID: number = parseInt(req.params.userID);
-    selectTaskByTaskID(db, taskID).then(task => {
-        res.status(200).send(task);
+    selectTasksByUserID(db, taskID).then(tasks => {
+        res.status(200).send(tasks);
+    }).catch((err) => {
+        if (err instanceof IdNotFoundError) {
+            res.status(400).send("No user with this userID");
+        } else {
+            res.status(404).send("Unknown Error");
+        }
     });
-    res.status(404);
 });
 
 app.get('/create-tables', (req, res) => {
