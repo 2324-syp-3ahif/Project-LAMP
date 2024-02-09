@@ -1,17 +1,29 @@
-@hostname=http://localhost:2000/api/todo
+@hostname=http://localhost:2000/api
+@taskHostname=http://localhost:2000/api/task
+@tasklistHostname=http://localhost:2000/api/tasklist
+@tagHostname=http://localhost:2000/api/tag
+@userHostname=http://localhost:2000/api/user
+@eventHostname=http://localhost:2000/api/event
 
-GET {{hostname}}
-###
-GET {{hostname}}/task
 
-
-### Tasklist
+#Tasklist
 ###    Get Tasklists by UserID
-GET {{hostname}}/tasklist&userid=1
-
+GET {{tasklistHostname}}/1
 ###	   Edit Tasklist by ID
+PUT {{hostname}}/tasklist/1
 ###	   Delete Tasklist by ID
+DELETE {{hostname}}/tasklist/1
 ###	   Create Tasklist by UserID
+POST {{hostname}}/tasklist/1
+Content-Type: application/json
+
+{
+    "title": "Mathe",
+    "description": "Buch Beispiele 1-5",
+    "sortingOrder": 1,
+    "priority": 1
+}
+
 ### Task
 ###	   Get Tasks by TasklistID
 ###	   Get Tasks by UserID

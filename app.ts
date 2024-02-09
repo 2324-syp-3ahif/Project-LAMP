@@ -15,7 +15,11 @@ import {insertTask} from './database-functions/insert-data';
 import {deleteTaskById} from './database-functions/delete-data';
 
 import {Task} from "./model/Task";
-import {todoRouter} from "./routers/router-todo";
+import {taskRouter} from "./routers/router-task";
+import {tasklistRouter} from "./routers/router-tasklist";
+import {eventRouter} from "./routers/router-event";
+import {tagRouter} from "./routers/router-tag";
+import {userRouter} from "./routers/router-user";
 import {selectTaskByTaskID, selectTaskByTasklistID, selectTasksByUserID} from "./database-functions/select-data";
 import sqlite3 from "sqlite3";
 
@@ -24,7 +28,11 @@ const port = process.env.PORT || 2000;
 const db: sqlite3.Database = connectToDatabase();
 
 dotenv.config();
-app.use("/api/todo", todoRouter);
+app.use("/api/task", taskRouter);
+app.use("/api/tasklist", tasklistRouter);
+app.use("/api/event", eventRouter);
+app.use("/api/tag", tagRouter);
+app.use("/api/user", userRouter);
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
