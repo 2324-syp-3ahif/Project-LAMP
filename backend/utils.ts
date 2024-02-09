@@ -24,3 +24,11 @@ export function hashString(str: string): string{
 export function generateWarningPopUp(message: string, errorCode: number): void{
     alert("Error " + errorCode + ": " + message);
 }
+
+export function convertTSToSQLDate(date: Date): string {
+    return `${date.getDay()}-${date.getMonth()}-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:0`;
+}
+
+export function convertSQLToTSDate(date: string): Date {
+    return new Date();
+}

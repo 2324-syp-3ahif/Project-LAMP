@@ -1,5 +1,3 @@
-import {Tasklist} from "./Tasklist";
-
 export interface Task {
     taskID: number,
     title: string,
