@@ -1,0 +1,40 @@
+@hostname=http://localhost:2000/api
+@taskHostname=http://localhost:2000/api/task
+@tasklistHostname=http://localhost:2000/api/tasklist
+@tagHostname=http://localhost:2000/api/tag
+@userHostname=http://localhost:2000/api/user
+@eventHostname=http://localhost:2000/api/event
+
+
+#Tasklist
+###    Get Tasklists by UserID
+GET {{tasklistHostname}}/1
+###	   Edit Tasklist by ID
+PUT {{hostname}}/tasklist/1
+###	   Delete Tasklist by ID
+DELETE {{hostname}}/tasklist/1
+###	   Create Tasklist by UserID
+POST {{hostname}}/tasklist/1
+Content-Type: application/json
+
+{
+    "title": "Mathe",
+    "description": "Buch Beispiele 1-5",
+    "sortingOrder": 1,
+    "priority": 1
+}
+
+### Task
+###	   Get Tasks by TasklistID
+###	   Get Tasks by UserID
+###	   Create Task by TasklistID
+###	   Edit Task by ID
+###	   Delete Task by ID
+### Tag
+###	   Get Tags by UserID
+###	   Create Tag by UserID
+###	   Edit Tag by ID
+###	   Delete Tag by ID
+### User
+###	   Get User by ID
+###	   Create User
