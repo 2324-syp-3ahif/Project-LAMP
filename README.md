@@ -138,7 +138,7 @@ Feature Set:
     - Gelb wenn das Fälligkeitsdatum bald ist
     - Grün wenn eine Task erledigt wurde
 
-![LAMP Mindmap](./pictures/LAMP_Mindmap.jpg)
+![LAMP Mindmap](./assets/LAMP_Mindmap.jpg)
 
 ## 3. Funktionale Anforderungen
 
@@ -150,14 +150,14 @@ Andreas Huber: Login und Tags<br>
 Melanie Dohr: Tasklist (= Liste an Tasks)<br>
 Philip Raab: Task Ansicht + Erstellung
 
-![UML Use Case Diagramm](./pictures/UseCase_Diagramm.png)
+![UML Use Case Diagramm](./assets/UseCase_Diagramm.png)
 
 ### 3.2 Login and Sign-Up System
 
 #### 3.2.1 Login
 
 ##### 3.2.1.1 GUI-Design
-![Login Page](./pictures/GUIMockups/Login.png)
+![Login Page](./assets/GUIMockups/Login.png)
 
 ##### 3.2.1.2 Workflow
 
@@ -172,7 +172,7 @@ Ansonsten muss man sich registrieren, da noch kein Konto existiert.
 
 ##### 3.2.2.1 GUI-Design
 
-![Sign Up Page](./pictures/GUIMockups/SignUp.png)
+![Sign Up Page](./assets/GUIMockups/SignUp.png)
 
 #### 3.2.2.2 Workflow
 
@@ -186,7 +186,7 @@ Darauffolgend kann man sich, wenn der Sign Up erfolgreich war, im Login anmelden
 #### 3.3.1. Alle TaskLists ansehen
 
 ##### 3.3.1.1. GUI-Design
-![View Task Lists on Main Page](./pictures/GUIMockups/ViewTasklistsOnMainPage.png)
+![View Task Lists on Main Page](./assets/GUIMockups/ViewTasklistsOnMainPage.png)
 
 ##### 3.3.1.2. Workflow
 Auf der Main Page werden alle Tasklists verkürzt angezeigt. Eine Tasklist ist dabei eine Liste an Tasks. Bei der verkürzten Ansicht kann man den Titel, die Tags und die Beschreibung der Tasklist sehen. Man kann die Tasklists nach Tag filtern und eine Sortiermöglichkeit (Creation Date, Priority, Last View) auswählen.
@@ -194,8 +194,8 @@ Auf der Main Page werden alle Tasklists verkürzt angezeigt. Eine Tasklist ist d
 #### 3.3.2. Nach Tag filtern
 
 ##### 3.3.2.1. GUI-Design
-![Filter Tasklists](./pictures/GUIMockups/FilterTasklists.png)
-![Filter Tasklists](./pictures/GUIMockups/FilterTasklistsSelected.png)
+![Filter Tasklists](./assets/GUIMockups/FilterTasklists.png)
+![Filter Tasklists](./assets/GUIMockups/FilterTasklistsSelected.png)
 
 ##### 3.3.2.2. Workflow
 Sobald man auf den Button zum Filtern drückt, erscheint ein Filter Pop-up, wobei man hier dann die Tags auswählen kann, nach denen die Tasklists gefiltert werden sollen. Zum Verständnis: Bei dem zweiten GUI Mockup von oben wurde "Schule" ausgewählt, das heißt, man filtert dann alle Tasklists nach dem Tag "Schule"
@@ -203,7 +203,7 @@ Sobald man auf den Button zum Filtern drückt, erscheint ein Filter Pop-up, wobe
 #### 3.3.3. Tasklist erstellen
 
 ##### 3.3.3.1. GUI-Design
-![Create Tasklist](./pictures/GUIMockups/CreateTaskListOnMainPage.png)
+![Create Tasklist](./assets/GUIMockups/CreateTaskListOnMainPage.png)
 
 ##### 3.3.3.2. Workflow
 Beim Erstellen einer Tasklist (= Liste an Tasks) muss man einen Titel angeben. Das Hinzufügen einer Beschreibung und Tags, das Auswählen einer Priorität und Sortierordnung und das Einladen von Kollaboratoren ist ebenfalls möglich. Falls man dies allerdings nicht macht, wird eine Standardoption ausgewählt.
@@ -213,7 +213,7 @@ Das Hinzufügen von Kollaboratoren funktioniert über einen Einladungslink per E
 #### 3.3.4. Tasklist - erweiterte Ansicht
 
 ##### 3.3.4.1. GUI-Design
-![View Tasklist - unfolded version](./pictures/GUIMockups/ViewTasklistsOnMainPageUnfoldedTaskList.png)
+![View Tasklist - unfolded version](./assets/GUIMockups/ViewTasklistsOnMainPageUnfoldedTaskList.png)
 
 ##### 3.3.4.2. Workflow
 Sobald man auf eine Tasklist drückt, kommt man zu einer erweiterten Ansicht. Beim Auflisten der Tasks werden jene rot markiert, deren Fälligkeitsdatum verstrichen ist, während diejenigen grau markiert und durchgestrichen werden, die bereits erledigt wurden. Zudem werden die Tasks gelb markiert, deren Ablaufdatum bald ist. Man kann auch nachträglich Tags hinzufügen. 
@@ -221,7 +221,7 @@ Sobald man auf eine Tasklist drückt, kommt man zu einer erweiterten Ansicht. Be
 #### 3.3.5. Löschen einer Tasklist
 
 ##### 3.3.5.1. GUI-Design
-![Delete Popup](./pictures/GUIMockups/DeletePopUp.png)
+![Delete Popup](./assets/GUIMockups/DeletePopUp.png)
 
 ##### 3.3.5.2. Workflow
 Durch das Drücken eines Papierkorb-Buttons das Löschen der gesamten Tasklist möglich, wobei dann ein Pop-Up erscheint, ob man das wirklich will. 
@@ -229,13 +229,13 @@ Durch das Drücken eines Papierkorb-Buttons das Löschen der gesamten Tasklist m
 #### 3.3.6. Versuchen Tasklist anzusehen, während jemand anderes sie bearbeitet
 
 ##### 3.3.6.1. GUI-Design
-![View Tasklist - Error](./pictures/GUIMockups/ViewTasklistError.png)
+![View Tasklist - Error](./assets/GUIMockups/ViewTasklistError.png)
 
 ##### 3.3.6.2. Workflow
 Wenn man versucht, eine Tasklist zu bearbeiten, während dies schon jemand anderer tut, bekommt man eine Fehlermeldung.
 
 ##### 3.3.6.3. ACD
-![ACD Tasklist editieren](./pictures/ACD_Tasklist_editieren.png)
+![ACD Tasklist editieren](./assets/ACD_Tasklist_editieren.png)
 
 ### 3.4. Task
 
@@ -244,14 +244,14 @@ Wenn man versucht, eine Tasklist zu bearbeiten, während dies schon jemand ander
 #### 3.4.1.1 Startseite
 
 ##### 3.4.1.1.1. GUI-Design
-![Create Task](./pictures/GUIMockups/CreateTaskOnMainPage.png)
+![Create Task](./assets/GUIMockups/CreateTaskOnMainPage.png)
 ##### 3.4.1.1.2. Workflow
 Nachdem man auf das "+" zum Hinzufügen einer neuen Task geklickt hat, erscheint ein Fenster. In diesem kann man den Namen, die Beschreibung, das Fälligkeitsdatum mit der zugehörigen Tageszeit und die Priorität eingeben. Zum Abschließen dieses Prozesses muss man nur noch auf "Save" klicken.
 
 #### 3.4.1.2 Calendar
 
 ##### 3.4.1.2.1. GUI-Design
-![Create Task](./pictures/GUIMockups/CreateTask.png)
+![Create Task](./assets/GUIMockups/CreateTask.png)
 ##### 3.4.1.2.2. Workflow
 Nachdem man auf das "+" zum Hinzufügen einer neuen Task geklickt hat, erscheint ein Fenster. In diesem kann man den Namen, die Beschreibung, das Fälligkeitsdatum mit der zugehörigen Tageszeit und Priorität eingeben. Außerdem muss man diesem nun eine Taskliste zuweisen. Zum Abschließen dieses Prozesses muss man nur noch auf "Create" klicken.
 
@@ -261,21 +261,21 @@ Nachdem man auf das "+" zum Hinzufügen einer neuen Task geklickt hat, erscheint
 #### 3.4.2.1 Startseite
 
 ##### 3.4.2.1.1. GUI-Design
-![Create Task](./pictures/GUIMockups/EditTaskOnMainPage.png)
+![Create Task](./assets/GUIMockups/EditTaskOnMainPage.png)
 ##### 3.4.2.1.2. Workflow
 Um eine Task zu ändern, braucht man nur darauf zu klicken. Danach "klappt" sich die Task nach unten auf und man kann die Beschreibung, die Priorität und den Fälligkeitszeitpunkt sehen. Um nun ein Element der Task zu ändern, klickt man einfach darauf. Überall kann man dann einfach den neuen Wert eingeben, außer bei der Priorität ist wie immer ein Dropdownmenü. Zum Speichern muss man einfach irgendwo außerhalb des Task klicken.
 
 #### 3.4.2.1 Calendar
 
 ##### 3.4.2.2.1. GUI-Design
-![Create Task](./pictures/GUIMockups/EditTask.png)
+![Create Task](./assets/GUIMockups/EditTask.png)
 ##### 3.4.2.2.2. Workflow
 Um eine Task zu ändern, braucht man nur auf eine drauf drücken. Es öffnet sich ein Popup bei dem man Name, Fälligkeitsdatum, Uhrzeit, Beschreibung, Priorität und Taskliste ändern kann. Mit "Edit" werden die Änderungen gespeichert und man kehrt zur Kalendaransicht zurück.
 
 ### 3.5. Kalender ansehen 
 
 #### 3.5.1. GUI-Design
-![calendar view](./pictures/GUIMockups/Calendar.png)
+![calendar view](./assets/GUIMockups/Calendar.png)
 
 #### 3.5.2. Workflow
 Die Ansicht des Kalenders ist einfach aufgebaut.
@@ -293,7 +293,7 @@ Diese weisen einen auf ein Erstellungsfenster der jeweiligen Kategorie weiter.
 #### 3.6.1 Event hinzufügen
 
 ##### 3.6.1.1. GUI-Design
-![adding events](./pictures/GUIMockups/CreateEvent.png)
+![adding events](./assets/GUIMockups/CreateEvent.png)
 
 ##### 3.6.1.2. Workflow
 Beim Erstellen eines Events gibt es folgende Auswahlmöglichkeiten:
@@ -306,7 +306,7 @@ Mit "Create" wird das Event sofort in den Kalender integriert.
 #### 3.6.2 Event bearbeiten
 
 ##### 3.6.2.1. GUI-Design
-![adding events](./pictures/GUIMockups/EditEvent.png)
+![adding events](./assets/GUIMockups/EditEvent.png)
 
 ##### 3.6.2.2. Workflow
 Beim Bearbeiten eines Events gibt es folgende Auswahlmöglichkeiten:
@@ -322,7 +322,7 @@ Mit dem Mistkübel kann das Event gelöscht werden und wird somit nicht mehr ang
 #### 3.7.1. Tag erstellen
 
 ##### 3.7.1.1 GUI-Design
-![Beispiel Tag erstellen](./pictures/GUIMockups/ExampleTagTest.png)
+![Beispiel Tag erstellen](./assets/GUIMockups/ExampleTagTest.png)
 
 ##### 3.7.1.2 Workflow
 Ausgehend davon, dass die beiden Tags Freizeit und Schule, die bereits genannt wurden noch nicht existieren, können wir uns ganz einfach bspw. den Tag Schule erstellen, indem wir den Namen des Tags eingeben und dann auf das '+' zum hinzufügen klicken.
@@ -330,7 +330,7 @@ Ausgehend davon, dass die beiden Tags Freizeit und Schule, die bereits genannt w
 #### 3.7.2 Tag erstellt
 
 ##### 3.7.2.1 GUI-Design
-![Beispiel Tag wurde erstellt](./pictures/GUIMockups/ExampleTagCreated.png)
+![Beispiel Tag wurde erstellt](./assets/GUIMockups/ExampleTagCreated.png)
 
 ##### 3.7.2.2 Workflow
 Wie man nun erkennen kann wurde der Tag Schule wie im Beispiel gezeigt erstellt.
@@ -339,7 +339,7 @@ Per Klick auf den Abfalleimer kann man ihn wieder löschen.
 #### 3.7.3 Tag löschen
 
 ##### GUI-Design
-![Biespiel Tag wurde gelöscht](./pictures/GUIMockups/ExampleTagDeleted.png)
+![Biespiel Tag wurde gelöscht](./assets/GUIMockups/ExampleTagDeleted.png)
 
 ##### Workflow
 Falls man sich entschieden hat das der Tag unnötig war und man den Abfalleimer geklickt hat wurde der Tag nun erflogreich gelöscht.
@@ -350,7 +350,7 @@ Falls man sich entschieden hat das der Tag unnötig war und man den Abfalleimer 
 #### 3.8.1 Standard Tags
 
 ##### 3.8.1.1 GUI-Design
-![Standard Tags](./pictures/GUIMockups/StandardTags.png)
+![Standard Tags](./assets/GUIMockups/StandardTags.png)
 
 ##### Workflow
 Nun gehen wir davon aus, dass wir die beiden Tags, Schule und Freizeit, bereits wie in der Tasklist vorhanden haben.
@@ -359,7 +359,7 @@ Wenn man nun eines Tag auswählen möchte muss man auf einen der Namen eines Tag
 #### 3.8.2 Selektieren eines Tags
 
 ##### GUI-Design
-![Select Standard Tags](./pictures/GUIMockups/SelectedStandardTag.png)
+![Select Standard Tags](./assets/GUIMockups/SelectedStandardTag.png)
 
 ##### Workflow
 Falls man sich für den Tag Schule entschieden hat und man auf den Namen geklickt hat, wird dieser Tag als Symbol, dass dieser Tag aktuell ausgewählt ist, hervorgehoben.
@@ -372,7 +372,7 @@ Nach sorgfältiger Überlegung sind wir zu dem Entschluss gekommen, dass uns kei
 ## 6. Systemarchitektur
 
 ### 6.1. Deployment-Diagramm
-![Deployment Diagramm](./pictures/Deployment_Diagramm.png)
+![Deployment Diagramm](./assets/Deployment_Diagramm.png)
 
 ### 6.2. Datenmodell
-![Datenmodell](./pictures/Datenmodell.png)
+![Datenmodell](./assets/Datenmodell.png)
