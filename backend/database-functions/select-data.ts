@@ -5,6 +5,7 @@ import { Tasklist } from "../ts-interfaces/model/Tasklist";
 import { User } from "../ts-interfaces/model/User";
 import sqlite3 from "sqlite3";
 import {IdNotFoundError} from "../ts-interfaces/errors/IdNotFoundError";
+import {ConnectionToDatabaseLostError} from "../ts-interfaces/errors/ConnectionToDatabaseLostError";
 
 export async function selectTasksByUserID(db: sqlite3.Database, userID: number): Promise<Task[]> {
     return new Promise((resolve, reject) => {
@@ -17,8 +18,7 @@ export async function selectTasksByUserID(db: sqlite3.Database, userID: number):
         const query = `SELECT * FROM TASKS WHERE userID = ${userID}`;
         db.all(query, (err, data) => {
             if (err) {
-                console.error('Error executing selectTasksByUserID:', err.message);
-                reject(err);
+                reject(new ConnectionToDatabaseLostError());
             }
             resolve(data as Task[]);
         });
@@ -28,10 +28,15 @@ export async function selectTasksByUserID(db: sqlite3.Database, userID: number):
 export async function selectTaskByTasklistID(db: sqlite3.Database, tasklistID: number): Promise<Task[]> {
     const query = `SELECT * FROM TASKS WHERE tasklistID IS ${tasklistID}`;
     return new Promise<Task[]>((resolve, reject) => {
+        selectUserByUserID(db, tasklistID).then(tasklist => {
+            if (tasklist === undefined) {
+                const toGetVariableName = {tasklistID};
+                reject(new IdNotFoundError(Object.keys(toGetVariableName)[0], "No tasklist with this tasklistID found!"));
+            }
+        });
         db.all(query, (err, data) => {
             if (err) {
-                console.error('Error executing selectTaskByTasklistID:', err.message);
-                reject(err);
+                reject(new ConnectionToDatabaseLostError());
             }
             resolve(data as Task[]);
         });
@@ -56,8 +61,10 @@ export function selectTasklistByTasklistID(db: sqlite3.Database, tasklistID: num
     return new Promise<Tasklist>((resolve, reject) => {
         db.get(query, (err, data) => {
             if (err) {
-                console.log(err.message);
-                reject();
+                reject(new ConnectionToDatabaseLostError());
+            } else if (data === undefined) {
+                const forName = { tasklistID };
+                reject(new IdNotFoundError(Object.keys(forName)[0], "No tasklist found for this tasklistID"));
             }
             resolve(data as Tasklist);
         })
