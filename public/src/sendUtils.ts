@@ -1,6 +1,6 @@
-import * as utils from './utils';
+import * as utils from '../../backend/utils';
 
-export async function send(URL: string, TYPE: string, json: string): Promise<void> { //Promise<Response | undefined>
+export async function send(URL: string, TYPE: string, json: string): Promise<Response | undefined> { //Promise<Response | undefined>
     const requestOptions: RequestInit = {
         method: TYPE,
         headers: {
@@ -10,20 +10,13 @@ export async function send(URL: string, TYPE: string, json: string): Promise<voi
     };
     try {
         const response = await fetch(URL, requestOptions);
-        /* get with response.status */
         if (response.status !== 200) {
             console.error('Error:', response.status);
-
-            //return undefined;
+            utils.generateWarningPopUp(response.statusText, response.status);
+        } else {
+            console.log('Success:', response.status);
+            return response;
         }
-        //return await fetch(URL, requestOptions);
-
-        /*
-        const element = document.getElementById(`${TYPE}-response`);
-        if (element !== null) {
-            element.innerHTML = await response.text();
-        }
-        */
     } catch (error) {
         console.error('Error:', error);
     }
