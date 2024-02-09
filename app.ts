@@ -15,13 +15,11 @@ import {insertTask} from './database-functions/insert-data';
 import {selectTaskByTaskID, selectTaskByTasklistID, selectTasksByUserID} from "./database-functions/select-data";
 import {deleteTaskById} from './database-functions/delete-data';
 
-import {Task} from "./model/Task";
 import {taskRouter} from "./routers/router-task";
 import {tasklistRouter} from "./routers/router-tasklist";
 import {eventRouter} from "./routers/router-event";
 import {tagRouter} from "./routers/router-tag";
 import {userRouter} from "./routers/router-user";
-import {selectTaskByTaskID, selectTaskByTasklistID, selectTasksByUserID} from "./database-functions/select-data";
 import {Task} from "./ts-interfaces/model/Task";
 import {IdNotFoundError} from "./ts-interfaces/errors/IdNotFoundError";
 
