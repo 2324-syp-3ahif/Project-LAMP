@@ -1,10 +1,5 @@
 import express from "express";
 
-import {Task} from "../model/Task";
-import {Tasklist} from "../model/Tasklist";
-import {Event} from "../model/Event";
-import {Tag} from "../model/Tag";
-
 export const tasklistRouter = express.Router();
 
 tasklistRouter.get("/", (req, res) => {

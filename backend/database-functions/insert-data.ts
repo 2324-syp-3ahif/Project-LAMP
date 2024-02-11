@@ -1,7 +1,6 @@
 import sqlite3 from "sqlite3";
-import { connectToDatabase, disconnectFromDatabase } from "./connect";
-import {convertTSToSQLDate} from "../src/utils";
-import {ConnectionToDatabaseLostError} from "../ts-interfaces/errors/ConnectionToDatabaseLostError";
+import {ConnectionToDatabaseLostError} from "../interfaces/errors/ConnectionToDatabaseLostError";
+import {convertTSToSQLDate} from "../utils";
 
 export async function insertTask(db: sqlite3.Database, title: string, dueDate: Date, description: string, priority: number, tasklistID: number, userID: number): Promise<void> {
      return new Promise<void>((resolve, reject) => {

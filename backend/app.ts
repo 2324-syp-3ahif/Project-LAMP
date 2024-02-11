@@ -20,10 +20,9 @@ import {tasklistRouter} from "./routers/router-tasklist";
 import {eventRouter} from "./routers/router-event";
 import {tagRouter} from "./routers/router-tag";
 import {userRouter} from "./routers/router-user";
-import {Task} from "./ts-interfaces/model/Task";
-import {IdNotFoundError} from "./ts-interfaces/errors/IdNotFoundError";
 
 import sqlite3 from "sqlite3";
+import {IdNotFoundError} from "./interfaces/errors/IdNotFoundError";
 
 const app = express();
 const port = process.env.PORT || 2000;
@@ -40,12 +39,7 @@ app.use(express.json());
 app.use(express.static('public'));
 
 app.post('/task', async (req, res) => {
-    const result: boolean = await insertTask([req.body.text, req.body.priority]);
-    if (result) {
-        res.send("Successfully inserted row to TASKS");
-    } else {
-        res.status(404);
-    }
+
 });
 
 app.get('/task', (req, res) => {
