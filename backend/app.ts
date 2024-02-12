@@ -23,6 +23,9 @@ import {userRouter} from "./routers/router-user";
 
 import sqlite3 from "sqlite3";
 import {IdNotFoundError} from "./interfaces/errors/IdNotFoundError";
+import {DateExpiredError} from "./interfaces/errors/DateExpiredError";
+import {checkDateFormat} from "./utils";
+import {DateFormatError} from "./interfaces/errors/DateFormatError";
 
 const app = express();
 const port = process.env.PORT || 2000;
@@ -50,6 +53,44 @@ app.get('/test/:userID', (req, res) => {
         }
     });
 });
+
+app.post('/hallo', (req, res) => {
+    console.log(req.body);
+    console.log(req.body.title);
+});
+
+app.post("/", (req, res) => {
+    const title = req.body.title;
+    const dueDate = req.body.dueDate;
+    const description = req.body.description;
+    const priority = req.body.priority;
+    const tasklistID = req.body.tasklistID;
+    const userID = req.body.userID;
+
+    insertTask(db, title, dueDate, description, priority, tasklistID, userID).then(() => {
+        selectTaskByTasklistID(db, tasklistID).then(tasks => {
+            res.send(tasks);
+        }).catch((err) => {
+            if (err instanceof IdNotFoundError) {
+                res.send("NO user found");
+            }
+        })
+    }).catch((err) => {
+        if (err instanceof DateExpiredError) {
+            res.send("Date already was!");
+        } else if (err instanceof IdNotFoundError) {
+            res.send("wrongID: " + err.message);
+        } else if (err instanceof DateFormatError) {
+            res.send("Date is wrong format!")
+        }
+    });
+});
+
+app.get('/emil', (req, res) => {
+    console.log("Hallo");
+    res.send(checkDateFormat(req.body.dueDate));
+});
+
 
 app.get('/create-tables', (req, res) => {
     dropTable('TASK');

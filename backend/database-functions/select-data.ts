@@ -76,6 +76,9 @@ export async function selectUserByUserID(db: sqlite3.Database, userID: number): 
             if (err) {
                 console.error('Error executing selectUserByUserID:', err.message);
                 reject(err);
+            } else if (data === undefined) {
+                const forName = { userID };
+                reject(new IdNotFoundError(Object.keys(forName)[0], "No user found for this userID"));
             }
             resolve(data as User);
         });

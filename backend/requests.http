@@ -18,4 +18,23 @@ GET {{hostname}}
 GET {{hostname}}/create-tables
 
 ###
-GET {{hostname}}/test/2
+POST localhost:2000
+Content-Type: application/json
+
+{
+  "title": "My Task",
+  "dueDate": "2024-ksdjfkasjf3",
+  "description": "This is my Task",
+  "priority": 1,
+  "tasklistID": 1,
+  "userID": 2
+}
+###
+
+GET localhost:2000/emil
+Content-Type: application/json
+
+{
+  "dueDate": "2024-02-14T10:10:13"
+}
+
