@@ -1,5 +1,4 @@
 import express from "express";
-
 export const tagRouter = express.Router();
 
 tagRouter.get("/", (req, res) => {

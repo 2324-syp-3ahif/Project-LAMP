@@ -38,29 +38,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-app.post('/task', async (req, res) => {
-
-});
-
-app.get('/task', (req, res) => {
-
-});
-
-app.delete('/task', (req, res) => {
-    const worked : boolean = deleteTaskById(req.body.id);
-    if (worked) {
-        res.send("That worked out!");
-    } else {
-        res.status(400).send("That did not work out!");
-    }
-});
-
-app.get('/', (req, res) => {
-    //dropTable('temp');
-    console.log("Hallo");
-    res.sendFile(__dirname + '\\public\\index.html');
-});
-
 app.get('/test/:userID', (req, res) => {
     const taskID: number = parseInt(req.params.userID);
     selectTasksByUserID(db, taskID).then(tasks => {
@@ -83,7 +60,7 @@ app.get('/create-tables', (req, res) => {
     createEventsTable();
     createTagTasklistsTable();
     createUserTasklistTable();
-    res.send();
+    res.send("Works");
 })
 
 app.listen(2000, () => {

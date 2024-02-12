@@ -1,6 +1,6 @@
+import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
 import sqlite3 from "sqlite3";
 import {Task} from "../interfaces/model/Task";
-import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
 import {ConnectionToDatabaseLostError} from "../interfaces/errors/ConnectionToDatabaseLostError";
 import {Tasklist} from "../interfaces/model/Tasklist";
 import {User} from "../interfaces/model/User";

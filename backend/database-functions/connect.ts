@@ -1,7 +1,7 @@
 import sqlite3 from "sqlite3";
 
 export function connectToDatabase() : sqlite3.Database {
-    const path = 'database/database.db';
+    const path = 'backend/database/database.db';
     console.log(path);
     return new sqlite3.Database(path, (err) => {
         if (err) {
