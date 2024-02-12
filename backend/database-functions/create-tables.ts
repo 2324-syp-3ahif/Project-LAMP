@@ -5,7 +5,7 @@ export function createTasksTable() : boolean {
     const db : sqlite3.Database = connectToDatabase();
     const query = `
         CREATE TABLE IF NOT EXISTS TASKS(
-          taskID int primary key AUTOINCREMENT,
+          taskID INTEGER primary key AUTOINCREMENT,
           title varchar(255),
           description varchar(255),
           dueDate Date,
@@ -29,7 +29,7 @@ export function createTasklistsTable() : boolean {
     const db : sqlite3.Database = connectToDatabase();
     const query = `
         CREATE TABLE IF NOT EXISTS TASKLISTS(
-          tasklistID int primary key AUTOINCREMENT,
+          tasklistID INTEGER primary key AUTOINCREMENT,
           title varchar(255),
           description varchar(255),
           sortingOrder BIT(4),
@@ -52,7 +52,7 @@ export function createTagsTable() : boolean {
     const db : sqlite3.Database = connectToDatabase();
     const query = `
         CREATE TABLE IF NOT EXISTS TAGS(
-          tagID int primary key AUTOINCREMENT,
+          tagID INTEGER primary key AUTOINCREMENT,
            name varchar(50)
           );
         `;
@@ -106,7 +106,7 @@ export function createUsersTable() : boolean {
     const db : sqlite3.Database = connectToDatabase();
     const query = `
         CREATE TABLE IF NOT EXISTS USERS(
-            userID int primary key AUTOINCREMENT,
+            userID INTEGER primary key AUTOINCREMENT,
             username varchar(50),
             hashedPassword varchar(50),
             email varchar(50)
@@ -126,7 +126,7 @@ export function createEventsTable() : boolean {
     const db : sqlite3.Database = connectToDatabase();
     const query = `
         CREATE TABLE IF NOT EXISTS EVENTS(
-            eventID int primary key AUTOINCREMENT,
+            eventID INTEGER primary key AUTOINCREMENT,
             name varchar(50),
             startTime Date,
             endTime Date,

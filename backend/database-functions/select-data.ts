@@ -1,11 +1,9 @@
-import { Event } from "../ts-interfaces/model/Event";
-import { Tag } from "../ts-interfaces/model/Tag";
-import { Task } from "../ts-interfaces/model/Task";
-import { Tasklist } from "../ts-interfaces/model/Tasklist";
-import { User } from "../ts-interfaces/model/User";
+import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
 import sqlite3 from "sqlite3";
-import {IdNotFoundError} from "../ts-interfaces/errors/IdNotFoundError";
-import {ConnectionToDatabaseLostError} from "../ts-interfaces/errors/ConnectionToDatabaseLostError";
+import {Task} from "../interfaces/model/Task";
+import {ConnectionToDatabaseLostError} from "../interfaces/errors/ConnectionToDatabaseLostError";
+import {Tasklist} from "../interfaces/model/Tasklist";
+import {User} from "../interfaces/model/User";
 
 export async function selectTasksByUserID(db: sqlite3.Database, userID: number): Promise<Task[]> {
     return new Promise((resolve, reject) => {
