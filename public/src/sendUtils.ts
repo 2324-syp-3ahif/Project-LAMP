@@ -1,6 +1,6 @@
 import * as utils from '../../backend/utils';
 
-export async function send(URL: string, TYPE: string, json: string): Promise<Response | undefined> { //Promise<Response | undefined>
+export async function send(URL: string, TYPE: string, json: string): Promise<any> { //Promise<Response | undefined>
     const requestOptions: RequestInit = {
         method: TYPE,
         headers: {

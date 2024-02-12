@@ -1,7 +1,7 @@
 // send mail to specific user with nodemailer
 import * as nodemailer from 'nodemailer';
 import * as utils from './utils';
-import * as tasklist from '../public/src/tasklist';
+import * as tasklist from '../public/src/tasklistFunctions';
 
 export function sendMailToUser(receiver: string, message: string, subj: string): void {
     console.log(`Mail sent to ${receiver} with message: ${message}`)
@@ -38,6 +38,6 @@ export function tryEditTasklist(receiver: string, listID: number): void {
         tasklist.noAccessPopUp();
     } else {
         // TODO: set isLocked to true on server
-        tasklist.showTasklist(listID);
+        tasklist.extendTasklist(listID);
     }
 }
