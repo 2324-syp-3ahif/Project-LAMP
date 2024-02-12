@@ -1,4 +1,6 @@
-export interface Task {
+import {Item} from "./Item";
+
+export interface Task extends Item {
     taskID: number,
     title: string,
     dueDate: Date,
