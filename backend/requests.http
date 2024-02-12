@@ -23,8 +23,8 @@ Content-Type: application/json
 
 {
   "title": "My Task",
-  "dueDate": "2024-ksdjfkasjf3",
-  "description": "This is my Task",
+  "dueDate": "2024-02-20T10:10:13",
+  "description": "This is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my TaskThis is my Task",
   "priority": 1,
   "tasklistID": 1,
   "userID": 2

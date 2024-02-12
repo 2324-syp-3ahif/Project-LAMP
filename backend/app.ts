@@ -26,6 +26,8 @@ import {IdNotFoundError} from "./interfaces/errors/IdNotFoundError";
 import {DateExpiredError} from "./interfaces/errors/DateExpiredError";
 import {checkDateFormat} from "./utils";
 import {DateFormatError} from "./interfaces/errors/DateFormatError";
+import {StringToLongError} from "./interfaces/errors/StringToLongError";
+import {NotAValidNumberError} from "./interfaces/errors/NotAValidNumberError";
 
 const app = express();
 const port = process.env.PORT || 2000;
@@ -82,6 +84,10 @@ app.post("/", (req, res) => {
             res.send("wrongID: " + err.message);
         } else if (err instanceof DateFormatError) {
             res.send("Date is wrong format!")
+        } else if (err instanceof StringToLongError) {
+            res.send(err.message);
+        } else if (err instanceof NotAValidNumberError) {
+            res.send("Number was not in a valid range!");
         }
     });
 });
