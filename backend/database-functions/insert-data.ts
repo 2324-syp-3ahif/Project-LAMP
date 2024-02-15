@@ -9,7 +9,7 @@ import {StringToLongError} from "../interfaces/errors/StringToLongError";
 import {NotAValidNumberError} from "../interfaces/errors/NotAValidNumberError";
 import {Item} from "../interfaces/model/Item";
 /*
-export async function insertTask(db: sqlite3.Database, title: string, dueDate: Date, description: string, priority: number, tasklistID: number, userID: number): Promise<void> {
+export async function inserTask(db: sqlite3.Database, title: string, dueDate: Date, description: string, priority: number, tasklistID: number, userID: number): Promise<void> {
      return new Promise<void>((resolve, reject) => {
          if (checkDateFormat(dueDate.toString())) {
              if (priority > 0 && priority <= 10) {
@@ -60,8 +60,8 @@ export async function insertTask(db: sqlite3.Database, title: string, dueDate: D
 
 export async function insertTask(db: sqlite3.Database, title: string, dueDate: Date, description: string, priority: number, tasklistID: number, userID: number): Promise<void> {
     try {
-        numberChecker(priority, 0, 10, "priority", `Priority must be between 0 and 10`);
-        dateFormatCheck(dueDate);
+        numberChecker(priority, 0, 10, 'priority', `Priority must be between 0 and 10`);
+        dateFormatCheck(dueDate, Object.keys({dueDate})[0], ' is not the right format!');
         dateSmallerNowChecker(dueDate);
         stringLenghtCheck(title, 50, 'title', ' cannot have more characters than ');
         stringLenghtCheck(description, 255, 'description', ' cannot have more characters than ');
@@ -96,9 +96,9 @@ function stringLenghtCheck(field: string, length: number, causer: string, messag
     }
 }
 
-function dateFormatCheck(dueDate: Date) {
+function dateFormatCheck(dueDate: Date, causer: string, message: string) {
     if (!checkDateFormat(dueDate.toString())) {
-        throw new DateFormatError("dueDate", "Date has the wrong format");
+        throw new DateFormatError(causer, causer + message);
     }
 }
 
