@@ -32,8 +32,13 @@ function getTags(listID: number): Tag[] {
     return [];
 }
 
-function editTitle(listID: number): void {
+async function editTitle(listID: number, newTitle: string): void {
+    const resp = sendUtils.send(url + listID, 'GET', '');
+    const list: Tasklist = await resp.json();
+    list.title = newTitle;
+    await sendUtils.send(url + listID, 'PUT', JSON.stringify(list));
 
+    await showAllTasklists();
 }
 
 async function showTasklist(listID: number): Promise<HTMLElement> {
@@ -43,8 +48,8 @@ async function showTasklist(listID: number): Promise<HTMLElement> {
 
     const title = document.createElement('h2');
     title.innerHTML = list.title;
-    title.addEventListener('click', () => {
-        editTitle(list.tasklistID);
+    title.addEventListener('input', () => {
+        editTitle(list.tasklistID, title.innerHTML);
     });
 
     const description = document.createElement('p');
