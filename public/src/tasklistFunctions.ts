@@ -3,11 +3,13 @@ import { Tasklist } from '../../backend/interfaces/model/Tasklist';
 import {Tag} from "../../backend/interfaces/model/Tag";
 
 /* TODO: URL */
-const url = 'http://localhost:3000/user/tasklists/';
+const url = 'http://localhost:2000/testTasklist/';
 
 export async function showAllTasklists(): Promise<void> {
+    console.log('showAllTasklists')
     const response = await sendUtils.send(url, 'GET', '');
-    const lists = await response.json();
+    console.log(response);
+    const lists = await response.body;
     const taskLists = document.getElementById('taskLists');
 
     if (taskLists) {
@@ -32,9 +34,9 @@ function getTags(listID: number): Tag[] {
     return [];
 }
 
-async function editTitle(listID: number, newTitle: string): void {
+async function editTitle(listID: number, newTitle: string): Promise<any> {
     const resp = sendUtils.send(url + listID, 'GET', '');
-    const list: Tasklist = await resp.json();
+    const list: Tasklist = await resp;
     list.title = newTitle;
     await sendUtils.send(url + listID, 'PUT', JSON.stringify(list));
 

@@ -24,6 +24,10 @@ import {userRouter} from "./routers/router-user";
 import sqlite3 from "sqlite3";
 import {IdNotFoundError} from "./interfaces/errors/IdNotFoundError";
 
+import * as tasklist from './interfaces/model/Tasklist';
+import {showAllTasklists} from "../public/src/tasklistFunctions";
+import * as send from "../public/src/sendUtils";
+
 const app = express();
 const port = process.env.PORT || 2000;
 const db: sqlite3.Database = connectToDatabase();
@@ -61,8 +65,26 @@ app.get('/create-tables', (req, res) => {
     createTagTasklistsTable();
     createUserTasklistTable();
     res.send("Works");
-})
+});
+console.log('testTasklist');
+
+app.get('/testTasklist', (req, res) => {
+    const list: tasklist.Tasklist = {
+        tasklistID: 42,
+        title: "HEHE",
+        description: "i hope this may work",
+        sortingOrder: 0,
+        priority: 0,
+        isLocked: false,
+        ownerID: 1,
+    }
+    //send.send('http://localhost:2000/api/tasklist', 'POST', JSON.stringify(list));
+    //res.send("Works");
+    res.send(list);
+});
 
 app.listen(2000, () => {
     console.log(`Listening on http://localhost:2000`);
-})
+    showAllTasklists().then(r => console.log(r));
+});
+
