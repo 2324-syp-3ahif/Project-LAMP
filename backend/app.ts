@@ -38,7 +38,6 @@ app.use("/api/tasklist", tasklistRouter);
 app.use("/api/event", eventRouter);
 app.use("/api/tag", tagRouter);
 app.use("/api/user", userRouter);
-app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
@@ -85,6 +84,4 @@ app.get('/testTasklist', (req, res) => {
 
 app.listen(2000, () => {
     console.log(`Listening on http://localhost:2000`);
-    showAllTasklists().then(r => console.log(r));
 });
-

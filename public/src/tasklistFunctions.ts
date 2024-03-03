@@ -5,19 +5,21 @@ import {Tag} from "../../backend/interfaces/model/Tag";
 /* TODO: URL */
 const url = 'http://localhost:2000/testTasklist/';
 
-export async function showAllTasklists(): Promise<void> {
+export async function showAllTasklists() {
     console.log('showAllTasklists')
     const response = await sendUtils.send(url, 'GET', '');
     console.log(response);
-    const lists = await response.body;
-    const taskLists = document.getElementById('tasklists');
+    if (response.ok) {
+        const lists = await response.json();
+        const taskLists = document.getElementById('tasklists');
 
-    if (taskLists) {
-        taskLists.innerHTML = "";
-        lists.map(async (listID: number) => {
-            const list: HTMLElement = await showTasklist(listID);
-            taskLists.appendChild(list);
-        });
+        if (taskLists) {
+            taskLists.innerHTML = "";
+            lists.map(async (listID: number) => {
+                const list: HTMLElement = await showTasklist(listID);
+                taskLists.appendChild(list);
+            });
+        }
     }
 }
 
@@ -72,6 +74,8 @@ async function showTasklist(listID: number): Promise<HTMLElement> {
 
     return listElement;
 }
-window.addEventListener('load', (event) => {
+
+window.addEventListener('load', () => {
+    console.log('load');
     showAllTasklists();
 });
