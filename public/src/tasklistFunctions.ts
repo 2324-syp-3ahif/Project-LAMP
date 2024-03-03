@@ -10,7 +10,7 @@ export async function showAllTasklists(): Promise<void> {
     const response = await sendUtils.send(url, 'GET', '');
     console.log(response);
     const lists = await response.body;
-    const taskLists = document.getElementById('taskLists');
+    const taskLists = document.getElementById('tasklists');
 
     if (taskLists) {
         taskLists.innerHTML = "";
@@ -72,3 +72,6 @@ async function showTasklist(listID: number): Promise<HTMLElement> {
 
     return listElement;
 }
+window.addEventListener('load', (event) => {
+    showAllTasklists();
+});
