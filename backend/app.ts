@@ -21,16 +21,17 @@ import {eventRouter} from "./routers/router-event";
 import {tagRouter} from "./routers/router-tag";
 import {userRouter} from "./routers/router-user";
 
-import sqlite3 from "sqlite3";
+import sqlite from "sqlite3";
 import {IdNotFoundError} from "./interfaces/errors/IdNotFoundError";
 
 import * as tasklist from './interfaces/model/Tasklist';
 import {showAllTasklists} from "../public/src/tasklistFunctions";
-import * as send from "../public/src/sendUtils";
+
+import { join } from "path";
 
 const app = express();
 const port = process.env.PORT || 2000;
-const db: sqlite3.Database = connectToDatabase();
+const db: sqlite.Database = connectToDatabase();
 
 dotenv.config();
 app.use("/api/task", taskRouter);
@@ -40,6 +41,10 @@ app.use("/api/tag", tagRouter);
 app.use("/api/user", userRouter);
 app.use(express.json());
 app.use(express.static('public'));
+
+const path = join(__dirname, "../public");
+const options = { extensions: ["html", "js"] }; // , "css"
+app.use(express.static(path, options));
 
 app.get('/test/:userID', (req, res) => {
     const taskID: number = parseInt(req.params.userID);

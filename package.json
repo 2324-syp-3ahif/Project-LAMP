@@ -2,10 +2,10 @@
   "name": "expressdatabase",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./backend/app.js",
   "scripts": {
-    "server-dev": "npx nodemon backend/app.ts",
-    "start": "npx nodemon backend/app.ts",
+    "server-dev": "npx nodemon ./backend/app.ts",
+    "start": "npx nodemon ./backend/app.ts",
     "client-dev": "npx tsc --watch --project public",
     "prestart": "npx tsc --project public"
   },
@@ -30,7 +30,6 @@
     "@types/cors": "^2.8.17",
     "nodemo": "^1.0.0",
     "ts-node": "^10.9.2",
-    "tsc": "^2.0.4",
     "typescript": "^5.3.3",
     "@types/nodemailer": "^6.4.14"
   }

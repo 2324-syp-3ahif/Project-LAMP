@@ -9,4 +9,8 @@ export interface Tasklist {
     priority: number,
     isLocked: boolean,
     ownerID: number
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> main
