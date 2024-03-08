@@ -5,82 +5,68 @@ import {ConnectionToDatabaseLostError} from "../interfaces/errors/ConnectionToDa
 import {Tasklist} from "../interfaces/model/Tasklist";
 import {User} from "../interfaces/model/User";
 
-export async function selectTasksByUserID(db: sqlite3.Database, userID: number): Promise<Task[]> {
-    return new Promise((resolve, reject) => {
-        selectUserByUserID(db, userID).then(user => {
-            if (user === undefined) {
-                const toGetVariableName = {userID};
-                reject(new IdNotFoundError(Object.keys(toGetVariableName)[0], "No user with this userID found!"));
+export async function selectTasksByTasklistID(db: sqlite3.Database, tasklistID: number): Promise<Task[]> {
+    const idName: string = Object.keys({tasklistID})[0];
+    return new Promise<Task[]>(async (resolve, reject) => {
+        selectByID<Tasklist[]>(db, tasklistID, 'TASKLISTS', idName).then(tasklists => {
+            if (tasklists === undefined || (tasklists as []).length === 0) {
+                reject(new IdNotFoundError(idName, 'No item with id, ' + idName));
             }
+        }).catch((err) => {
+            reject(err);
         });
-        const query = `SELECT * FROM TASKS WHERE userID = ${userID}`;
-        db.all(query, (err, data) => {
-            if (err) {
-                reject(new ConnectionToDatabaseLostError());
-            }
-            resolve(data as Task[]);
-        });
-    });
-}
-
-export async function selectTaskByTasklistID(db: sqlite3.Database, tasklistID: number): Promise<Task[]> {
-    const query = `SELECT * FROM TASKS WHERE tasklistID IS ${tasklistID}`;
-    return new Promise<Task[]>((resolve, reject) => {
-        selectUserByUserID(db, tasklistID).then(tasklist => {
-            if (tasklist === undefined) {
-                const toGetVariableName = {tasklistID};
-                reject(new IdNotFoundError(Object.keys(toGetVariableName)[0], "No tasklist with this tasklistID found!"));
-            }
-        });
-        db.all(query, (err, data) => {
-            if (err) {
-                reject(new ConnectionToDatabaseLostError());
-            }
-            resolve(data as Task[]);
+        selectByID<Task[]>(db, tasklistID, 'TASKS', idName).then(tasks => {
+            resolve(tasks as Task[]);
+        }).catch(err => {
+            reject(err);
         });
     });
 }
 
+// TASKS
 export async function selectTaskByTaskID(db: sqlite3.Database, taskID: number): Promise<Task> {
-    const query = `SELECT * FROM TASKS WHERE taskID IS ${taskID}`;
-    return new Promise<Task>((resolve, reject) => {
-        db.get(query, (err, data) => {
-            if (err) {
-                console.error('Error executing selectTaskByTaskID:', err.message);
-                reject(err);
+    return selectByID<Task>(db, taskID, 'TASKS', Object.keys({taskID})[0]);
+
+}
+
+// TASKLISTS
+export function selectTasklistByTasklistID(db: sqlite3.Database, tasklistID: number): Promise<Tasklist> {
+    return selectByID<Tasklist>(db, tasklistID, 'TASKLISTS', Object.keys({tasklistID})[0]);
+}
+
+export function selectTasklistsByUserID(db: sqlite3.Database, userID: number): Promise<Tasklist[]> {
+    const idName: string = Object.keys({userID})[0];
+    return new Promise<Tasklist[]>((resolve, reject) => {
+        selectByID<User[]>(db, userID, 'USERS', Object.keys({userID})[0]).then(users => {
+            if (users === undefined || (users as []).length === 0) {
+                reject(new IdNotFoundError(idName, 'No item with id, ' + idName));
             }
-            resolve(data as Task);
+        }).catch((err) => {
+            reject(err);
+        });
+        selectByID<string>(db, userID, 'USERTASKLISTS', Object.keys({userID})[0]).then(usertasklists => {
+            const tasklists = JSON.parse(usertasklists);
+            console.log(typeof tasklists);
+            resolve(tasklists);
+        }).catch(err => {
+            reject(err);
         });
     });
 }
 
-export function selectTasklistByTasklistID(db: sqlite3.Database, tasklistID: number): Promise<Tasklist> {
-    const query: string = `SELECT * FROM TASKLISTS WHERE tasklistID = ${tasklistID}`;
-    return new Promise<Tasklist>((resolve, reject) => {
-        db.get(query, (err, data) => {
+export async function selectByID<T>(db: sqlite3.Database, tableID: number, tablename: string, idName: string): Promise<T> {
+    const query = `SELECT * FROM ${tablename} WHERE ${idName} IS ${tableID}`;
+    const data = await db.all(query);
+    return new Promise<T>((resolve, reject) => {
+        db.all(query, (err, data) => {
             if (err) {
-                reject(new ConnectionToDatabaseLostError());
-            } else if (data === undefined) {
-                const forName = { tasklistID };
-                reject(new IdNotFoundError(Object.keys(forName)[0], "No tasklist found for this tasklistID"));
-            }
-            resolve(data as Tasklist);
-        })
-    });
-}
-
-export async function selectUserByUserID(db: sqlite3.Database, userID: number): Promise<User> {
-    const query = `SELECT * FROM USERS WHERE userID IS ${userID}`;
-    return new Promise<User>((resolve, reject) => {
-        db.get(query, (err, data) => {
-            if (err) {
-                console.error('Error executing selectUserByUserID:', err.message);
+                console.error(`Error executing selectByID on table ${tablename}:`, err.message);
                 reject(err);
             } else if (data === undefined) {
-                const forName = { userID };
-                reject(new IdNotFoundError(Object.keys(forName)[0], "No user found for this userID"));
+                const forName = { tableID };
+                reject(new IdNotFoundError(Object.keys(forName)[0], `No id found in ${tablename}`));
             }
-            resolve(data as User);
+            resolve(data as T);
         });
     });
 }

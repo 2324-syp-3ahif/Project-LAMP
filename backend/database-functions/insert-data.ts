@@ -2,12 +2,12 @@ import sqlite3 from "sqlite3";
 import {checkDateFormat, convertTSToSQLDate} from "../utils";
 import {ConnectionToDatabaseLostError} from "../interfaces/errors/ConnectionToDatabaseLostError";
 import {DateExpiredError} from "../interfaces/errors/DateExpiredError";
-import {selectTasklistByTasklistID, selectUserByUserID} from "./select-data";
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
 import {DateFormatError} from "../interfaces/errors/DateFormatError";
 import {StringToLongError} from "../interfaces/errors/StringToLongError";
 import {NotAValidNumberError} from "../interfaces/errors/NotAValidNumberError";
 import {Item} from "../interfaces/model/Item";
+import {selectTasklistByTasklistID} from "./select-data";
 /*
 export async function inserTask(db: sqlite3.Database, title: string, dueDate: Date, description: string, priority: number, tasklistID: number, userID: number): Promise<void> {
      return new Promise<void>((resolve, reject) => {
@@ -67,7 +67,7 @@ export async function insertTask(db: sqlite3.Database, title: string, dueDate: D
         stringLenghtCheck(description, 255, 'description', ' cannot have more characters than ');
 
         await idNotFound(db, tasklistID, (db, tasklistID) => {return selectTasklistByTasklistID(db, tasklistID)}, " not found!", "tasklistID")
-        await idNotFound(db, userID, (db, userID) => {return selectUserByUserID(db, userID)}, " not found!", "userID")
+        //dawait idNotFound(db, userID, (db, userID) => {return selectUserByUserID(db, userID)}, " not found!", "userID")
 
         const query: string = `INSERT INTO TASKS (title, description, dueDate, priority, isComplete, tasklistID, userID) VALUES (?,?,?,?,?,?,?);`;
         db.run(query, [title, description, dueDate.toString(), priority, false, tasklistID, userID]);
