@@ -26,6 +26,7 @@ import {IdNotFoundError} from "./interfaces/errors/IdNotFoundError";
 
 import * as tasklist from './interfaces/model/Tasklist';
 import {showAllTasklists} from "../public/src/tasklistFunctions";
+
 import { join } from "path";
 
 const app = express();
@@ -38,7 +39,6 @@ app.use("/api/tasklist", tasklistRouter);
 app.use("/api/event", eventRouter);
 app.use("/api/tag", tagRouter);
 app.use("/api/user", userRouter);
-app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
@@ -69,8 +69,24 @@ app.get('/create-tables', (req, res) => {
     createTagTasklistsTable();
     createUserTasklistTable();
     res.send("Works");
-})
+});
+console.log('testTasklist');
+
+app.get('/testTasklist', (req, res) => {
+    const list: tasklist.Tasklist = {
+        tasklistID: 42,
+        title: "HEHE",
+        description: "i hope this may work",
+        sortingOrder: 0,
+        priority: 0,
+        isLocked: false,
+        ownerID: 1,
+    }
+    //send.send('http://localhost:2000/api/tasklist', 'POST', JSON.stringify(list));
+    //res.send("Works");
+    res.send(list);
+});
 
 app.listen(2000, () => {
     console.log(`Listening on http://localhost:2000`);
-})
+});
