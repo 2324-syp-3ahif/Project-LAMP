@@ -1,13 +1,13 @@
-import * as sendUtils from './sendUtils';
-import { Tasklist } from '../../backend/interfaces/model/Tasklist';
-import {Tag} from "../../backend/interfaces/model/Tag";
+import { send } from './sendUtils';
+import { Tasklist } from './model/Tasklist';
+import { Tag } from './model/Tag';
 
 /* TODO: URL */
 const url = 'http://localhost:2000/testTasklist/';
 
 export async function showAllTasklists() {
     console.log('showAllTasklists')
-    const response = await sendUtils.send(url, 'GET', '');
+    const response = await send(url, 'GET', '');
     console.log(response);
     if (response.ok) {
         const lists = await response.json();
@@ -37,17 +37,15 @@ function getTags(listID: number): Tag[] {
 }
 
 async function editTitle(listID: number, newTitle: string): Promise<any> {
-    const resp = sendUtils.send(url + listID, 'GET', '');
+    const resp = send(url + listID, 'GET', '');
     const list: Tasklist = await resp;
     list.title = newTitle;
-    await sendUtils.send(url + listID, 'PUT', JSON.stringify(list));
-
+    await send(url + listID, 'PUT', JSON.stringify(list));
     await showAllTasklists();
 }
 
 async function showTasklist(listID: number): Promise<HTMLElement> {
-    const list = await sendUtils.send(url + listID, 'GET', '');
-
+    const list = await send(url + listID, 'GET', '');
     const listElement: HTMLElement = document.createElement('div');
 
     const title = document.createElement('h2');

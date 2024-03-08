@@ -1,3 +1,6 @@
+export function generateWarningPopUp(message: string, errorCode: number): void{
+    alert("Error " + errorCode + ": " + message);
+}
 export async function send(URL: string, TYPE: string, json: string): Promise<any> {
     const requestOptions: RequestInit = {
         method: TYPE,
@@ -18,8 +21,4 @@ export async function send(URL: string, TYPE: string, json: string): Promise<any
     } catch (error) {
         console.error('Error:', error);
     }
-}
-
-function generateWarningPopUp(message: string, errorCode: number): void{
-    alert("Error " + errorCode + ": " + message);
 }
