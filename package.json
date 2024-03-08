@@ -30,7 +30,6 @@
     "@types/cors": "^2.8.17",
     "nodemo": "^1.0.0",
     "ts-node": "^10.9.2",
-    "tsc": "^2.0.4",
     "typescript": "^5.3.3",
     "@types/nodemailer": "^6.4.14"
   }
