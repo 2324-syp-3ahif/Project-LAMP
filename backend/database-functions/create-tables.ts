@@ -1,11 +1,11 @@
 import sqlite3 from "sqlite3";
-import {connectToDatabase, disconnectFromDatabase} from "./connect";
+import {connectToDatabase} from "./connect";
 
 export function createTasksTable() : boolean {
     const db : sqlite3.Database = connectToDatabase();
     const query = `
         CREATE TABLE IF NOT EXISTS TASKS(
-          taskID int primary key,
+          taskID INTEGER primary key AUTOINCREMENT,
           title varchar(255),
           description varchar(255),
           dueDate Date,
@@ -22,7 +22,6 @@ export function createTasksTable() : boolean {
         }
         console.log("Successfully created TASKS");
     });
-    disconnectFromDatabase(db);
     return true;
 }
 
@@ -30,7 +29,7 @@ export function createTasklistsTable() : boolean {
     const db : sqlite3.Database = connectToDatabase();
     const query = `
         CREATE TABLE IF NOT EXISTS TASKLISTS(
-          tasklistID int primary key,
+          tasklistID INTEGER primary key AUTOINCREMENT,
           title varchar(255),
           description varchar(255),
           sortingOrder BIT(4),
@@ -44,9 +43,8 @@ export function createTasklistsTable() : boolean {
             console.log("Failed creation!" + err.message);
             return false;
         }
-        console.log("Successfully created TASKS");
+        console.log("Successfully created TASKLISTS");
     });
-    disconnectFromDatabase(db);
     return true;
 }
 
@@ -54,7 +52,7 @@ export function createTagsTable() : boolean {
     const db : sqlite3.Database = connectToDatabase();
     const query = `
         CREATE TABLE IF NOT EXISTS TAGS(
-          tagID int primary key,
+          tagID INTEGER primary key AUTOINCREMENT,
            name varchar(50)
           );
         `;
@@ -63,9 +61,8 @@ export function createTagsTable() : boolean {
             console.log("Failed creation!" + err.message);
             return false;
         }
-        console.log("Successfully created TASKS");
+        console.log("Successfully created TAGS");
     });
-    disconnectFromDatabase(db);
     return true;
 }
 
@@ -82,9 +79,8 @@ export function createTagTasklistsTable() : boolean {
             console.log("Failed creation!" + err.message);
             return false;
         }
-        console.log("Successfully created TASKS");
+        console.log("Successfully created TAGTASKLISTS");
     });
-    disconnectFromDatabase(db);
     return true;
 }
 
@@ -101,9 +97,8 @@ export function createUserTasklistTable() : boolean {
             console.log("Failed creation!" + err.message);
             return false;
         }
-        console.log("Successfully created TASKS");
+        console.log("Successfully created USERTASKLISTS");
     });
-    disconnectFromDatabase(db);
     return true;
 }
 
@@ -111,7 +106,7 @@ export function createUsersTable() : boolean {
     const db : sqlite3.Database = connectToDatabase();
     const query = `
         CREATE TABLE IF NOT EXISTS USERS(
-            userID int primary key,
+            userID INTEGER primary key AUTOINCREMENT,
             username varchar(50),
             hashedPassword varchar(50),
             email varchar(50)
@@ -122,9 +117,8 @@ export function createUsersTable() : boolean {
             console.log("Failed creation!" + err.message);
             return false;
         }
-        console.log("Successfully created TASKS");
+        console.log("Successfully created USERS");
     });
-    disconnectFromDatabase(db);
     return true;
 }
 
@@ -132,7 +126,7 @@ export function createEventsTable() : boolean {
     const db : sqlite3.Database = connectToDatabase();
     const query = `
         CREATE TABLE IF NOT EXISTS EVENTS(
-            eventID int primary key,
+            eventID INTEGER primary key AUTOINCREMENT,
             name varchar(50),
             startTime Date,
             endTime Date,
@@ -146,8 +140,7 @@ export function createEventsTable() : boolean {
             console.log("Failed creation!" + err.message);
             return false;
         }
-        console.log("Successfully created TASKS");
+        console.log("Successfully created EVENTS");
     });
-    disconnectFromDatabase(db);
     return true;
 }
