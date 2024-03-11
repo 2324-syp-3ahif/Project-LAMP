@@ -6,8 +6,4 @@ export interface Task {
     description: string,
     isComplete: boolean,
     tasklistID: number,
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> main
