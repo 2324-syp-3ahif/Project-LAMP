@@ -60,7 +60,26 @@
                 </div>
             </div>
             <button class="btn btn-secondary" id="create-tasklist">Create Tasklist</button>
-            <img src="./img/filter.png" id="filter-img">
+            <button class="btn" type="submit" id="filter-btn">
+                <img src="./img/filter.png" id="filter-img" alt="filter img"/>
+            </button>
+        </div>
+        <div class="modal" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Filter by Tags</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="filter-tags-modal"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="tasklists"></div>
         <footer class="footer">

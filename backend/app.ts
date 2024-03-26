@@ -97,6 +97,19 @@ app.get('/testTasklist', (_, res) => {
     res.send(list);
 });
 
+app.get('/testTags', (_, res) => {
+    const tag1: Tag = {
+        tagID: 1,
+        name: "Tag1",
+    }
+    const tag2: Tag = {
+        tagID: 2,
+        name: "Tag2",
+    }
+    const tag = [tag1, tag2];
+    res.send(tag);
+});
+
 app.listen(2000, () => {
     console.log(`Listening on http://localhost:2000`);
 });

@@ -5,6 +5,7 @@ import { Tag } from './model/Tag';
 window.onload = async() => {
     /* TODO: URLs */
     const url = 'http://localhost:2000/testTasklist/';
+    const tagUrl = 'http://localhost:2000/testTags/';
 
     console.log('onload');
 
@@ -13,9 +14,11 @@ window.onload = async() => {
     const orderPriorityButton = document.getElementById('order-priority') as HTMLButtonElement;
     const orderViewButton = document.getElementById('order-view') as HTMLButtonElement;
     const orderCreateButton = document.getElementById('order-creation') as HTMLButtonElement;
-
+    const filterButton = document.getElementById('filter-btn') as HTMLButtonElement;
+    const filterTagsModal = document.getElementById('filter-tags-modal') as HTMLElement;
 
     const lists: Tasklist[] = await send(url, 'GET');
+    const tags: Tag[] = await send(tagUrl, 'GET');
 
     await showAllTasklists(lists);
 
@@ -42,6 +45,13 @@ window.onload = async() => {
         await showAllTasklists(lists);
     });
 
+    filterButton.addEventListener('click', async () => {
+        console.log('filter');
+        // Add dropdown items from the items array
+        for (const tag of tags) {
+        }
+    });
+
     async function showAllTasklists(lists: Tasklist[]) {
         taskLists.innerHTML = "";
         console.log(lists);
@@ -58,9 +68,13 @@ window.onload = async() => {
 
     }
 
-
-    function extendTasklist(list: HTMLElement): void {
-
+    function extendTasklist(listEl: HTMLElement, list: Tasklist): void {
+        if (list.isLocked) {
+            noAccessPopUp();
+        } else {
+            // show all tasks
+            // close button to un-expand?
+        }
     }
 
     function getTags(listID: number): Tag[] {
@@ -113,7 +127,7 @@ window.onload = async() => {
 
         listElement.addEventListener('click', () => {
 
-            extendTasklist(listElement);
+            extendTasklist(listElement, list);
         });
 
         return listElement;
