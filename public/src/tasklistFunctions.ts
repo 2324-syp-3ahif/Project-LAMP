@@ -5,7 +5,13 @@ import { Tag } from './model/Tag';
 /* TODO: URL */
 const url = 'http://localhost:2000/testTasklist/';
 const taskLists = document.getElementById('tasklists') as HTMLElement;
-const createTasklistButton = document.getElementById('createTasklist') as HTMLButtonElement;
+const createTasklistButton = document.getElementById('create-tasklist') as HTMLButtonElement;
+const orderPriorityButton = document.getElementById('order-priority') as HTMLButtonElement;
+const orderViewButton = document.getElementById('order-view') as HTMLButtonElement;
+const orderCreateButton = document.getElementById('order-creation') as HTMLButtonElement;
+
+
+const lists: Tasklist[] = Object.values(await (await send(url, 'GET', '')).json());
 
 window.onload = async() => {
     await showAllTasklists();
@@ -15,23 +21,36 @@ createTasklistButton.addEventListener('click', async () => {
   // show formular -> create tasklist
 });
 
-export async function showAllTasklists() {
-    console.log('showAllTasklists')
-    const response = await send(url, 'GET', '');
-    if (response.ok) {
-        const lists: Tasklist[] = Object.values(await response.json());
-        taskLists.innerHTML = "";
+orderPriorityButton.addEventListener('click', async () => {
+    lists.sort((a: Tasklist, b: Tasklist) => {
+        return b.priority - a.priority;
+    });
+    await showAllTasklists();
+});
 
-        console.log(lists);
+orderViewButton.addEventListener('click', async () => {
+    // TODO sort by last view
+    await showAllTasklists();
+});
 
-        taskLists.innerHTML = "";
+orderCreateButton.addEventListener('click', async () => {
+    lists.sort((a: Tasklist, b: Tasklist) => {
+        return a.tasklistID - b.tasklistID;
+    });
+    await showAllTasklists();
+});
 
-        lists.forEach(async (list: Tasklist) => {
-            const listEl: HTMLElement = await showTasklist(list);
-            taskLists.appendChild(listEl);
-        });
+async function showAllTasklists() {
+    taskLists.innerHTML = "";
 
-    }
+    console.log(lists);
+
+    taskLists.innerHTML = "";
+
+    lists.forEach(async (list: Tasklist) => {
+        const listEl: HTMLElement = await showTasklist(list);
+        taskLists.appendChild(listEl);
+    });
 }
 
 export function noAccessPopUp(): void {

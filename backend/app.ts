@@ -25,7 +25,6 @@ import sqlite from "sqlite3";
 import {IdNotFoundError} from "./interfaces/errors/IdNotFoundError";
 
 import * as tasklist from './interfaces/model/Tasklist';
-import {showAllTasklists} from "../public/src/tasklistFunctions";
 
 import { join } from "path";
 
@@ -87,7 +86,7 @@ app.get('/testTasklist', (req, res) => {
         title: "ha",
         description: "test",
         sortingOrder: 0,
-        priority: 0,
+        priority: 1,
         isLocked: false,
         ownerID: 1,
     }
