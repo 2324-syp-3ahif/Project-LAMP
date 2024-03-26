@@ -4,22 +4,33 @@ import { Tag } from './model/Tag';
 
 /* TODO: URL */
 const url = 'http://localhost:2000/testTasklist/';
+const taskLists = document.getElementById('tasklists') as HTMLElement;
+const createTasklistButton = document.getElementById('createTasklist') as HTMLButtonElement;
+
+window.onload = async() => {
+    await showAllTasklists();
+}
+
+createTasklistButton.addEventListener('click', async () => {
+  // show formular -> create tasklist
+});
 
 export async function showAllTasklists() {
     console.log('showAllTasklists')
     const response = await send(url, 'GET', '');
-    console.log(response);
     if (response.ok) {
-        const lists = await response.json();
-        const taskLists = document.getElementById('tasklists');
+        const lists: Tasklist[] = Object.values(await response.json());
+        taskLists.innerHTML = "";
 
-        if (taskLists) {
-            taskLists.innerHTML = "";
-            lists.map(async (listID: number) => {
-                const list: HTMLElement = await showTasklist(listID);
-                taskLists.appendChild(list);
-            });
-        }
+        console.log(lists);
+
+        taskLists.innerHTML = "";
+
+        lists.forEach(async (list: Tasklist) => {
+            const listEl: HTMLElement = await showTasklist(list);
+            taskLists.appendChild(listEl);
+        });
+
     }
 }
 
@@ -36,7 +47,7 @@ function getTags(listID: number): Tag[] {
     return [];
 }
 
-async function editTitle(listID: number, newTitle: string): Promise<any> {
+async function editTitle(listID: number, newTitle: string){
     const resp = send(url + listID, 'GET', '');
     const list: Tasklist = await resp;
     list.title = newTitle;
@@ -44,9 +55,10 @@ async function editTitle(listID: number, newTitle: string): Promise<any> {
     await showAllTasklists();
 }
 
-async function showTasklist(listID: number): Promise<HTMLElement> {
-    const list = await send(url + listID, 'GET', '');
+async function showTasklist(list: Tasklist): Promise<HTMLElement> {
+    console.log('showTasklist');
     const listElement: HTMLElement = document.createElement('div');
+    listElement.classList.add('tasklist');
 
     const title = document.createElement('h2');
     title.innerHTML = list.title;
@@ -70,10 +82,11 @@ async function showTasklist(listID: number): Promise<HTMLElement> {
     listElement.appendChild(description);
     listElement.appendChild(tags);
 
+    console.log(listElement);
+
+    listElement.addEventListener('click', () => {
+        extendTasklist(list.tasklistID);
+    });
+
     return listElement;
 }
-
-window.addEventListener('load', () => {
-    console.log('load');
-    showAllTasklists();
-});

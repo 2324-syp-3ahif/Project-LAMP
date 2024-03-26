@@ -73,7 +73,7 @@ app.get('/create-tables', (req, res) => {
 console.log('testTasklist');
 
 app.get('/testTasklist', (req, res) => {
-    const list: tasklist.Tasklist = {
+    const list1: tasklist.Tasklist = {
         tasklistID: 42,
         title: "HEHE",
         description: "i hope this may work",
@@ -82,6 +82,16 @@ app.get('/testTasklist', (req, res) => {
         isLocked: false,
         ownerID: 1,
     }
+    const list2: tasklist.Tasklist = {
+        tasklistID: 43,
+        title: "ha",
+        description: "test",
+        sortingOrder: 0,
+        priority: 0,
+        isLocked: false,
+        ownerID: 1,
+    }
+    const list = [list1, list2];
     //send.send('http://localhost:2000/api/tasklist', 'POST', JSON.stringify(list));
     //res.send("Works");
     res.send(list);
