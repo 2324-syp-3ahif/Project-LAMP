@@ -71,7 +71,7 @@ app.get('/create-tables', (req, res) => {
 });
 console.log('testTasklist');
 
-app.get('/testTasklist', (req, res) => {
+app.get('/testTasklist', (_, res) => {
     const list1: tasklist.Tasklist = {
         tasklistID: 42,
         title: "HEHE",
