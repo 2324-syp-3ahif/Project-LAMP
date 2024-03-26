@@ -9,7 +9,8 @@ export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATC
     }
     const res = await fetch(route, options);
     if (!res.ok) {
-        throw new Error(`${method} ${res.url} ${res.status} (${res.statusText})`);
+        console.error('Error:', res.status);
+        generateWarningPopUp(res.statusText, res.status);
     }
     if (res.status !== 204) {
         return await res.json();

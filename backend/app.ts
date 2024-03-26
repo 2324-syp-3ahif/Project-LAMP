@@ -27,6 +27,7 @@ import {IdNotFoundError} from "./interfaces/errors/IdNotFoundError";
 import * as tasklist from './interfaces/model/Tasklist';
 
 import { join } from "path";
+import {Tag} from "./interfaces/model/Tag";
 
 const app = express();
 const port = process.env.PORT || 2000;

@@ -2,11 +2,12 @@ import { send } from './sendUtils';
 import { Tasklist } from './model/Tasklist';
 import { Tag } from './model/Tag';
 
-/* TODO: URL */
-
 window.onload = async() => {
+    /* TODO: URLs */
     const url = 'http://localhost:2000/testTasklist/';
+
     console.log('onload');
+
     const taskLists = document.getElementById('tasklists') as HTMLElement;
     const createTasklistButton = document.getElementById('create-tasklist') as HTMLButtonElement;
     const orderPriorityButton = document.getElementById('order-priority') as HTMLButtonElement;
@@ -14,7 +15,7 @@ window.onload = async() => {
     const orderCreateButton = document.getElementById('order-creation') as HTMLButtonElement;
 
 
-    const lists: Tasklist[] = await send(url, 'GET', );
+    const lists: Tasklist[] = await send(url, 'GET');
 
     await showAllTasklists(lists);
 
@@ -58,11 +59,12 @@ window.onload = async() => {
     }
 
 
-    function extendTasklist(listID: number): void {
+    function extendTasklist(list: HTMLElement): void {
 
     }
 
     function getTags(listID: number): Tag[] {
+        // can't implement this function without tag router
         return [];
     }
 
@@ -78,15 +80,16 @@ window.onload = async() => {
         console.log('showTasklist');
         const listElement: HTMLElement = document.createElement('div');
         listElement.classList.add('tasklist');
+        listElement.classList.add('card-body');
+        listElement.classList.add('card');
+        //listElement.classList.add('w-50');
 
         const title = document.createElement('h2');
         title.innerHTML = list.title;
         title.addEventListener('input', () => {
             editTitle(list.tasklistID, title.innerHTML);
         });
-
-        const description = document.createElement('p');
-        description.innerHTML = list.description;
+        title.classList.add("card-title");
 
         const tags = document.createElement('div');
         tags.classList.add('tags');
@@ -97,6 +100,11 @@ window.onload = async() => {
             tags.appendChild(tagElement);
         });
 
+
+        const description = document.createElement('p');
+        description.innerHTML = list.description;
+        description.classList.add("card-text");
+
         listElement.appendChild(title);
         listElement.appendChild(description);
         listElement.appendChild(tags);
@@ -104,7 +112,8 @@ window.onload = async() => {
         console.log(listElement);
 
         listElement.addEventListener('click', () => {
-            extendTasklist(list.tasklistID);
+
+            extendTasklist(listElement);
         });
 
         return listElement;
