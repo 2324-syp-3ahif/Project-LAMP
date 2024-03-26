@@ -47,8 +47,22 @@ window.onload = async() => {
 
     filterButton.addEventListener('click', async () => {
         console.log('filter');
-        // Add dropdown items from the items array
         for (const tag of tags) {
+            const tagElement = document.createElement('button');
+            tagElement.classList.add('tag-btn');
+            tagElement.classList.add('btn');
+            tagElement.innerHTML = tag.name;
+            tagElement.addEventListener('click', () => {
+                if (tagElement.classList.contains('active')) {
+                    tagElement.classList.remove('active');
+                    // remove filter
+                } else {
+                    tagElement.classList.add('active');
+                    // add filter
+                }
+                // filter by tag -> show only tasklists with this tag, can only work with tag router
+            });
+            filterTagsModal.appendChild(tagElement);
         }
     });
 
