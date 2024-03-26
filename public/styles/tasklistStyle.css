@@ -26,13 +26,16 @@
     padding: 8px;
     font-size: 18px;
 }
-
+.modal-content {
+    color: #EEEEEE;
+    background-color: #3751AD;
+}
 #filter-tags-modal {
     display: flex;
     flex-direction: column;
+    color: #EEEEEE;
 }
 
 #filter-tags-modal .active {
-    background-color: #3751AD;
-    color: #EEEEEE;
+    background-color: #00C2DD;
 }
