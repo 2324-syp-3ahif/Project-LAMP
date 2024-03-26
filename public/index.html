@@ -12,6 +12,7 @@
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
           crossorigin="anonymous">
     <link href="styles/mainPage.css" rel="stylesheet">
+    <link href="styles/tasklistStyle.css" rel="stylesheet">
     <script type="module" src="./src/tasklistFunctions.js"></script>
 </head>
     <body>
@@ -45,8 +46,25 @@
                 </div>
             </div>
         </nav>
+        <div class="top-items">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="ordering-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Select Ordering
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Priority</a>
+                    <a class="dropdown-item" href="#">Last View</a>
+                    <a class="dropdown-item" href="#">Creation Date</a>
+                </div>
+            </div>
+            <button class="btn btn-primary" id="create-tasklist">Create Tasklist</button>
+            <img src="./img/filter.png" id="filter-img">
+        </div>
+        
+        
         <div id="tasklists"></div>
-        <footer class="footer fixed-bottom">
+
+        <footer class="footer">
             <div class="container-xxl">
                 <div class="row">
                     <div class="col-sm-6 col-md-3 item">
@@ -68,6 +86,7 @@
                         <ul>
                             <li><a href="https://github.com/2324-syp-3ahif/Project-LAMP">GitHub Repository</a></li>
                             <li><a href="https://www.sqlite.org/index.html">Used Database</a></li>
+                            <li><a href="https://www.flaticon.com/free-icons/filter" title="filter icons">Filter icons by herikus - Flaticon</a></li>
                             <li><a href="https://github.com/plantuml/plantuml">Features of the future</a></li>
                         </ul>
                     </div>
