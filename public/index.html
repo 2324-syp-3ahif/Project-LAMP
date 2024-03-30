@@ -63,7 +63,7 @@
                 </div>
             </div>
             <button class="btn btn-design" id="create-tasklist-btn">Create Tasklist</button>
-            <button class="btn" type="button" id="filter-btn" data-bs-toggle="modal" data-bs-target="#filterModal">
+            <button class="btn" type="button" id="filter-btn" data-bs-toggle="modal" data-bs-target="#filter-modal">
                 <img src="./img/filter.png" id="filter-img" alt="filter img"/>
             </button>
         </div>
@@ -71,7 +71,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Filter by Tags</h5>
+                        <h5 class="modal-title">Filter by Tags</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="filter-tags-modal">
@@ -86,35 +86,36 @@
             <form>
                 <div class="mb-2">
                     <label for="name-input" class="form-label">Name</label>
-                    <input type="email" class="form-control" id="name-input">
+                    <input type="text" class="form-control" id="name-input">
                 </div>
                 <div class="mb-2">
                     <label for="description-input" class="form-label">Add description</label>
-                    <input type="password" class="form-control" id="description-input">
+                    <input type="text" class="form-control" id="description-input">
                 </div>
                 <div class="mb-2">
                     <label for="invite-btn" class="form-label">Want to invite a friend? Send an invitation link!</label>
-                    <button type="button" class="btn btn-primary" id="invite-btn">Invite!</button>
+                    <button type="button" class="btn btn-primary" id="invite-btn" data-bs-toggle="modal" data-bs-target="#invite-modal">Invite!</button>
                 </div>
                 <div class="mb-2">
                     <label for="tags-btn" class="form-label">Add tags to find your tasklist easier</label>
                     <button type="button" class="btn btn-primary" id="tags-btn">Add Tags</button>
                 </div>
-                <select class="form-select" aria-label="Select priority">
+                <select class="form-select" aria-label="Select priority" id="priority-input">
                     <option selected>Select Priority</option>
                     <option value="0">0</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                 </select>
-                <select class="form-select" aria-label="Select sorting order">
+                <select class="form-select" aria-label="Select sorting order" id="sorting-order-input">
                     <option selected>Select Sorting Order</option>
                     <option value="priority">Priority</option>
                     <option value="date">Date</option>
                     <option value="view">Last View</option>
                 </select>
-                <button type="submit" class="btn btn-primary" id="submit-btn">Submit</button>
+                <button type="button" class="btn btn-primary" id="submit-btn">Submit</button>
             </form>
         </div>
+
         <div id="tasklists"></div>
         <footer class="footer">
             <div class="container-xxl">

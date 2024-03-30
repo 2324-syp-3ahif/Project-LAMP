@@ -42,7 +42,8 @@ window.onload = async() => {
             description: description,
             priority: parseInt(priority),
             isLocked: false,
-            sortingOrder: parseInt(sortingOrder),
+            sortingOrder: sortingOrder,
+            lastView: new Date(),
             ownerID: 0, // TODO
             tasklistID: 0, // let server handle this
         };
@@ -58,7 +59,9 @@ window.onload = async() => {
     });
 
     orderViewButton.addEventListener('click', async () => {
-        // TODO sort by last view
+        lists.sort((a: Tasklist, b: Tasklist) => {
+            return b.lastView.getTime() - a.lastView.getTime();
+        });
         await showAllTasklists(lists);
     });
 
