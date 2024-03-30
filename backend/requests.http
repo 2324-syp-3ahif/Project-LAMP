@@ -1,0 +1,21 @@
+@hostname=http://localhost:2000/api
+
+POST {{hostname}}/task
+Content-Type: application/json
+
+{
+  "text": "minecraft super",
+  "priority": 1
+}
+
+###
+GET {{hostname}}/task
+
+###
+GET {{hostname}}
+
+###
+GET {{hostname}}/create-tables
+
+###
+GET {{hostname}}/test/2

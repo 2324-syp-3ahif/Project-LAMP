@@ -1,14 +1,24 @@
-export function send(URL: string, TYPE: string, json: string): string | any{
-    const request = new XMLHttpRequest();
-    request.open(TYPE, URL,true);
-    if (TYPE === 'POST' || TYPE === 'DELETE' ||TYPE === 'PUT' || TYPE === 'PATCH'){
-        request.setRequestHeader('Content-Type', 'application/json');
-    }
-    request.send(json);
-    request.onload = () => {
-        const element = document.getElementById(`${TYPE}-response`);
-        if (element != null){
-            element.innerHTML = request.response;
+export function generateWarningPopUp(message: string, errorCode: number): void{
+    alert("Error " + errorCode + ": " + message);
+}
+export async function send(URL: string, TYPE: string, json: string): Promise<any> {
+    const requestOptions: RequestInit = {
+        method: TYPE,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: TYPE === 'GET' ? undefined : json,
+    };
+    try {
+        const response = await fetch(URL, requestOptions);
+        if (response.status !== 200) {
+            console.error('Error:', response.status);
+            generateWarningPopUp(response.statusText, response.status);
+        } else {
+            console.log('Success:', response.status);
+            return response;
         }
+    } catch (error) {
+        console.error('Error:', error);
     }
 }

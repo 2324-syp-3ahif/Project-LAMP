@@ -3,24 +3,83 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <title>LAMP Main Page</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+          crossorigin="anonymous">
     <link href="styles/mainPage.css" rel="stylesheet">
+    <script type="module" src="./src/tasklistFunctions.js"></script>
 </head>
     <body>
-    <header>
-        <div id="navBar">
-            <div id="navbar-part-left">
-                <a href="index.html"><img id="Logo" src="img/FullLogo.svg" alt="Logo"></a>
+        <nav class="navbar navbar-expand-lg fixed-top">
+            <div class="container-xxl">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-dropdown"
+                        aria-controls="navbar-dropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbar-dropdown">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a id="logo-nav" href="./index.html">
+                                <img src="./img/LogoWithoutSlogan.svg" class="image-navbar">
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link heading" href="./index.html">Tasklist</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link heading" href="#">Calendar</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#">
+                                <img id="account-picture" src="img/AccountImg.svg" alt="Logo" class="image-navbar">
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div id="navbar-part-right">
-                <a class="navbar-item" href="#">Tasklist</a>
-                <a class="navbar-item" href="#">Calender</a>
-                <a href="#"><img id="accountPicture" src="img/AccountImg.svg" alt="Logo"></a>
-
+        </nav>
+        <div id="tasklists"></div>
+        <footer class="footer fixed-bottom">
+            <div class="container-xxl">
+                <div class="row">
+                    <div class="col-sm-6 col-md-3 item">
+                        <h3>Content</h3>
+                        <ul>
+                            <li><a href="#">Main Page</a></li>
+                            <li><a href="#">Tasklist</a></li>
+                            <li><a href="#">Calendar</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-6 col-md-3 item">
+                        <h3>Partner in Crime</h3>
+                        <ul>
+                            <li><a href="https://relace.xyz.duckdns.org">Relace</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-6 col-md-3 item">
+                        <h3>Links</h3>
+                        <ul>
+                            <li><a href="https://github.com/2324-syp-3ahif/Project-LAMP">GitHub Repository</a></li>
+                            <li><a href="https://www.sqlite.org/index.html">Used Database</a></li>
+                            <li><a href="https://github.com/plantuml/plantuml">Features of the future</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-6 col-md-3 item">
+                        <h3>Project LAMP</h3>
+                        <a href="./index.html">
+                            <img src="./img/FullLogo.svg" class="footer-image" alt="Logo">
+                        </a>
+                    </div>
+                </div>
+                <p class="copyright">© 2024 Luca Haas, Andreas Huber, Melanie Dohr, Philip Raab. All rights reserved.</p>
             </div>
-        </div>
-    </header>
-
+        </footer>
     </body>
 </html>
