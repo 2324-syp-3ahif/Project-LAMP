@@ -17,15 +17,37 @@ window.onload = async() => {
     const filterButton = document.getElementById('filter-btn') as HTMLButtonElement;
     const filterTagsModal = document.getElementById('filter-tags-modal') as HTMLElement;
     const createForm = document.getElementById('create-form') as HTMLFormElement;
-
+    const submitButton = document.getElementById('submit-btn') as HTMLButtonElement;
     const lists: Tasklist[] = await send(url, 'GET');
     const tags: Tag[] = await send(tagUrl, 'GET');
 
     await showAllTasklists(lists);
 
     createTasklistButton.addEventListener('click', async () => {
-        createForm.style.display = 'block';
-        // show formular -> create tasklist
+        createForm.style.display = 'flex';
+    });
+
+    submitButton.addEventListener('click', async () => {
+        const title = (document.getElementById('name-input') as HTMLInputElement).value;
+        const description = (document.getElementById('description-input') as HTMLInputElement).value;
+        const inviteButton = document.getElementById('invite-btn') as HTMLButtonElement;
+        inviteButton.addEventListener('click', async () => {
+            // invite user to tasklist, show as modal?
+        });
+        const priority = (document.getElementById('priority-input') as HTMLInputElement).value;
+        const sortingOrder = (document.getElementById('sorting-order-input') as HTMLInputElement).value;
+
+        const tasklist: Tasklist = {
+            title: title,
+            description: description,
+            priority: parseInt(priority),
+            isLocked: false,
+            sortingOrder: parseInt(sortingOrder),
+            ownerID: 0, // TODO
+            tasklistID: 0, // let server handle this
+        };
+        await send(url, 'POST', tasklist);
+        await showAllTasklists(lists);
     });
 
     orderPriorityButton.addEventListener('click', async () => {
