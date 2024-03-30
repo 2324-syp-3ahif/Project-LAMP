@@ -6,6 +6,7 @@ body {
     width: 100%;
     height: auto;
     min-width: 50%;
+    justify-content: center;
 }
 /* Top items */
 .top-items {
@@ -32,9 +33,35 @@ body {
 /* Create Tasklist Form */
 #create-form {
     display: none;
-    flex-direction: column;
+    width: 40%;
+    transform: translateX(75%);
+    padding: 20px;
     align-items: center;
     justify-content: center;
-    width: 100%;
     margin-top: 20px;
+    background-color: #00c2dd;
+    color: #eeeeee;
+    border-radius: 20px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+}
+
+#create-form button {
+    margin-top: 10px;
+    background-color: #3751AD;
+    color: #eeeeee;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#invite-btn #tags-btn {
+    align-self: flex-end;
+}
+
+#tags-btn {
+    float: right;
+}
+
+.form-select {
+    margin: 10px 0;
 }

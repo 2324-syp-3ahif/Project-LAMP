@@ -100,22 +100,19 @@
                     <label for="tags-btn" class="form-label">Add tags to find your tasklist easier</label>
                     <button type="button" class="btn btn-primary" id="tags-btn">Add Tags</button>
                 </div>
-                <div class="left-side">
-                    <select class="form-select" aria-label="Select priority">
-                        <option selected>Select Priority</option>
-                        <option value="1">0</option>
-                        <option value="2">1</option>
-                        <option value="3">2</option>
-                    </select>
-                    <select class="form-select" aria-label="Select sorting order">
-                        <option selected>Open this select menu</option>
-                        <option value="1">Priority</option>
-                        <option value="2">Date</option>
-                        <option value="3">Last View</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <select class="form-select" aria-label="Select priority">
+                    <option selected>Select Priority</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                </select>
+                <select class="form-select" aria-label="Select sorting order">
+                    <option selected>Select Sorting Order</option>
+                    <option value="priority">Priority</option>
+                    <option value="date">Date</option>
+                    <option value="view">Last View</option>
+                </select>
+                <button type="submit" class="btn btn-primary" id="submit-btn">Submit</button>
             </form>
         </div>
         <div id="tasklists"></div>
