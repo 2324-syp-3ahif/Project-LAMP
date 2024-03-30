@@ -10,12 +10,13 @@ window.onload = async() => {
     console.log('onload');
 
     const taskLists = document.getElementById('tasklists') as HTMLElement;
-    const createTasklistButton = document.getElementById('create-tasklist') as HTMLButtonElement;
+    const createTasklistButton = document.getElementById('create-tasklist-btn') as HTMLButtonElement;
     const orderPriorityButton = document.getElementById('order-priority') as HTMLButtonElement;
     const orderViewButton = document.getElementById('order-view') as HTMLButtonElement;
     const orderCreateButton = document.getElementById('order-creation') as HTMLButtonElement;
     const filterButton = document.getElementById('filter-btn') as HTMLButtonElement;
     const filterTagsModal = document.getElementById('filter-tags-modal') as HTMLElement;
+    const createForm = document.getElementById('create-form') as HTMLFormElement;
 
     const lists: Tasklist[] = await send(url, 'GET');
     const tags: Tag[] = await send(tagUrl, 'GET');
@@ -23,6 +24,7 @@ window.onload = async() => {
     await showAllTasklists(lists);
 
     createTasklistButton.addEventListener('click', async () => {
+        createForm.style.display = 'block';
         // show formular -> create tasklist
     });
 

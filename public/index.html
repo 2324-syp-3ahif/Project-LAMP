@@ -10,6 +10,8 @@
           crossorigin="anonymous">
     <link href="styles/mainPage.css" rel="stylesheet">
     <link href="styles/tasklistStyle.css" rel="stylesheet">
+    <link href="styles/footer.css" rel="stylesheet">
+    <link href="styles/header.css" rel="stylesheet">
     <script type="module" src="./src/tasklistFunctions.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
@@ -48,9 +50,10 @@
                 </div>
             </div>
         </nav>
+        <div id="createTasklist"></div>
         <div class="top-items">
             <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" role="button" id="ordering-btn" data-bs-toggle="dropdown">
+                <button class="btn btn-design dropdown-toggle" role="button" id="ordering-btn" data-bs-toggle="dropdown">
                     Select Ordering
                 </button>
                 <div class="dropdown-menu">
@@ -59,13 +62,12 @@
                     <a class="dropdown-item" id="order-creation">Creation Date</a>
                 </div>
             </div>
-            <button class="btn btn-secondary" id="create-tasklist">Create Tasklist</button>
+            <button class="btn btn-design" id="create-tasklist-btn">Create Tasklist</button>
             <button class="btn" type="button" id="filter-btn" data-bs-toggle="modal" data-bs-target="#filterModal">
                 <img src="./img/filter.png" id="filter-img" alt="filter img"/>
             </button>
         </div>
-        <!-- Modal -->
-        <div class="modal fade" id="filterModal" tabindex="-1">
+        <div class="modal fade" id="filter-modal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -79,6 +81,42 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div id="create-form">
+            <form>
+                <div class="mb-2">
+                    <label for="name-input" class="form-label">Name</label>
+                    <input type="email" class="form-control" id="name-input">
+                </div>
+                <div class="mb-2">
+                    <label for="description-input" class="form-label">Add description</label>
+                    <input type="password" class="form-control" id="description-input">
+                </div>
+                <div class="mb-2">
+                    <label for="invite-btn" class="form-label">Want to invite a friend? Send an invitation link!</label>
+                    <button type="button" class="btn btn-primary" id="invite-btn">Invite!</button>
+                </div>
+                <div class="mb-2">
+                    <label for="tags-btn" class="form-label">Add tags to find your tasklist easier</label>
+                    <button type="button" class="btn btn-primary" id="tags-btn">Add Tags</button>
+                </div>
+                <div class="left-side">
+                    <select class="form-select" aria-label="Select priority">
+                        <option selected>Select Priority</option>
+                        <option value="1">0</option>
+                        <option value="2">1</option>
+                        <option value="3">2</option>
+                    </select>
+                    <select class="form-select" aria-label="Select sorting order">
+                        <option selected>Open this select menu</option>
+                        <option value="1">Priority</option>
+                        <option value="2">Date</option>
+                        <option value="3">Last View</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
         </div>
         <div id="tasklists"></div>
         <footer class="footer">
