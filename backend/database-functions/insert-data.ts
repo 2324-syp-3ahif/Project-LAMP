@@ -14,6 +14,7 @@ import {Task} from "../interfaces/model/Task";
 import {checkMailFormat} from '../utils';
 import {StringWrongFormatError} from "../interfaces/errors/StringWrongFormatError";
 import {IdAlreadyExistsError} from "../interfaces/errors/IdAlreadyExistsError";
+import bcrypt from "bcrypt";
 
 export async function insertTask(db: sqlite3.Database, title: string, dueDate: Date, description: string, priority: number, tasklistID: number, userID: number): Promise<void> {
     try {
@@ -46,7 +47,7 @@ export async function insertUser(db: sqlite3.Database, email: string, username: 
     await idFound<User>(db, email, 'USERS', 'email');
 
     const query: string = `INSERT INTO USERS (email, username, hashedPassword) VALUES (?,?,?);`;
-    db.run(query, [email, username, password]);
+    db.run(query, [email, username, await bcrypt.hash(password, 10)]);
 }
 
 
@@ -57,7 +58,7 @@ async function idNotFound<T>(db: sqlite3.Database, id: number | string, tablenam
     }
 }
 
-async function idFound<T>(db: sqlite3.Database, id: number | string, tablename: string, idName: string): Promise<void> {
+export async function idFound<T>(db: sqlite3.Database, id: number | string, tablename: string, idName: string): Promise<void> {
     try {
         await selectRowByID<T>(db, id, tablename, idName);
         throw new IdAlreadyExistsError(idName);

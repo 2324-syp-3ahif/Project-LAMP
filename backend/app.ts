@@ -13,11 +13,7 @@ import {
 } from './database-functions/create-tables';
 import {dropTable} from './database-functions/drop-tables';
 import {insertTask} from './database-functions/insert-data';
-import {
-    selectByID,
-    selectTaskByTaskID, selectTasklistByTasklistID, selectTasklistsByUserID,
-    selectTasksByTasklistID
-} from "./database-functions/select-data";
+import {selectTaskByTaskID, selectTasksByTasklistID} from "./database-functions/select-data";
 import {deleteTaskById} from './database-functions/delete-data';
 
 import {taskRouter} from "./routers/router-task";
@@ -134,13 +130,6 @@ app.put("/", (req, res) => {
     })
 });
 
-app.get('/emil', (req, res) => {
-    selectTasklistsByUserID(db, req.body.userID).then((tasklists) => {
-        res.status(200).send(tasklists);
-    }).catch(err => {
-        res.status(400).send(err.message);
-    });
-});
 
 
 app.get('/create-tables', (req, res) => {

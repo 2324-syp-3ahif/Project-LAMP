@@ -8,6 +8,8 @@ const overlay = document.createElement("div");
 const footer = document.querySelector("footer") as HTMLElement;
 const loginEmailInput = document.getElementById("login-email") as HTMLInputElement;
 const loginPasswordInput = document.getElementById("login-password") as HTMLInputElement;
+const signUpButton = document.getElementById("sign-up-button") as HTMLInputElement;
+const loginButton = document.getElementById("login-button") as HTMLInputElement;
 let loggedIn: boolean = false;
 overlay.className = "overlay";
 switchModeToLogin.addEventListener("click", () => {
@@ -26,14 +28,13 @@ window.onload = () => {
     }
 }
 
-document.getElementById("sign-up-button")?.addEventListener("click", async () => {
+signUpButton.addEventListener("click", async () => {
     const response = await send("http://localhost:2000/api/register", "POST", JSON.stringify({
-        username: (document.getElementById("username") as HTMLInputElement).value,
-        email: (document.getElementById("email") as HTMLInputElement).value,
-        password: (document.getElementById("password") as HTMLInputElement).value
+        username: (document.getElementById("signup-username") as HTMLInputElement).value,
+        email: (document.getElementById("signup-email") as HTMLInputElement).value,
+        password: (document.getElementById("signup-password") as HTMLInputElement).value
     }));
     if (response.status === 200) {
-        window.location.href = "http://localhost:2000/";
         signupWrapper.style.display = "none";
         loginWrapper.style.display = "inline-block";
     }
@@ -41,15 +42,13 @@ document.getElementById("sign-up-button")?.addEventListener("click", async () =>
         alert("Failed to create user");
     }
 });
-document.getElementById("login-button")?.addEventListener("click", async () => {
-    console.log(loginEmailInput.value);
+loginButton.addEventListener("click", async () => {
     const response = await send("http://localhost:2000/api/login", "POST", JSON.stringify({
         email: loginEmailInput.value,
         password: loginPasswordInput.value
     }));
     if (response.status === 200) {
         loggedIn = true;
-        window.location.href = "http://localhost:2000/";
         footer.style.display = "block";
         loginWrapper.style.display = "none";
         overlay.style.display = "none";

@@ -46,3 +46,12 @@ Content-Type: application/json
   "userID": "1"
 }
 
+###
+POST http://localhost:2000/api/register
+Content-Type: application/json
+
+{
+  "email": "andi@gmail.com",
+  "username": "andidev",
+  "password": "Password123"
+}
