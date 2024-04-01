@@ -1,5 +1,5 @@
 import sqlite3 from "sqlite3";
-import {checkDateFormat, convertTSToSQLDate} from "../utils";
+import {checkDateFormat, checkPasswordFormat, checkStringFormat, convertTSToSQLDate} from "../utils";
 import {ConnectionToDatabaseLostError} from "../interfaces/errors/ConnectionToDatabaseLostError";
 import {DateExpiredError} from "../interfaces/errors/DateExpiredError";
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
@@ -7,81 +7,64 @@ import {DateFormatError} from "../interfaces/errors/DateFormatError";
 import {StringToLongError} from "../interfaces/errors/StringToLongError";
 import {NotAValidNumberError} from "../interfaces/errors/NotAValidNumberError";
 import {Item} from "../interfaces/model/Item";
-import {selectTasklistByTasklistID} from "./select-data";
-/*
-export async function inserTask(db: sqlite3.Database, title: string, dueDate: Date, description: string, priority: number, tasklistID: number, userID: number): Promise<void> {
-     return new Promise<void>((resolve, reject) => {
-         if (checkDateFormat(dueDate.toString())) {
-             if (priority > 0 && priority <= 10) {
-                 if (title.length <= 50) {
-                     if (description.length <= 255) {
-                         if (new Date(dueDate).valueOf() > new Date(Date.now()).valueOf()) {
-                             selectUserByUserID(db, userID).catch((err) => {
-                                 if (err instanceof IdNotFoundError) {
-                                     reject(err);
-                                 }
-                             }).then(v => {
-                                 selectTasklistByTasklistID(db, tasklistID).catch((err) => {
-                                     if (err instanceof IdNotFoundError) {
-                                         reject(err);
-                                     }
-                                 }).then(v => {
-                                     const query: string = `INSERT INTO TASKS (title, description, dueDate, priority, isComplete, tasklistID, userID) VALUES (?,?,?,?,?,?,?);`;
-                                     db.run(query, [title, description, dueDate.toString(), priority, false, tasklistID, userID], (err) => {
-                                         if (err) {
-                                             console.log(err.message);
-                                             reject(new ConnectionToDatabaseLostError());
-                                         }
-                                         resolve();
-                                     });
-                                 })
-                             });
-                         } else {
-                             reject(new DateExpiredError());
-                         }
-                     } else {
-                         const d = {description};
-                         reject(new StringToLongError(Object.keys(d)[0], "Description to long!"));
-                     }
-                 } else {
-                     const d = {title};
-                     reject(new StringToLongError(Object.keys(d)[0], "Title to long!"));
-                 }
-             } else {
-                 const d = {priority};
-                reject(new NotAValidNumberError(Object.keys(d)[0], "Priority wrong format!"));
-             }
-         } else {
-             const d = {dueDate};
-             reject(new DateFormatError(Object.keys(d)[0], "Date wrong format"));
-         }
-     });
-}*/
+import {selectRowByID} from "./select-data";
+import {Tasklist} from "../interfaces/model/Tasklist";
+import {User} from "../interfaces/model/User";
+import {Task} from "../interfaces/model/Task";
+import {checkMailFormat} from '../utils';
+import {StringWrongFormatError} from "../interfaces/errors/StringWrongFormatError";
+import {IdAlreadyExistsError} from "../interfaces/errors/IdAlreadyExistsError";
 
 export async function insertTask(db: sqlite3.Database, title: string, dueDate: Date, description: string, priority: number, tasklistID: number, userID: number): Promise<void> {
     try {
         numberChecker(priority, 0, 10, 'priority', `Priority must be between 0 and 10`);
-        dateFormatCheck(dueDate, Object.keys({dueDate})[0], ' is not the right format!');
+        dateFormatCheck(dueDate, 'dueDate', ' is not the right format!');
         dateSmallerNowChecker(dueDate);
         stringLenghtCheck(title, 50, 'title', ' cannot have more characters than ');
         stringLenghtCheck(description, 255, 'description', ' cannot have more characters than ');
 
-        await idNotFound(db, tasklistID, (db, tasklistID) => {return selectTasklistByTasklistID(db, tasklistID)}, " not found!", "tasklistID")
-        //dawait idNotFound(db, userID, (db, userID) => {return selectUserByUserID(db, userID)}, " not found!", "userID")
+        await idNotFound<Tasklist>(db, tasklistID, 'TASKLISTS', 'tasklistID');
+        await idNotFound<User>(db, userID, 'USERS', 'userID');
 
         const query: string = `INSERT INTO TASKS (title, description, dueDate, priority, isComplete, tasklistID, userID) VALUES (?,?,?,?,?,?,?);`;
         db.run(query, [title, description, dueDate.toString(), priority, false, tasklistID, userID]);
-
-        return Promise.resolve();
     } catch (error) {
         return Promise.reject(error);
     }
 }
 
-async function idNotFound(db: sqlite3.Database, id: number, func: (db: sqlite3.Database, id: number) => Promise<Item>, message: string, name: string) {
-    const item = await func(db, id);
-    if (item === undefined) {
-        throw new IdNotFoundError(name, name + message);
+export async function insertUser(db: sqlite3.Database, email: string, username: string, password: string): Promise<void> {
+    stringLenghtCheck(email, 50, 'email', ' cannot have more characters than ');
+    stringLenghtCheck(username, 50, 'username', ' cannot have more characters than ');
+    if (!checkMailFormat(email)) {
+        throw new StringWrongFormatError('email');
+    } if (!checkPasswordFormat(password)) {
+        throw new StringWrongFormatError('password');
+    } if (!checkStringFormat(username)) {
+        throw new StringWrongFormatError('username');
+    }
+    await idFound<User>(db, email, 'USERS', 'email');
+
+    const query: string = `INSERT INTO USERS (email, username, hashedPassword) VALUES (?,?,?);`;
+    db.run(query, [email, username, password]);
+}
+
+
+async function idNotFound<T>(db: sqlite3.Database, id: number | string, tablename: string, idName: string): Promise<void> {
+    const row = await selectRowByID<T>(db, id, tablename, idName);
+    if (row === undefined) {
+        throw new IdNotFoundError(idName);
+    }
+}
+
+async function idFound<T>(db: sqlite3.Database, id: number | string, tablename: string, idName: string): Promise<void> {
+    try {
+        await selectRowByID<T>(db, id, tablename, idName);
+        throw new IdAlreadyExistsError(idName);
+    } catch (error) {
+        if (error instanceof IdAlreadyExistsError) {
+            throw error;
+        }
     }
 }
 function dateSmallerNowChecker(dueDate: Date) {
