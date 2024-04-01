@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import * as bodyParser from 'body-parser';
 
 import {connectToDatabase} from './database-functions/connect';
 import {
@@ -28,19 +29,23 @@ import * as tasklist from './interfaces/model/Tasklist';
 import {showAllTasklists} from "../public/src/tasklistFunctions";
 
 import { join } from "path";
+import {loginRouter} from "./routers/router-login";
 
 const app = express();
 const port = process.env.PORT || 2000;
 const db: sqlite.Database = connectToDatabase();
 
 dotenv.config();
+app.use(express.json());
+app.use(express.static('public'));
+
 app.use("/api/task", taskRouter);
 app.use("/api/tasklist", tasklistRouter);
 app.use("/api/event", eventRouter);
 app.use("/api/tag", tagRouter);
 app.use("/api/user", userRouter);
-app.use(express.json());
-app.use(express.static('public'));
+app.use("/api", loginRouter);
+
 
 const path = join(__dirname, "../public");
 const options = { extensions: ["html", "js"] }; // , "css"
@@ -86,7 +91,6 @@ app.get('/testTasklist', (req, res) => {
     //res.send("Works");
     res.send(list);
 });
-
 app.listen(2000, () => {
     console.log(`Listening on http://localhost:2000`);
 });
