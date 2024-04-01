@@ -12,7 +12,11 @@ import {
 } from './database-functions/create-tables';
 import {dropTable} from './database-functions/drop-tables';
 import {insertTask} from './database-functions/insert-data';
-import {selectTaskByTaskID, selectTaskByTasklistID, selectTasksByUserID} from "./database-functions/select-data";
+import {
+    selectByID,
+    selectTaskByTaskID, selectTasklistByTasklistID, selectTasklistsByUserID,
+    selectTasksByTasklistID
+} from "./database-functions/select-data";
 import {deleteTaskById} from './database-functions/delete-data';
 
 import {taskRouter} from "./routers/router-task";
@@ -23,6 +27,13 @@ import {userRouter} from "./routers/router-user";
 
 import sqlite from "sqlite3";
 import {IdNotFoundError} from "./interfaces/errors/IdNotFoundError";
+import {DateExpiredError} from "./interfaces/errors/DateExpiredError";
+import {checkDateFormat} from "./utils";
+import {DateFormatError} from "./interfaces/errors/DateFormatError";
+import {StringToLongError} from "./interfaces/errors/StringToLongError";
+import {NotAValidNumberError} from "./interfaces/errors/NotAValidNumberError";
+import {updateTask} from "./database-functions/update-data";
+import {Task} from "./interfaces/model/Task";
 
 import * as tasklist from './interfaces/model/Tasklist';
 import {showAllTasklists} from "../public/src/tasklistFunctions";
@@ -47,17 +58,85 @@ const options = { extensions: ["html", "js"] }; // , "css"
 app.use(express.static(path, options));
 
 app.get('/test/:userID', (req, res) => {
-    const taskID: number = parseInt(req.params.userID);
-    selectTasksByUserID(db, taskID).then(tasks => {
-        res.status(200).send(tasks);
+});
+
+app.post('/hallo', (req, res) => {
+    console.log(req.body);
+    console.log(req.body.title);
+});
+
+app.post("/", (req, res) => {
+    const title = req.body.title;
+    const dueDate = req.body.dueDate;
+    const description = req.body.description;
+    const priority = req.body.priority;
+    const tasklistID = req.body.tasklistID;
+    const userID = req.body.userID;
+
+    insertTask(db, title, dueDate, description, priority, tasklistID, userID).then(() => {
+        selectTasksByTasklistID(db, tasklistID).then(tasks => {
+            res.send(tasks);
+        }).catch((err) => {
+            if (err instanceof IdNotFoundError) {
+                res.send("NO user found");
+            }
+        })
     }).catch((err) => {
-        if (err instanceof IdNotFoundError) {
-            res.status(400).send("No user with this userID");
-        } else {
-            res.status(404).send("Unknown Error");
+        if (err instanceof DateExpiredError) {
+            res.send("Date already was!");
+        } else if (err instanceof IdNotFoundError) {
+            res.send("wrongID: " + err.message);
+        } else if (err instanceof DateFormatError) {
+            res.send("Date is wrong format!")
+        } else if (err instanceof StringToLongError) {
+            res.send(err.message);
+        } else if (err instanceof NotAValidNumberError) {
+            res.send("Number was not in a valid range!");
         }
     });
 });
+
+app.put("/", (req, res) => {
+    const taskID = req.body.taskID;
+    const title = req.body.title;
+    const dueDate = req.body.dueDate;
+    const description = req.body.description;
+    const priority = req.body.priority;
+    const tasklistID = req.body.tasklistID;
+
+    updateTask(db, taskID, title, description, dueDate, priority, false, tasklistID).then(() => {
+    }).catch((err) => {
+        if (err instanceof DateExpiredError) {
+            res.send("Date already was!");
+        } else if (err instanceof IdNotFoundError) {
+            res.send("wrongID: " + err.message);
+        } else if (err instanceof DateFormatError) {
+            res.send("Date is wrong format!")
+        } else if (err instanceof StringToLongError) {
+            res.send(err.message);
+        } else if (err instanceof NotAValidNumberError) {
+            res.send("Number was not in a valid range!");
+        }
+    });
+    selectTaskByTaskID(db, taskID).then((task: Task) => {
+        console.log(typeof task.isComplete);
+        res.send(task);
+
+    }).catch((err) => {
+        if (err instanceof IdNotFoundError) {
+            res.send("NO user found");
+        }
+    })
+});
+
+app.get('/emil', (req, res) => {
+    selectTasklistsByUserID(db, req.body.userID).then((tasklists) => {
+        res.status(200).send(tasklists);
+    }).catch(err => {
+        res.status(400).send(err.message);
+    });
+});
+
 
 app.get('/create-tables', (req, res) => {
     dropTable('TASK');
