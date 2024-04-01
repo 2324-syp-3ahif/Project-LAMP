@@ -13,6 +13,7 @@
           crossorigin="anonymous">
     <link href="styles/mainPage.css" rel="stylesheet">
     <script type="module" src="./src/tasklistFunctions.js"></script>
+    <script type="module" src="./src/loginFunctions.js"></script>
 </head>
     <body>
         <nav class="navbar navbar-expand-lg fixed-top">
@@ -45,6 +46,48 @@
                 </div>
             </div>
         </nav>
+        <div class="wrapper" id="login-wrapper">
+            <h2>Login</h2>
+            <form action="#">
+
+                <div class="input-box">
+                    <input id="login-email" type="text" placeholder="Enter your email" required>
+                </div>
+                <div class="input-box">
+                    <input id="login-password" type="password" placeholder="Enter your password" required>
+                </div>
+
+                <div class="input-box button">
+                    <input id="login-button" type="Submit" value="Login">
+                </div>
+                <p class="switch-mode-paragraph">
+                    Don't have an account?
+                    <a id="switch-to-signup">Sign Up</a>
+                </p>
+            </form>
+        </div>
+        <div class="wrapper" id="signup-wrapper">
+            <h2>Sign Up</h2>
+            <form action="#">
+                <div class="input-box">
+                    <input id="signup-username" type="text" placeholder="Enter a username" required>
+                </div>
+                <div class="input-box">
+                    <input id="signup-email" type="text" placeholder="Enter your email" required>
+                </div>
+                <div class="input-box">
+                    <input id="signup-password" type="password" placeholder="Create password" required>
+                </div>
+
+                <div class="input-box button">
+                    <input id="sign-up-button" type="Submit" value="Register">
+                </div>
+                <p class="switch-mode-paragraph">
+                    Already have an account?
+                    <a id="switch-to-login">Login</a>
+                </p>
+            </form>
+        </div>
         <div id="tasklists"></div>
         <footer class="footer fixed-bottom">
             <div class="container-xxl">
