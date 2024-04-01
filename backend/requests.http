@@ -18,13 +18,31 @@ GET {{hostname}}
 GET {{hostname}}/create-tables
 
 ###
-GET {{hostname}}/test/2
-
+#POST localhost:2000
+#Content-Type: application/json
+#
+#{
+#  "title": "My Task",
+#  "dueDate": "2024-02-20T10:10:13",
+#  "description": "This is my Task",
+#  "priority": 1,
+#  "tasklistID": 1,
+#  "userID": 2
+#}
 ###
-POST http://localhost:2000/api/login
+PUT localhost:2000
 Content-Type: application/json
 
 {
-  "email": "abc123",
-  "password": "xyz"
+  "taskID": 60,
+  "isComplete": false
 }
+###
+
+GET localhost:2000/emil
+Content-Type: application/json
+
+{
+  "userID": "1"
+}
+
