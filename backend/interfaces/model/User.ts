@@ -1,6 +1,4 @@
-import {Item} from "./Item";
-
-export interface User extends Item {
+export interface User {
     username: string,
     hashedPassword: string,
     email: string

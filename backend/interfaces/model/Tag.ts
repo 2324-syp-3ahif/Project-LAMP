@@ -1,6 +1,4 @@
-import {Item} from "./Item";
-
-export interface Tag extends Item {
+export interface Tag {
     tagID: number,
     name: string,
 }
