@@ -19,3 +19,12 @@ GET {{hostname}}/create-tables
 
 ###
 GET {{hostname}}/test/2
+
+###
+POST http://localhost:2000/api/login
+Content-Type: application/json
+
+{
+  "email": "abc123",
+  "password": "xyz"
+}
