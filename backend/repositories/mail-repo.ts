@@ -6,7 +6,7 @@ export function sendMailToUser(receiver: string, message: string, subj: string):
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'project.lamp@gmail.com',
+            user: 'lamp.noreply@gmail.com',
             pass: process.env.EMAIL_PASSWORD
         }
     });
@@ -24,6 +24,6 @@ export function sendInviteMail(receiver: string, listID: number): void {
     const link: string = `http://localhost:3000/signup?listID=${hashedID}`;
     const message: string = `Hello my dear friend!\nYou have been invited to join a tasklist on our platform.\n Please click on the link to sign up.` + link;
     sendMailToUser(receiver, message, 'Tasklist Invitation');
-    // save link in local storage for use after signup
-    localStorage.setItem('listID', listID.toString()); 
+    // save link in local storage for use after signup -> maybe in env variable
+    //localStorage.setItem('listID', listID.toString());
 }
