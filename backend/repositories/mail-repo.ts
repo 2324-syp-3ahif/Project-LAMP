@@ -1,7 +1,5 @@
-// send mail to specific user with nodemailer
 import * as nodemailer from 'nodemailer';
-import * as utils from './utils';
-import * as tasklist from '../public/src/tasklistFunctions';
+import * as utils from '../utils';
 
 export function sendMailToUser(receiver: string, message: string, subj: string): void {
     console.log(`Mail sent to ${receiver} with message: ${message}`)
@@ -28,16 +26,4 @@ export function sendInviteMail(receiver: string, listID: number): void {
     sendMailToUser(receiver, message, 'Tasklist Invitation');
     // save link in local storage for use after signup
     localStorage.setItem('listID', listID.toString()); 
-}
-
-export function tryEditTasklist(receiver: string, listID: number): void {
-    // send get request to server to get the tasklist
-    const isLocked = false; 
-    // TODO: get from server with receiver and listID 
-    if (isLocked) {
-        tasklist.noAccessPopUp();
-    } else {
-        // TODO: set isLocked to true on server
-        tasklist.extendTasklist(listID);
-    }
 }

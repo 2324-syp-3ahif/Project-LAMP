@@ -1,5 +1,5 @@
 import express from "express";
-import { sendInviteMail } from "../collaboration";
+import { sendInviteMail } from "../repositories/mail-repo";
 export const mailRouter = express.Router();
 
 mailRouter.get("/", (req, res) => {
