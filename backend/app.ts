@@ -13,8 +13,7 @@ import {
 import {dropTable} from './database-functions/drop-tables';
 import {insertTask} from './database-functions/insert-data';
 import {
-    selectByID,
-    selectTaskByTaskID, selectTasklistByTasklistID, selectTasklistsByUserID,
+    selectTaskByTaskID,
     selectTasksByTasklistID
 } from "./database-functions/select-data";
 import {deleteTaskById} from './database-functions/delete-data';
@@ -34,9 +33,7 @@ import {StringToLongError} from "./interfaces/errors/StringToLongError";
 import {NotAValidNumberError} from "./interfaces/errors/NotAValidNumberError";
 import {updateTask} from "./database-functions/update-data";
 import {Task} from "./interfaces/model/Task";
-
 import * as tasklist from './interfaces/model/Tasklist';
-import {showAllTasklists} from "../public/src/tasklistFunctions";
 
 import { join } from "path";
 
@@ -128,15 +125,6 @@ app.put("/", (req, res) => {
         }
     })
 });
-
-app.get('/emil', (req, res) => {
-    selectTasklistsByUserID(db, req.body.userID).then((tasklists) => {
-        res.status(200).send(tasklists);
-    }).catch(err => {
-        res.status(400).send(err.message);
-    });
-});
-
 
 app.get('/create-tables', (req, res) => {
     dropTable('TASK');
