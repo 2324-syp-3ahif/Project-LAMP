@@ -15,6 +15,11 @@ export function checkStringFormat(username: string): boolean{
     return regex.test(username);
 }
 
+export function checkDateFormat(date: string): boolean {
+    const d = new Date(date);
+    return d.toString() != "Invalid Date";
+}
+
 export function hashString(str: string): string{
     const hash = crypto.createHash('sha256');
     hash.update(str);
