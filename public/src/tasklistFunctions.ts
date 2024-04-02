@@ -4,8 +4,8 @@ import { Tag } from './model/Tag';
 
 window.onload = async() => {
     /* TODO: URLs */
-    const url = 'http://localhost:2000/testTasklist/';
-    const tagUrl = 'http://localhost:2000/testTags/';
+    const url: string = 'http://localhost:2000/testTasklist/';
+    const tagUrl: string = 'http://localhost:2000/testTags/';
 
     console.log('onload');
 
@@ -30,13 +30,22 @@ window.onload = async() => {
     submitButton.addEventListener('click', async () => {
         const title = (document.getElementById('name-input') as HTMLInputElement).value;
         const description = (document.getElementById('description-input') as HTMLInputElement).value;
-        const inviteButton = document.getElementById('invite-btn') as HTMLButtonElement;
-        inviteButton.addEventListener('click', async () => {
-            // invite user to tasklist, show as modal?
-        });
         const priority = (document.getElementById('priority-input') as HTMLInputElement).value;
         const sortingOrder = (document.getElementById('sorting-order-input') as HTMLInputElement).value;
+        const inviteUserBtn = (document.getElementById('invite-user-btn') as HTMLButtonElement);
 
+        if (title.length > 50) {
+            alert('Title is too long, must be less than 50 characters');
+            return;
+        } else if (description.length > 255) {
+            alert('Description is too long, must be less than 255 characters');
+            return;
+        }
+        inviteUserBtn.addEventListener('click', async () => {
+            const email: string = (document.getElementById('email-input') as HTMLInputElement).value;
+            // send email to user (collaboration)
+
+        });
         const tasklist: Tasklist = {
             title: title,
             description: description,
