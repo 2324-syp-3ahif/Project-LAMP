@@ -49,7 +49,7 @@ tasklistRouter.post("/:userID",
             ownerID: userID
         };
         try {
-            insertTask(db, result.title, new Date(), result.description, result.priority, result.tasklistID, result.ownerID);
+            insertTask(db, result.title, new Date('02.05.2025'), result.description, result.priority, result.tasklistID, result.ownerID);
         } catch (err) {
             if (err instanceof ConnectionToDatabaseLostError) {
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("Database connection lost");

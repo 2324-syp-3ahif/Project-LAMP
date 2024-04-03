@@ -39,15 +39,14 @@ const port = process.env.PORT || 2000;
 export const db: sqlite3.Database = connectToDatabase();
 
 dotenv.config();
+app.use(cors());
+app.use(express.json());
+app.use(express.static('public'));
 app.use("/api/task", taskRouter);
 app.use("/api/tasklist", tasklistRouter);
 app.use("/api/event", eventRouter);
 app.use("/api/tag", tagRouter);
 app.use("/api/user", userRouter);
-app.use(cors());
-app.use(express.json());
-app.use(express.static('public'));
-
 app.get('/test/:userID', (req, res) => {
 });
 
