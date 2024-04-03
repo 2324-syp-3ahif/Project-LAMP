@@ -18,10 +18,14 @@ window.onload = async() => {
     const filterTagsModal = document.getElementById('filter-tags-modal') as HTMLElement;
     const createForm = document.getElementById('create-form') as HTMLFormElement;
     const submitButton = document.getElementById('submit-btn') as HTMLButtonElement;
+    const inviteUserBtn = document.getElementById('invite-user-btn') as HTMLButtonElement;
     const lists: Tasklist[] = await send(url, 'GET');
     const tags: Tag[] = await send(tagUrl, 'GET');
 
     await showAllTasklists(lists);
+
+    console.log("invite USERRRRR")
+    console.log(inviteUserBtn);
 
     createTasklistButton.addEventListener('click', async () => {
         createForm.style.display = 'flex';
@@ -32,7 +36,6 @@ window.onload = async() => {
         const description = (document.getElementById('description-input') as HTMLInputElement).value;
         const priority = (document.getElementById('priority-input') as HTMLInputElement).value;
         const sortingOrder = (document.getElementById('sorting-order-input') as HTMLInputElement).value;
-        const inviteUserBtn = (document.getElementById('invite-user-btn') as HTMLButtonElement);
 
         if (title.length > 50) {
             alert('Title is too long, must be less than 50 characters');
@@ -41,11 +44,7 @@ window.onload = async() => {
             alert('Description is too long, must be less than 255 characters');
             return;
         }
-        inviteUserBtn.addEventListener('click', async () => {
-            const email: string = (document.getElementById('email-input') as HTMLInputElement).value;
-            // send email to user (collaboration)
 
-        });
         const tasklist: Tasklist = {
             title: title,
             description: description,
@@ -58,6 +57,15 @@ window.onload = async() => {
         };
         await send(url, 'POST', tasklist);
         await showAllTasklists(lists);
+    });
+
+    inviteUserBtn.addEventListener('click', async () => {
+        console.log("invite user");
+        const email = (document.getElementById('email-input') as HTMLInputElement);
+        // send email to user (collaboration)
+        // get next tasklistID from server with GET request
+        await send("http://localhost:2000/api/mail/invite/" + email.value + "/" + 0, 'POST', {email: email})
+        email.value = "";
     });
 
     orderPriorityButton.addEventListener('click', async () => {
@@ -104,9 +112,6 @@ window.onload = async() => {
 
     async function showAllTasklists(lists: Tasklist[]) {
         taskLists.innerHTML = "";
-        console.log(lists);
-
-        taskLists.innerHTML = "";
 
         for (const list of lists) {
             const listEl: HTMLElement = await showTasklist(list);
@@ -137,12 +142,10 @@ window.onload = async() => {
     }
 
     async function showTasklist(list: Tasklist): Promise<HTMLElement> {
-        console.log('showTasklist');
         const listElement: HTMLElement = document.createElement('div');
         listElement.classList.add('tasklist');
         listElement.classList.add('card-body');
         listElement.classList.add('card');
-        //listElement.classList.add('w-50');
 
         const title = document.createElement('h2');
         title.innerHTML = list.title;
@@ -168,8 +171,6 @@ window.onload = async() => {
         listElement.appendChild(title);
         listElement.appendChild(description);
         listElement.appendChild(tags);
-
-        console.log(listElement);
 
         listElement.addEventListener('click', () => {
 

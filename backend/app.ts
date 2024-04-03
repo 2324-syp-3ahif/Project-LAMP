@@ -140,7 +140,6 @@ app.get('/create-tables', (req, res) => {
     createUserTasklistTable();
     res.send("Works");
 });
-console.log('testTasklist');
 
 app.get('/testTasklist', (_, res) => {
     const list1: tasklist.Tasklist = {
