@@ -114,13 +114,9 @@ window.onload = async() => {
         }
     }
 
-    function noAccessPopUp(): void {
-
-    }
-
     function extendTasklist(listEl: HTMLElement, list: Tasklist): void {
         if (list.isLocked) {
-            noAccessPopUp();
+            alert('This tasklist is locked');
         } else {
             // show all tasks
             // close button to un-expand?
