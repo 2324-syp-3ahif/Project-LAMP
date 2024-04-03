@@ -10,18 +10,16 @@
 ###    Get Tasklists by UserID
 GET {{tasklistHostname}}/1
 ###	   Edit Tasklist by ID
-PUT {{hostname}}/tasklist/1
+PUT {{tasklistHostname}}/1
 ###	   Delete Tasklist by ID
-DELETE {{hostname}}/tasklist/1
+DELETE {{tasklistHostname}}/1
 ###	   Create Tasklist by UserID
-POST {{hostname}}/tasklist/1
+POST {{tasklistHostname}}/1
 Content-Type: application/json
 
 {
-    "title": "Mathe",
-    "description": "Buch Beispiele 1-5",
-    "sortingOrder": 1,
-    "priority": 1
+    "title": "MatheHUE",
+    "description": "Bsp 1-5"
 }
 
 ### Task

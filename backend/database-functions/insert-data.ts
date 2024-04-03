@@ -6,7 +6,6 @@ import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
 import {DateFormatError} from "../interfaces/errors/DateFormatError";
 import {StringToLongError} from "../interfaces/errors/StringToLongError";
 import {NotAValidNumberError} from "../interfaces/errors/NotAValidNumberError";
-import {Item} from "../interfaces/model/Item";
 import {selectRowByID} from "./select-data";
 import {Tasklist} from "../interfaces/model/Tasklist";
 import {User} from "../interfaces/model/User";
@@ -14,6 +13,7 @@ import {Task} from "../interfaces/model/Task";
 import {checkMailFormat} from '../utils';
 import {StringWrongFormatError} from "../interfaces/errors/StringWrongFormatError";
 import {IdAlreadyExistsError} from "../interfaces/errors/IdAlreadyExistsError";
+
 
 export async function insertTask(db: sqlite3.Database, title: string, dueDate: Date, description: string, priority: number, tasklistID: number, userID: number): Promise<void> {
     try {

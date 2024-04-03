@@ -1,4 +1,4 @@
-import * as utils from './utils';
+
 
 export async function send(URL: string, TYPE: string, json: string): Promise<void> { //Promise<Response | undefined>
     const requestOptions: RequestInit = {
