@@ -1,6 +1,5 @@
 import {Task} from "./Task";
 import {Tag} from "./Tag";
-
 export interface Tasklist {
     tasklistID: number,
     title: string,
