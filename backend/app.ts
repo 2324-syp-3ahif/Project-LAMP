@@ -23,6 +23,7 @@ import {tasklistRouter} from "./routers/router-tasklist";
 import {eventRouter} from "./routers/router-event";
 import {tagRouter} from "./routers/router-tag";
 import {userRouter} from "./routers/router-user";
+import {mailRouter} from "./routers/router-mail";
 
 import sqlite from "sqlite3";
 import {IdNotFoundError} from "./interfaces/errors/IdNotFoundError";
@@ -47,6 +48,7 @@ app.use("/api/tasklist", tasklistRouter);
 app.use("/api/event", eventRouter);
 app.use("/api/tag", tagRouter);
 app.use("/api/user", userRouter);
+app.use("/api/mail", mailRouter);
 app.use(express.json());
 app.use(express.static('public'));
 
