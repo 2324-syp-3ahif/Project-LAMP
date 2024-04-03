@@ -3,28 +3,13 @@
     margin: 0 auto; /* This will center the div horizontally */
 }
 
-.btn-design{
-    background-color: #00C2DD;
-    color: #EEEEEE;
-    border: none;
-    border-radius: 15px;
-    padding: 10px;
-    margin: 10px;
-    cursor: pointer;
-}
-
-.btn-design:hover {
-    background-color: #00C2DD !important;
-    color: #EEEEEE !important;
-}
-
 .card {
     background-color: #3751AD;
     margin-top: 30px;
     /* round corner*/
     border-radius: 30px;
     /* shadow */
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 8px 0 rgba(0, 0, 0, 0.2);
     align-self: center;
 }
 

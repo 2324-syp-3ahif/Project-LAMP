@@ -1,6 +1,6 @@
 body {
     font-family: sans-serif;
-    background-color: #ECFAFC;
+    background-color: #EEEEEE;
     padding: 80px 0 0;
     margin: 0;
     width: 100%;
@@ -8,6 +8,22 @@ body {
     min-width: 50%;
     justify-content: center;
 }
+
+.btn {
+    background-color: #3751AD;
+    color: #EEEEEE;
+    border: none;
+    border-radius: 15px;
+    padding: 10px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #26397a !important;
+    color: #EEEEEE !important;
+}
+
 /* Top items */
 .top-items {
     display: flex;
@@ -30,6 +46,19 @@ body {
     height: 30px;
 }
 
+#filter-btn {
+    background: none;
+    box-sizing: border-box;
+    border: solid 2px transparent;
+
+}
+
+#filter-btn:hover {
+    background-color: #EEEEEE !important;
+    color: #00C2DD !important;
+    border: solid 2px #3751AD;
+}
+
 /* Create Tasklist Form */
 #create-form {
     display: none;
@@ -45,15 +74,6 @@ body {
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
 }
 
-#create-form button {
-    margin-top: 10px;
-    background-color: #3751AD;
-    color: #eeeeee;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
 #invite-btn #tags-btn {
     align-self: flex-end;
 }
@@ -64,4 +84,19 @@ body {
 
 .form-select {
     margin: 10px 0;
+}
+
+/* Invite Modal */
+#invite-user-btn {
+    margin-top: 10px;
+    background-color: #00C2DD !important;
+    color: #EEEEEE !important;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#invite-user-btn:hover {
+    background-color: #EEEEEE !important;
+    color: #00C2DD !important;
 }

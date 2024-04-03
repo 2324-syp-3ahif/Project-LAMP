@@ -24,9 +24,6 @@ window.onload = async() => {
 
     await showAllTasklists(lists);
 
-    console.log("invite USERRRRR")
-    console.log(inviteUserBtn);
-
     createTasklistButton.addEventListener('click', async () => {
         createForm.style.display = 'flex';
     });
@@ -60,12 +57,11 @@ window.onload = async() => {
     });
 
     inviteUserBtn.addEventListener('click', async () => {
-        console.log("invite user");
-        const email = (document.getElementById('email-input') as HTMLInputElement);
-        // send email to user (collaboration)
-        // get next tasklistID from server with GET request
-        await send("http://localhost:2000/api/mail/invite/" + email.value + "/" + 0, 'POST', {email: email})
+        const email = document.getElementById('email-input') as HTMLInputElement;
+        const emailText = email.value;
         email.value = "";
+        // TODO get next tasklistID from server with GET request
+        await send("http://localhost:2000/api/mail/invite/" + emailText + "/" + 0, 'POST', {email: email})
     });
 
     orderPriorityButton.addEventListener('click', async () => {
@@ -99,12 +95,12 @@ window.onload = async() => {
             tagElement.addEventListener('click', () => {
                 if (tagElement.classList.contains('active')) {
                     tagElement.classList.remove('active');
-                    // remove filter
+                    // TODO remove filter
                 } else {
                     tagElement.classList.add('active');
-                    // add filter
+                    // TODO add filter
                 }
-                // filter by tag -> show only tasklists with this tag, can only work with tag router
+                // TODO filter by tag -> show only tasklists with this tag, can only work with tag router
             });
             filterTagsModal.appendChild(tagElement);
         }
@@ -123,13 +119,22 @@ window.onload = async() => {
         if (list.isLocked) {
             alert('This tasklist is locked');
         } else {
-            // show all tasks
-            // close button to un-expand?
+            const tasks = document.createElement('div');
+            tasks.classList.add('tasks');
+            // get tasks from server
+            // for (const task of tasks) {
+            //     const taskEl = document.createElement('div');
+            //     taskEl.innerHTML = task.title;
+            //     tasks.appendChild(taskEl);
+            // }
+            listEl.appendChild(tasks);
+            // TODO show all tasks
+            // TODO close button to un-expand?
         }
     }
 
     function getTags(listID: number): Tag[] {
-        // can't implement this function without tag router
+        // TODO can't implement this function without tag router
         return [];
     }
 
@@ -163,7 +168,6 @@ window.onload = async() => {
             tags.appendChild(tagElement);
         });
 
-
         const description = document.createElement('p');
         description.innerHTML = list.description;
         description.classList.add("card-text");
@@ -173,7 +177,6 @@ window.onload = async() => {
         listElement.appendChild(tags);
 
         listElement.addEventListener('click', () => {
-
             extendTasklist(listElement, list);
         });
 
