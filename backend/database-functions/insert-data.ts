@@ -13,6 +13,7 @@ import {Task} from "../interfaces/model/Task";
 import {checkMailFormat} from '../utils';
 import {StringWrongFormatError} from "../interfaces/errors/StringWrongFormatError";
 import {IdAlreadyExistsError} from "../interfaces/errors/IdAlreadyExistsError";
+import {Tag} from "../interfaces/model/Tag";
 
 export async function insertTasklist(db: sqlite3.Database, title: string, description: string, priority: number, isLocked: boolean, sortingOrder: number, ownerEmail: string): Promise<void> {
     numberChecker(priority, 0, 10, 'priority', `Priority must be between 0 and 10`);

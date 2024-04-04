@@ -9,6 +9,7 @@ import {db} from "../app";
 import {DateExpiredError} from "../interfaces/errors/DateExpiredError";
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
 import {StringToLongError} from "../interfaces/errors/StringToLongError";
+import {checkMailFormat} from "../utils";
 
 
 export const tasklistRouter = express.Router();
@@ -16,10 +17,9 @@ export const tasklistRouter = express.Router();
 tasklistRouter.get("/", (req, res) => {
     res.status(200).send("Hello World! from tasklist-router");
 });
-tasklistRouter.post("/:userID",
+tasklistRouter.post("/:email",
     (req, res) => {
-        const userID = parseInt(req.params.userID);
-        if (userID === undefined || isNaN(userID) || userID <= 0) {
+        if (checkMailFormat(req.params.email)) {
             res.status(StatusCodes.BAD_REQUEST).send("userID must be a positive number");
             return;
         }
@@ -49,7 +49,7 @@ tasklistRouter.post("/:userID",
             ownerID: userID
         };
         try {
-            insertTask(db, result.title, new Date('02.05.2025'), result.description, result.priority, result.tasklistID, result.ownerID);
+            insertTask(db, result.title, new Date(), result.description, result.priority, result.tasklistID, "");
         } catch (err) {
             if (err instanceof ConnectionToDatabaseLostError) {
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("Database connection lost");

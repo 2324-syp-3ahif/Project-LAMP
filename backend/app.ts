@@ -40,7 +40,7 @@ import { join } from "path";
 
 const app = express();
 const port = process.env.PORT || 2000;
-const db: sqlite.Database = connectToDatabase();
+export const db: sqlite.Database = connectToDatabase();
 
 dotenv.config();
 app.use(cors());
@@ -52,8 +52,6 @@ app.use("/api/event", eventRouter);
 app.use("/api/tag", tagRouter);
 app.use("/api/user", userRouter);
 app.use("/api/mail", mailRouter);
-app.use(express.json());
-app.use(express.static('public'));
 
 const path = join(__dirname, "../public");
 const options = { extensions: ["html", "js"] }; // , "css"
