@@ -7,11 +7,21 @@ import {Task} from "../interfaces/model/Task";
 import {Tasklist} from "../interfaces/model/Tasklist";
 import {User} from "../interfaces/model/User";
 import {Tag} from "../interfaces/model/Tag";
+import {Event} from "../interfaces/model/Event";
+import {idNotFound} from "./insert-data";
 
 export async function selectUserByEmail(db: sqlite3.Database, email: string): Promise<User> {
     return await selectRowByID<User>(db, email, 'USERS', 'email');
 }
 
+export async function selectEventByEventID(db: sqlite3.Database, eventID: number): Promise<Event> {
+    return await selectRowByID<Event>(db, eventID, 'EVENTS', 'eventID');
+}
+
+export async function selectEventsByEmail(db: sqlite3.Database, email: string): Promise<Event[]> {
+    await idNotFound<User>(db, email, 'USERS', 'email');
+    return await select<Event>(db, `SELECT * FROM EVENTS WHERE email = '${email}'`);
+}
 export async function selectTagsByTasklistID(db: sqlite3.Database, tasklistID: number): Promise<Tag[]> {
     const query: string = `SELECT * FROM TAGS WHERE tagID in (SELECT tagID FROM TAGTASKLISTS WHERE tasklistID = ${tasklistID});`;
     return select<Tag>(db, query);
@@ -67,5 +77,5 @@ interface Row {
 export async function getMaxId(db: sqlite3.Database, tablename: string, idname: string): Promise<number> {
     const dbFunction = promisify(db.get.bind(db));
     const data: Row = await dbFunction(`SELECT MAX(${idname}) AS maxId FROM ${tablename}`) as Row;
-    return data.maxId;
+    return data.maxId !== null ? data.maxId : 0;
 }
