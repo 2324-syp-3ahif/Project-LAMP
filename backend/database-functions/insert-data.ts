@@ -1,6 +1,5 @@
 import sqlite3 from "sqlite3";
-import {checkDateFormat, checkPasswordFormat, checkStringFormat, convertTSToSQLDate} from "../utils";
-import {ConnectionToDatabaseLostError} from "../interfaces/errors/ConnectionToDatabaseLostError";
+import {checkDateFormat, checkPasswordFormat, checkStringFormat} from "../utils";
 import {DateExpiredError} from "../interfaces/errors/DateExpiredError";
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
 import {DateFormatError} from "../interfaces/errors/DateFormatError";
@@ -42,6 +41,11 @@ export async function addTagToTasklist(db: sqlite3.Database, tasklistID: number,
     await idNotFound<Tasklist>(db, tasklistID, 'TASKLISTS', 'tasklistID');
     await idNotFound<Tag>(db, tagID, 'TAGS', 'tagID');
 
+    const data = await select<string>(db, `SELECT * FROM TAGTASKLISTS WHERE tasklistID = ${tasklistID} and tagID = ${tagID};`);
+    if (data.length !== 0) {
+        throw new IdAlreadyExistsError('tagID', 'idAlreadyAdded');
+    }
+
     const query: string = `INSERT INTO TAGTASKLISTS (tasklistID, tagID) VALUES (?,?);`;
     db.run(query, [tasklistID, tagID]);
 }
@@ -58,6 +62,21 @@ export async function insertTask(db: sqlite3.Database, title: string, dueDate: D
 
     const query: string = `INSERT INTO TASKS (title, description, dueDate, priority, isComplete, tasklistID, email) VALUES (?,?,?,?,?,?,?);`;
     db.run(query, [title, description, dueDate.toString(), priority, false, tasklistID, email]);
+}
+
+export async function insertEvent(db: sqlite3.Database, name: string, description: string, startTime: Date, endTime: Date, fullDay: boolean, email: string): Promise<void> {
+    dateFormatCheck(startTime, 'startTime', ' is not the right format!');
+    dateSmallerNowChecker(startTime);
+    dateFormatCheck(endTime, 'endTime', ' is not the right format!');
+    dateSmallerNowChecker(endTime);
+    stringLenghtCheck(name, 50, 'name', ' cannot have more characters than ');
+    stringLenghtCheck(description, 255, 'description', ' cannot have more characters than ');
+
+    await idNotFound<User>(db, email, 'USERS', 'email');
+
+    const id: number = (await getMaxId(db, 'EVENTS', 'eventID')) + 1;
+    const query: string = `INSERT INTO EVENTS (eventID, name, startTime, endTime, fullDay, description, email) VALUES (?, ?,?,?,?,?,?);`;
+    db.run(query, [id, name, startTime, endTime, fullDay, description, email]);
 }
 
 export async function insertTag(db: sqlite3.Database, name: string, email: string): Promise<void> {

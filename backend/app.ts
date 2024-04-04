@@ -53,6 +53,7 @@ app.use("/api/tag", tagRouter);
 app.use("/api/user", userRouter);
 app.use("/api/mail", mailRouter);
 
+
 const path = join(__dirname, "../public");
 const options = { extensions: ["html", "js"] }; // , "css"
 app.use(express.static(path, options));
