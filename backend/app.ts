@@ -96,7 +96,7 @@ app.put("/", (req, res) => {
     const priority = req.body.priority;
     const tasklistID = req.body.tasklistID;
 
-    updateTask(db, taskID, title, description, dueDate, priority, false, tasklistID).then(() => {
+    updateTask(db, taskID, tasklistID, title, description, dueDate, priority, false).then(() => {
     }).catch((err) => {
         if (err instanceof DateExpiredError) {
             res.send("Date already was!");
