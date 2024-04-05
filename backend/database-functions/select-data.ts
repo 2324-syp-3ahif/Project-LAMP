@@ -26,15 +26,7 @@ import {Tag} from "../interfaces/model/Tag";
 */
 
 export async function selectUserByEmail(db: sqlite3.Database, email: string): Promise<User> {
-    try {
-        return await selectRowByID<User>(db, email, 'USERS', 'email');
-    } catch (error) {
-        if (error instanceof IdNotFoundError) {
-            console.log("IdNotFoundError");
-            throw new IdNotFoundError(error.causer, error.message);
-        }
-        throw error;
-    }
+    return await selectRowByID<User>(db, email, 'USERS', 'email');
 }
 
 export async function selectTagsByTasklistID(db: sqlite3.Database, tasklistID: number): Promise<Tag[]> {
