@@ -13,11 +13,18 @@ import {
 import {dropTable} from './database-functions/drop-tables';
 import {insertTask} from './database-functions/insert-data';
 import {
-    selectByID,
-    selectTaskByTaskID, selectTasklistByTasklistID, selectTasklistsByUserID,
+    selectEventByEventID,
+    selectEventsByEmail,
+    selectTaskByTaskID,
     selectTasksByTasklistID
 } from "./database-functions/select-data";
-import {deleteTaskById} from './database-functions/delete-data';
+import {
+    deleteEventByID,
+    deleteTagByID,
+    deleteTaskByID,
+    deleteTasklistByID,
+    delteUserByEmail
+} from './database-functions/delete-data';
 
 import {taskRouter} from "./routers/router-task";
 import {tasklistRouter} from "./routers/router-tasklist";
@@ -32,7 +39,7 @@ import {checkDateFormat} from "./utils";
 import {DateFormatError} from "./interfaces/errors/DateFormatError";
 import {StringToLongError} from "./interfaces/errors/StringToLongError";
 import {NotAValidNumberError} from "./interfaces/errors/NotAValidNumberError";
-import {updateTask} from "./database-functions/update-data";
+import {updateEvent, updateTask} from "./database-functions/update-data";
 import {Task} from "./interfaces/model/Task";
 
 const app = express();
@@ -121,12 +128,14 @@ app.put("/", (req, res) => {
     })
 });
 
-app.get('/emil', (req, res) => {
-    selectTasklistsByUserID(db, req.body.userID).then((tasklists) => {
-        res.status(200).send(tasklists);
-    }).catch(err => {
-        res.status(400).send(err.message);
-    });
+app.get('/emil', async (req, res) => {
+    try {
+        await delteUserByEmail(db, 'test24@gmx.at');
+        const data = await selectEventByEventID(db, 1);
+        res.send(data);
+    } catch (err) {
+        res.send((err as Error).message);
+    }
 });
 
 
