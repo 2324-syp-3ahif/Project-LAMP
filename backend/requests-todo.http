@@ -6,6 +6,7 @@
 @eventHostname=http://localhost:2000/api/event
 
 
+
 #Tasklist
 ###    Get Tasklists by UserID
 GET {{tasklistHostname}}/1
@@ -14,7 +15,7 @@ PUT {{tasklistHostname}}/1
 ###	   Delete Tasklist by ID
 DELETE {{tasklistHostname}}/1
 ###	   Create Tasklist by UserID
-POST {{tasklistHostname}}/1
+POST {{tasklistHostname}}/luca.stinkt@hodenkobold.com
 Content-Type: application/json
 
 {
@@ -22,11 +23,27 @@ Content-Type: application/json
     "description": "Bsp 1-5"
 }
 
-### Task
 ###	   Get Tasks by TasklistID
+GET {{taskHostname}}/tasklistID/1
 ###	   Get Tasks by UserID
+GET {{taskHostname}}/userID/1
 ###	   Create Task by TasklistID
+POST {{taskHostname}}/1
+Content-Type: application/json
+
+{
+    "title": "MatheHUE",
+    "description": "Bsp 1-5"
+}
 ###	   Edit Task by ID
+PUT {{taskHostname}}/3
+Content-Type: application/json
+
+{
+    "title": "DeutschHUE",
+    "description": "Buch Seite 125",
+    "dueDate": "09.04.2024"
+}
 ###	   Delete Task by ID
 ### Tag
 ###	   Get Tags by UserID

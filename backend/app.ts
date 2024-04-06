@@ -105,20 +105,20 @@ app.put("/", (req, res) => {
     const priority = req.body.priority;
     const tasklistID = req.body.tasklistID;
 
-    updateTask(db, taskID, title, description, dueDate, priority, false, tasklistID).then(() => {
-    }).catch((err) => {
-        if (err instanceof DateExpiredError) {
-            res.send("Date already was!");
-        } else if (err instanceof IdNotFoundError) {
-            res.send("wrongID: " + err.message);
-        } else if (err instanceof DateFormatError) {
-            res.send("Date is wrong format!")
-        } else if (err instanceof StringToLongError) {
-            res.send(err.message);
-        } else if (err instanceof NotAValidNumberError) {
-            res.send("Number was not in a valid range!");
-        }
-    });
+    // updateTask(db, taskID, title, description, dueDate, priority, false, tasklistID).then(() => {
+    // }).catch((err) => {
+    //     if (err instanceof DateExpiredError) {
+    //         res.send("Date already was!");
+    //     } else if (err instanceof IdNotFoundError) {
+    //         res.send("wrongID: " + err.message);
+    //     } else if (err instanceof DateFormatError) {
+    //         res.send("Date is wrong format!")
+    //     } else if (err instanceof StringToLongError) {
+    //         res.send(err.message);
+    //     } else if (err instanceof NotAValidNumberError) {
+    //         res.send("Number was not in a valid range!");
+    //     }
+    // });
     selectTaskByTaskID(db, taskID).then((task: Task) => {
         console.log(typeof task.isComplete);
         res.send(task);
@@ -143,20 +143,20 @@ app.get('/create-tables', (req, res) => {
 });
 console.log('testTasklist');
 
-app.get('/testTasklist', (req, res) => {
-    const list: tasklist.Tasklist = {
-        tasklistID: 42,
-        title: "HEHE",
-        description: "i hope this may work",
-        sortingOrder: 0,
-        priority: 0,
-        isLocked: false,
-        ownerID: 1,
-    }
-    //send.send('http://localhost:2000/api/tasklist', 'POST', JSON.stringify(list));
-    //res.send("Works");
-    res.send(list);
-});
+// app.get('/testTasklist', (req, res) => {
+//     const list: tasklist.Tasklist = {
+//         tasklistID: 42,
+//         title: "HEHE",
+//         description: "i hope this may work",
+//         sortingOrder: 0,
+//         priority: 0,
+//         isLocked: false,
+//         ownerID: 1,
+//     }
+//     //send.send('http://localhost:2000/api/tasklist', 'POST', JSON.stringify(list));
+//     //res.send("Works");
+//     res.send(list);
+// });
 
 app.listen(2000, () => {
     console.log(`Listening on http://localhost:2000`);
