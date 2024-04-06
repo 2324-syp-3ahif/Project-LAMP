@@ -9,7 +9,7 @@
 
 #Tasklist
 ###    Get Tasklists by UserID
-GET {{tasklistHostname}}/1
+GET {{tasklistHostname}}/luca.stinkt@hodenkobold.com
 ###	   Edit Tasklist by ID
 PUT {{tasklistHostname}}/1
 ###	   Delete Tasklist by ID

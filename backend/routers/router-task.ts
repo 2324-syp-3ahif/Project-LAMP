@@ -32,24 +32,21 @@ taskRouter.get("/tasklistID/:tasklistID", async (req, res) => {
     })
 });
 
-taskRouter.get("/userID/:userID", async (req, res) => {
-
-    //ToDO: implement selectTaskFromUserID
-
-    // const userID = parseInt(req.params.userID);
-    // if (userID === undefined || isNaN(userID) || userID < 1) {
-    //     res.status(StatusCodes.BAD_REQUEST).send("tasklistID must be a positive number");
-    //     return;
-    // }
-    // selectTaskFromUserID(db, userID).then(tasks => {
-    //     res.status(StatusCodes.OK).send(tasks);
-    // }).catch((err) => {
-    //     if (err instanceof IdNotFoundError) {
-    //         res.status(StatusCodes.BAD_REQUEST).send("NO user found");
-    //     }
-    // })
-    res.status(StatusCodes.NOT_IMPLEMENTED).send("Not implemented yet!");
-});
+// taskRouter.get("/userID/:userID", async (req, res) => {
+//   const userID = parseInt(req.params.userID);
+//     if (userID === undefined || isNaN(userID) || userID < 1) {
+//         res.status(StatusCodes.BAD_REQUEST).send("tasklistID must be a positive number");
+//         return;
+//     }
+//     selectTaskFromUserID(db, userID).then(tasks => {
+//         res.status(StatusCodes.OK).send(tasks);
+//     }).catch((err) => {
+//         if (err instanceof IdNotFoundError) {
+//             res.status(StatusCodes.BAD_REQUEST).send("NO user found");
+//         }
+//     })
+//     res.status(StatusCodes.NOT_IMPLEMENTED).send("Not implemented yet!");
+// });
 
 
 taskRouter.post("/:tasklistID", async (req, res) => {
@@ -58,7 +55,7 @@ taskRouter.post("/:tasklistID", async (req, res) => {
         res.status(StatusCodes.BAD_REQUEST).send("userID must be a positiv Number");
         return;
     }
-    if (utils.checkIfFalseTitle(req.body.title)) {
+    if (!utils.checkTitle(req.body.title)) {
         res.status(StatusCodes.BAD_REQUEST).send("title must be at least 1 character long");
         return;
     }
@@ -66,11 +63,11 @@ taskRouter.post("/:tasklistID", async (req, res) => {
     const description = req.body.description ?? "";
     const sortingOrder = req.body.sortingOrder ?? 1;
     const priority = req.body.priority ?? 1;
-    if (utils.checkIfFalseSortingOrder(sortingOrder)) {
+    if (!utils.checkSortingOrder(sortingOrder)) {
         res.status(StatusCodes.BAD_REQUEST).send("sortingOrder must be a positive number");
         return;
     }
-    if (utils.checkIfFalsePriority(priority)) {
+    if (!utils.checkPriority(priority)) {
         res.status(StatusCodes.BAD_REQUEST).send("priority must be a positive number");
         return;
     }
