@@ -8,4 +8,3 @@ coverage
 pictures/.$UseCase_Diagramm.png.bkp
 .env
 package-lock.json
-yarn.lock
