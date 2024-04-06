@@ -10,9 +10,9 @@
     "@jridgewell/trace-mapping" "0.3.9"
 
 "@fontsource/open-sans@^5.0.22":
-  version "5.0.23"
-  resolved "https://registry.npmjs.org/@fontsource/open-sans/-/open-sans-5.0.23.tgz"
-  integrity sha512-BTp23tnfuvoLVyb0pmybebmx/YEmq/VMSwTWPy9zMyNlRV63XDVuE1M/XCpcCy2mYbespx/Ky4NWrZkL3GGfig==
+  version "5.0.22"
+  resolved "https://registry.npmjs.org/@fontsource/open-sans/-/open-sans-5.0.22.tgz"
+  integrity sha512-lN3A4prlcVPgLjlgwY+oMPalpyXPM/6DwaLr6LjqkjytjGIZTLBbInL+zTfcemSyMtTQklreETepGjjmtzlRHA==
 
 "@gar/promisify@^1.0.1":
   version "1.1.3"
@@ -136,9 +136,9 @@
   integrity sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==
 
 "@types/node@*":
-  version "20.11.17"
-  resolved "https://registry.npmjs.org/@types/node/-/node-20.11.17.tgz"
-  integrity sha512-QmgQZGWu1Yw9TDyAP9ZzpFJKynYNeOvwMJmaxABfieQoVoiVOS6MN1WSpqpRcbeA5+RW82kraAVxCCJg+780Qw==
+  version "20.11.16"
+  resolved "https://registry.npmjs.org/@types/node/-/node-20.11.16.tgz"
+  integrity sha512-gKb0enTmRCzXSSUJDq6/sPcqrfCv2mkkG6Jt/clpn5eiCbKTY+SgZUxo+p8ZKMof5dCp9vHQUAB7wOUTod22wQ==
   dependencies:
     undici-types "~5.26.4"
 
@@ -536,9 +536,9 @@ diff@^4.0.1:
   integrity sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==
 
 dotenv@^16.4.1:
-  version "16.4.2"
-  resolved "https://registry.npmjs.org/dotenv/-/dotenv-16.4.2.tgz"
-  integrity sha512-rZSSFxke7d9nYQ5NeMIwp5PP+f8wXgKNljpOb7KtH6SKW1cEqcXAz9VSJYVLKe7Jhup/gUYOkaeSVyK8GJ+nBg==
+  version "16.4.1"
+  resolved "https://registry.npmjs.org/dotenv/-/dotenv-16.4.1.tgz"
+  integrity sha512-CjA3y+Dr3FyFDOAMnxZEGtnW9KBR2M0JvvUtXNW+dYJL5ROWxP9DUHCwgFqpMk0OXCc0ljhaNTr2w/kutYIcHQ==
 
 ee-first@1.1.1:
   version "1.1.1"
@@ -787,9 +787,9 @@ has-unicode@^2.0.1:
   integrity sha512-8Rf9Y83NBReMnx0gFzA8JImQACstCYWUplepDa9xprwwtmgEZUF0h/i5xSA625zB/I37EtrswSST6OXxwaaIJQ==
 
 hasown@^2.0.0:
-  version "2.0.1"
-  resolved "https://registry.npmjs.org/hasown/-/hasown-2.0.1.tgz"
-  integrity sha512-1/th4MHjnwncwXsIW6QMzlvYL9kG5e/CpVvLRZe4XPa8TOUNbCELqmvhDmnkNsAjwaG4+I8gJJL0JBvTTLO9qA==
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/hasown/-/hasown-2.0.0.tgz"
+  integrity sha512-vUptKVTpIJhcczKBbgnS+RtcuYMB8+oNzPK2/Hp3hanz8JmpATdmmgLgSaadVREkDm+e2giHwY3ZRkyjSIDDFA==
   dependencies:
     function-bind "^1.1.2"
 
@@ -1622,11 +1622,6 @@ ts-node@^10.9.2:
     make-error "^1.1.1"
     v8-compile-cache-lib "^3.0.1"
     yn "3.1.1"
-
-tsc@^2.0.4:
-  version "2.0.4"
-  resolved "https://registry.npmjs.org/tsc/-/tsc-2.0.4.tgz"
-  integrity sha512-fzoSieZI5KKJVBYGvwbVZs/J5za84f2lSTLPYf6AGiIf43tZ3GNrI1QzTLcjtyDDP4aLxd46RTZq1nQxe7+k5Q==
 
 tunnel-agent@^0.6.0:
   version "0.6.0"
