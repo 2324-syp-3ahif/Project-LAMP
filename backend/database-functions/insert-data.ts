@@ -12,6 +12,7 @@ import {Task} from "../interfaces/model/Task";
 import {checkMailFormat} from '../utils';
 import {StringWrongFormatError} from "../interfaces/errors/StringWrongFormatError";
 import {IdAlreadyExistsError} from "../interfaces/errors/IdAlreadyExistsError";
+import bcrypt from "bcrypt";
 import {Tag} from "../interfaces/model/Tag";
 
 export async function insertTasklist(db: sqlite3.Database, title: string, description: string, priority: number, isLocked: boolean, sortingOrder: number, ownerEmail: string): Promise<void> {
@@ -101,7 +102,7 @@ export async function insertUser(db: sqlite3.Database, email: string, username: 
     await idFound<User>(db, email, 'USERS', 'email');
 
     const query: string = `INSERT INTO USERS (email, username, hashedPassword) VALUES (?,?,?);`;
-    db.run(query, [email, username, password]);
+    db.run(query, [email, username, await bcrypt.hash(password, 10)]);
 }
 
 
