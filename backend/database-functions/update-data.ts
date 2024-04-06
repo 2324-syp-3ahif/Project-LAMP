@@ -10,6 +10,7 @@ import {selectUserByEmail} from "./select-data";
 import {Tag} from "../interfaces/model/Tag";
 
 export async function updateTask(db: sqlite3.Database, taskID: number, tasklistID?: number, title?: string, description?: string, dueDate?: Date, priority?: number, isComplete?: boolean): Promise<void> {
+    let dd = undefined;
     if (tasklistID !== undefined) {
         await idNotFound<Tasklist>(db, tasklistID, 'TASKLISTS', 'tasklistID');
     } if (title !== undefined) {
@@ -19,11 +20,12 @@ export async function updateTask(db: sqlite3.Database, taskID: number, tasklistI
     } if (dueDate !== undefined) {
         dateFormatCheck(dueDate, 'dueDate', '');
         dateSmallerNowChecker(dueDate);
+        dd = dueDate.toISOString();
     } if (priority !== undefined) {
         numberChecker(priority, 0, 10, "sortingOrder", '');
     }
 
-    const array = [title, description, dueDate, priority, isComplete, tasklistID];
+    const array = [title, description, dd, priority, isComplete, tasklistID];
     const names = ["title", "description", "dueDate", "priority", "isComplete", "tasklistID"];
     await idNotFound<Task>(db, taskID, 'TASKS', 'taskID');
     for (let i = 0; i < array.length; i++) {
@@ -77,6 +79,33 @@ export async function updateTasklist(db: sqlite3.Database, tasklistID: number, t
         }
     }
 }
+
+export async function updateEvent(db: sqlite3.Database, eventID: number, name?: string, description?: string, startTime?: Date, endTime?: Date, fullDay?: boolean) : Promise<void> {
+    let st = undefined;
+    let et = undefined;
+    if (name !== undefined) {
+        stringLenghtCheck(name, 50, 'name', '');
+    } if (description !== undefined) {
+        stringLenghtCheck(description, 255, 'description', '');
+    } if (startTime !== undefined) {
+        dateFormatCheck(startTime, 'startTime', '');
+        dateSmallerNowChecker(startTime);
+        st = startTime.toISOString();
+    } if (endTime !== undefined) {
+        dateFormatCheck(endTime, 'dueDate', '');
+        dateSmallerNowChecker(endTime);
+        et = endTime.toISOString();
+    }
+
+    const array = [name, description, st, et];
+    const names = ["name", "description", "startTime", "endTime"];
+    for (let i = 0; i < array.length; i++) {
+        if (array[i] !== undefined) {
+            updateSingleColumn(db, 'EVENTS', eventID, 'eventID', names[i], array[i]);
+        }
+    }
+}
+
 
 function updateSingleColumn(db: sqlite3.Database, tablename: string, id: number | string, idName: string, row: string, value: any): void {
     if (typeof value === 'string') {

@@ -13,10 +13,19 @@ import {
 import {dropTable} from './database-functions/drop-tables';
 import {insertTask} from './database-functions/insert-data';
 import {
+
+    selectEventByEventID,
+    selectEventsByEmail,
     selectTaskByTaskID,
     selectTasksByTasklistID
 } from "./database-functions/select-data";
-import {deleteTaskById} from './database-functions/delete-data';
+import {
+    deleteEventByID,
+    deleteTagByID,
+    deleteTaskByID,
+    deleteTasklistByID,
+    delteUserByEmail
+} from './database-functions/delete-data';
 
 import {taskRouter} from "./routers/router-task";
 import {tasklistRouter} from "./routers/router-tasklist";
@@ -32,7 +41,7 @@ import {checkDateFormat} from "./utils";
 import {DateFormatError} from "./interfaces/errors/DateFormatError";
 import {StringToLongError} from "./interfaces/errors/StringToLongError";
 import {NotAValidNumberError} from "./interfaces/errors/NotAValidNumberError";
-import {updateTask} from "./database-functions/update-data";
+import {updateEvent, updateTask} from "./database-functions/update-data";
 import {Task} from "./interfaces/model/Task";
 import * as tasklist from './interfaces/model/Tasklist';
 
@@ -104,7 +113,7 @@ app.put("/", (req, res) => {
     const priority = req.body.priority;
     const tasklistID = req.body.tasklistID;
 
-    updateTask(db, taskID, title, description, dueDate, priority, false, tasklistID).then(() => {
+    updateTask(db, taskID, tasklistID, title, description, dueDate, priority, false).then(() => {
     }).catch((err) => {
         if (err instanceof DateExpiredError) {
             res.send("Date already was!");
@@ -127,6 +136,17 @@ app.put("/", (req, res) => {
             res.send("NO user found");
         }
     })
+});
+
+
+app.get('/emil', async (req, res) => {
+    try {
+        await delteUserByEmail(db, 'test24@gmx.at');
+        const data = await selectEventByEventID(db, 1);
+        res.send(data);
+    } catch (err) {
+        res.send((err as Error).message);
+    }
 });
 
 app.get('/create-tables', (req, res) => {
