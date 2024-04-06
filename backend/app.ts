@@ -13,14 +13,27 @@ import {
 } from './database-functions/create-tables';
 import {dropTable} from './database-functions/drop-tables';
 import {insertTask} from './database-functions/insert-data';
-import {selectTaskByTaskID, selectTasksByTasklistID} from "./database-functions/select-data";
-import {deleteTaskById} from './database-functions/delete-data';
+import {
+
+    selectEventByEventID,
+    selectEventsByEmail,
+    selectTaskByTaskID,
+    selectTasksByTasklistID
+} from "./database-functions/select-data";
+import {
+    deleteEventByID,
+    deleteTagByID,
+    deleteTaskByID,
+    deleteTasklistByID,
+    delteUserByEmail
+} from './database-functions/delete-data';
 
 import {taskRouter} from "./routers/router-task";
 import {tasklistRouter} from "./routers/router-tasklist";
 import {eventRouter} from "./routers/router-event";
 import {tagRouter} from "./routers/router-tag";
 import {userRouter} from "./routers/router-user";
+import {mailRouter} from "./routers/router-mail";
 
 import sqlite from "sqlite3";
 import {IdNotFoundError} from "./interfaces/errors/IdNotFoundError";
@@ -29,11 +42,9 @@ import {checkDateFormat} from "./utils";
 import {DateFormatError} from "./interfaces/errors/DateFormatError";
 import {StringToLongError} from "./interfaces/errors/StringToLongError";
 import {NotAValidNumberError} from "./interfaces/errors/NotAValidNumberError";
-import {updateTask} from "./database-functions/update-data";
+import {updateEvent, updateTask} from "./database-functions/update-data";
 import {Task} from "./interfaces/model/Task";
-
 import * as tasklist from './interfaces/model/Tasklist';
-import {showAllTasklists} from "../public/src/tasklistFunctions";
 
 import { join } from "path";
 import {loginRouter} from "./routers/router-login";
@@ -51,7 +62,7 @@ app.use("/api/tasklist", tasklistRouter);
 app.use("/api/event", eventRouter);
 app.use("/api/tag", tagRouter);
 app.use("/api/user", userRouter);
-app.use("/api", loginRouter);
+app.use("/api/mail", mailRouter);
 
 
 const path = join(__dirname, "../public");
@@ -105,7 +116,7 @@ app.put("/", (req, res) => {
     const priority = req.body.priority;
     const tasklistID = req.body.tasklistID;
 
-    updateTask(db, taskID, title, description, dueDate, priority, false, tasklistID).then(() => {
+    updateTask(db, taskID, tasklistID, title, description, dueDate, priority, false).then(() => {
     }).catch((err) => {
         if (err instanceof DateExpiredError) {
             res.send("Date already was!");
@@ -131,6 +142,15 @@ app.put("/", (req, res) => {
 });
 
 
+app.get('/emil', async (req, res) => {
+    try {
+        await delteUserByEmail(db, 'test24@gmx.at');
+        const data = await selectEventByEventID(db, 1);
+        res.send(data);
+    } catch (err) {
+        res.send((err as Error).message);
+    }
+});
 
 app.get('/create-tables', (req, res) => {
     dropTable('TASK');

@@ -1,6 +1,4 @@
-import {Item} from "./Item";
-
-export interface Event extends Item{
+export interface Event {
     eventID: number,
     name: string,
     startTime: Date,

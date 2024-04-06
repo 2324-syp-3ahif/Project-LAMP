@@ -1,8 +1,6 @@
 import {Task} from "./Task";
 import {Tag} from "./Tag";
-import {Item} from "./Item";
-
-export interface Tasklist extends Item{
+export interface Tasklist {
     tasklistID: number,
     title: string,
     description: string,
