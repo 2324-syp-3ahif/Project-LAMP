@@ -2,7 +2,6 @@ import express from "express";
 import {StatusCodes} from "http-status-codes";
 import {connectToDatabase} from "../database-functions/connect";
 import bcrypt from "bcrypt";
-import {User} from "../interfaces/model/User";
 import {selectUserByEmail} from "../database-functions/select-data";
 import {insertUser, idFound} from "../database-functions/insert-data";
 export const loginRouter = express.Router();

@@ -11,7 +11,10 @@ const loginPasswordInput = document.getElementById("login-password") as HTMLInpu
 const signUpButton = document.getElementById("sign-up-button") as HTMLInputElement;
 const loginButton = document.getElementById("login-button") as HTMLInputElement;
 let loggedIn: boolean = false;
+let mail: string = "hanfalmdudler@gmail.com";
+
 overlay.className = "overlay";
+
 switchModeToLogin.addEventListener("click", () => {
     signupWrapper.style.display = "none";
     loginWrapper.style.display = "inline-block";
@@ -29,12 +32,19 @@ window.onload = () => {
 }
 
 signUpButton.addEventListener("click", async () => {
-    const response = await send("http://localhost:2000/api/register", "POST", JSON.stringify({
-        username: (document.getElementById("signup-username") as HTMLInputElement).value,
-        email: (document.getElementById("signup-email") as HTMLInputElement).value,
-        password: (document.getElementById("signup-password") as HTMLInputElement).value
-    }));
+    const username = (document.getElementById("signup-username") as HTMLInputElement).value;
+    const email = (document.getElementById("signup-email") as HTMLInputElement).value;
+    const password = (document.getElementById("signup-password") as HTMLInputElement).value;
+
+    console.log(username, email, password);
+
+    const response = await send("http://localhost:2000/api/register", "POST", {
+        username: username,
+        email: email,
+        password: password
+    });
     if (response.status === 200) {
+        mail = (document.getElementById("signup-email") as HTMLInputElement).value;
         signupWrapper.style.display = "none";
         loginWrapper.style.display = "inline-block";
     }
@@ -43,11 +53,12 @@ signUpButton.addEventListener("click", async () => {
     }
 });
 loginButton.addEventListener("click", async () => {
-    const response = await send("http://localhost:2000/api/login", "POST", JSON.stringify({
+    const response = await send("http://localhost:2000/api/login", "POST", {
         email: loginEmailInput.value,
         password: loginPasswordInput.value
-    }));
+    });
     if (response.status === 200) {
+        mail = loginEmailInput.value;
         loggedIn = true;
         footer.style.display = "block";
         loginWrapper.style.display = "none";
@@ -57,3 +68,7 @@ loginButton.addEventListener("click", async () => {
         alert("Failed to log in");
     }
 });
+
+export function getCurrentMail() {
+    return mail;
+}

@@ -14,7 +14,6 @@ import {
 import {dropTable} from './database-functions/drop-tables';
 import {insertTask} from './database-functions/insert-data';
 import {
-
     selectEventByEventID,
     selectEventsByEmail,
     selectTaskByTaskID,
@@ -34,6 +33,7 @@ import {eventRouter} from "./routers/router-event";
 import {tagRouter} from "./routers/router-tag";
 import {userRouter} from "./routers/router-user";
 import {mailRouter} from "./routers/router-mail";
+import {loginRouter} from "./routers/router-login";
 
 import sqlite from "sqlite3";
 import {IdNotFoundError} from "./interfaces/errors/IdNotFoundError";
@@ -48,7 +48,6 @@ import * as tasklist from './interfaces/model/Tasklist';
 
 import { join } from "path";
 import {Tag} from "./interfaces/model/Tag";
-import {loginRouter} from "./routers/router-login";
 
 const app = express();
 const port = process.env.PORT || 2000;
@@ -59,6 +58,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
+app.use("/api", loginRouter);
 app.use("/api/task", taskRouter);
 app.use("/api/tasklist", tasklistRouter);
 app.use("/api/event", eventRouter);
@@ -66,18 +66,9 @@ app.use("/api/tag", tagRouter);
 app.use("/api/user", userRouter);
 app.use("/api/mail", mailRouter);
 
-
 const path = join(__dirname, "../public");
 const options = { extensions: ["html", "js"] }; // , "css"
 app.use(express.static(path, options));
-
-app.get('/test/:userID', (req, res) => {
-});
-
-app.post('/hallo', (req, res) => {
-    console.log(req.body);
-    console.log(req.body.title);
-});
 
 app.post("/", (req, res) => {
     const title = req.body.title;

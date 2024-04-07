@@ -1,11 +1,14 @@
 import { send } from './sendUtils';
 import { Tasklist } from './model/Tasklist';
 import { Tag } from './model/Tag';
+import { getCurrentMail} from './loginFunctions';
+
 
 window.onload = async() => {
-    /* TODO: URLs */
-    const url: string = 'http://localhost:2000/testTasklist/';
-    const tagUrl: string = 'http://localhost:2000/testTags/';
+    const mail: string = getCurrentMail();
+    const tasklistUrl: string = 'http://localhost:2000/api/tasklist/';
+    const tagUrl: string = 'http://localhost:2000/api/tag/';
+    const taskUrl: string = 'http://localhost:2000/api/task/';
 
     console.log('onload');
 
@@ -19,12 +22,13 @@ window.onload = async() => {
     const createForm = document.getElementById('create-form') as HTMLFormElement;
     const submitButton = document.getElementById('submit-btn') as HTMLButtonElement;
     const inviteUserBtn = document.getElementById('invite-user-btn') as HTMLButtonElement;
-    const lists: Tasklist[] = await send(url, 'GET');
+    const lists: Tasklist[] = await send(tasklistUrl + mail, 'GET');
     const tags: Tag[] = await send(tagUrl, 'GET');
 
     await showAllTasklists(lists);
 
     createTasklistButton.addEventListener('click', async () => {
+        console.log('create tasklist');
         createForm.style.display = 'flex';
     });
 
@@ -47,12 +51,12 @@ window.onload = async() => {
             description: description,
             priority: parseInt(priority),
             isLocked: false,
-            sortingOrder: sortingOrder,
-            lastView: new Date(),
-            ownerID: 0, // TODO
+            sortingOrder: parseInt(sortingOrder),
+            email: mail,
+            //lastView: new Date(),
             tasklistID: 0, // let server handle this
         };
-        await send(url, 'POST', tasklist);
+        await send(tasklistUrl + mail, 'POST', tasklist);
         await showAllTasklists(lists);
     });
 
@@ -60,8 +64,9 @@ window.onload = async() => {
         const email = document.getElementById('email-input') as HTMLInputElement;
         const emailText = email.value;
         email.value = "";
+        const nextId = await send(tasklistUrl + mail, 'GET');
         // TODO get next tasklistID from server with GET request
-        await send("http://localhost:2000/api/mail/invite/" + emailText + "/" + 0, 'POST', {email: email})
+        await send("http://localhost:2000/api/mail/invite/" + emailText + "/" + 0, 'POST', {email: email});
     });
 
     orderPriorityButton.addEventListener('click', async () => {
@@ -72,9 +77,9 @@ window.onload = async() => {
     });
 
     orderViewButton.addEventListener('click', async () => {
-        lists.sort((a: Tasklist, b: Tasklist) => {
-            return b.lastView.getTime() - a.lastView.getTime();
-        });
+        /*lists.sort((a: Tasklist, b: Tasklist) => {
+            //return b.lastView.getTime() - a.lastView.getTime();
+        });*/
         await showAllTasklists(lists);
     });
 
@@ -115,34 +120,29 @@ window.onload = async() => {
         }
     }
 
-    function extendTasklist(listEl: HTMLElement, list: Tasklist): void {
+    async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
         if (list.isLocked) {
             alert('This tasklist is locked');
         } else {
-            const tasks = document.createElement('div');
-            tasks.classList.add('tasks');
-            // get tasks from server
-            // for (const task of tasks) {
-            //     const taskEl = document.createElement('div');
-            //     taskEl.innerHTML = task.title;
-            //     tasks.appendChild(taskEl);
-            // }
-            listEl.appendChild(tasks);
-            // TODO show all tasks
+            const tasksEl = document.createElement('div');
+            tasksEl.classList.add('tasks');
+            const tasks = await send(taskUrl + "tasklistID/" + list.tasklistID, 'GET');
+            for (const task of tasks) {
+                const taskEl = document.createElement('div');
+                taskEl.innerHTML = task.title;
+                tasks.appendChild(taskEl);
+                console.log("added task!");
+            }
+            listEl.appendChild(tasksEl);
             // TODO close button to un-expand?
         }
     }
 
-    function getTags(listID: number): Tag[] {
-        // TODO can't implement this function without tag router
-        return [];
-    }
-
     async function editTitle(listID: number, newTitle: string){
-        const resp = send(url + listID, 'GET', );
+        const resp = send(tasklistUrl + listID, 'GET', );
         const list: Tasklist = await resp;
         list.title = newTitle;
-        await send(url + listID, 'PUT', list);
+        await send(tasklistUrl + listID, 'PUT', list);
         await showAllTasklists(lists);
     }
 
@@ -161,13 +161,14 @@ window.onload = async() => {
 
         const tags = document.createElement('div');
         tags.classList.add('tags');
-        const allTags: Tag[] = getTags(list.tasklistID);
+        /*
+        const allTags: Tag[] = await send(tagUrl + "tasklistID/" + list.tasklistID, 'GET');
         allTags.forEach((tag: Tag) => {
             const tagElement = document.createElement('span');
             tagElement.innerHTML = tag.name;
             tags.appendChild(tagElement);
         });
-
+        */
         const description = document.createElement('p');
         description.innerHTML = list.description;
         description.classList.add("card-text");

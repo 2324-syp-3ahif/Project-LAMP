@@ -1,10 +1,9 @@
 export interface Tasklist {
+    tasklistID: number,
     title: string,
     description: string,
-    sortingOrder: string,
+    sortingOrder: number,
     priority: number,
     isLocked: boolean,
-    ownerID: number,
-    tasklistID: number,
-    lastView: Date,
+    email: string,
 }

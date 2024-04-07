@@ -1,14 +1,12 @@
 #tasklists {
-    width: 40%; /* Set the width of your div */
-    margin: 0 auto; /* This will center the div horizontally */
+    width: 40%;
+    margin: 0 auto;
 }
 
 .card {
     background-color: #3751AD;
     margin-top: 30px;
-    /* round corner*/
     border-radius: 30px;
-    /* shadow */
     box-shadow: 0 10px 8px 0 rgba(0, 0, 0, 0.2);
     align-self: center;
 }
