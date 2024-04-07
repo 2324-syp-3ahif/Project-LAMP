@@ -1,16 +1,12 @@
 import { send } from './sendUtils';
 import { Tasklist } from './model/Tasklist';
 import { Tag } from './model/Tag';
-import { getCurrentMail} from './loginFunctions';
+import { checkMailFormat} from "./utils";
 
-
-window.onload = async() => {
-    const mail: string = getCurrentMail();
+export async function load(mail: string) {
     const tasklistUrl: string = 'http://localhost:2000/api/tasklist/';
     const tagUrl: string = 'http://localhost:2000/api/tag/';
     const taskUrl: string = 'http://localhost:2000/api/task/';
-
-    console.log('onload');
 
     const taskLists = document.getElementById('tasklists') as HTMLElement;
     const createTasklistButton = document.getElementById('create-tasklist-btn') as HTMLButtonElement;
@@ -22,10 +18,8 @@ window.onload = async() => {
     const createForm = document.getElementById('create-form') as HTMLFormElement;
     const submitButton = document.getElementById('submit-btn') as HTMLButtonElement;
     const inviteUserBtn = document.getElementById('invite-user-btn') as HTMLButtonElement;
-    const lists: Tasklist[] = await send(tasklistUrl + mail, 'GET');
-    const tags: Tag[] = await send(tagUrl, 'GET');
-
-    await showAllTasklists(lists);
+    const lists: Tasklist[] = (await send(tasklistUrl + mail, 'GET')).json();
+    const tags: Tag[] = (await send(tagUrl + mail, 'GET')).json;
 
     createTasklistButton.addEventListener('click', async () => {
         console.log('create tasklist');
@@ -56,7 +50,11 @@ window.onload = async() => {
             //lastView: new Date(),
             tasklistID: 0, // let server handle this
         };
+        console.log("sending");
         await send(tasklistUrl + mail, 'POST', tasklist);
+        console.log("sended");
+        lists.push(tasklist);
+        createForm.style.display = 'none';
         await showAllTasklists(lists);
     });
 
@@ -64,9 +62,13 @@ window.onload = async() => {
         const email = document.getElementById('email-input') as HTMLInputElement;
         const emailText = email.value;
         email.value = "";
-        const nextId = await send(tasklistUrl + mail, 'GET');
-        // TODO get next tasklistID from server with GET request
-        await send("http://localhost:2000/api/mail/invite/" + emailText + "/" + 0, 'POST', {email: email});
+        if (checkMailFormat(emailText)) {
+            const nextId = await send(tasklistUrl + mail, 'GET');
+            // TODO get next tasklistID from server with GET request
+            await send("http://localhost:2000/api/mail/invite/" + emailText, 'POST', {email: email});
+        } else {
+            alert('Invalid email address');
+        }
     });
 
     orderPriorityButton.addEventListener('click', async () => {
@@ -113,7 +115,7 @@ window.onload = async() => {
 
     async function showAllTasklists(lists: Tasklist[]) {
         taskLists.innerHTML = "";
-
+        console.log(lists);
         for (const list of lists) {
             const listEl: HTMLElement = await showTasklist(list);
             taskLists.appendChild(listEl);

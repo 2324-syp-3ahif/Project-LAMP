@@ -1,4 +1,5 @@
 import {send} from "./sendUtils";
+import {load} from "./tasklistFunctions";
 
 const switchModeToLogin = document.getElementById("switch-to-login") as HTMLElement;
 const switchModeToSignUp = document.getElementById("switch-to-signup") as HTMLElement;
@@ -11,7 +12,7 @@ const loginPasswordInput = document.getElementById("login-password") as HTMLInpu
 const signUpButton = document.getElementById("sign-up-button") as HTMLInputElement;
 const loginButton = document.getElementById("login-button") as HTMLInputElement;
 let loggedIn: boolean = false;
-let mail: string = "hanfalmdudler@gmail.com";
+let mail: string = "";
 
 overlay.className = "overlay";
 
@@ -46,6 +47,7 @@ signUpButton.addEventListener("click", async () => {
         mail = (document.getElementById("signup-email") as HTMLInputElement).value;
         signupWrapper.style.display = "none";
         loginWrapper.style.display = "inline-block";
+        await load(mail);
     }
     else {
         alert("Failed to create user");
@@ -63,12 +65,9 @@ loginButton.addEventListener("click", async () => {
         footer.style.display = "block";
         loginWrapper.style.display = "none";
         overlay.style.display = "none";
+        await load(mail);
     }
     else {
         alert("Failed to log in");
     }
 });
-
-export function getCurrentMail() {
-    return mail;
-}
