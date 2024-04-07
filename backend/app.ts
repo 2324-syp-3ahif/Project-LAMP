@@ -25,7 +25,7 @@ import {
     deleteTagByID,
     deleteTaskByID,
     deleteTasklistByID,
-    delteUserByEmail
+    deleteUserByEmail
 } from './database-functions/delete-data';
 
 import {taskRouter} from "./routers/router-task";
@@ -52,9 +52,10 @@ import {loginRouter} from "./routers/router-login";
 
 const app = express();
 const port = process.env.PORT || 2000;
-const db: sqlite.Database = connectToDatabase();
+export const db: sqlite.Database = connectToDatabase();
 
 dotenv.config();
+app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
@@ -117,20 +118,20 @@ app.put("/", (req, res) => {
     const priority = req.body.priority;
     const tasklistID = req.body.tasklistID;
 
-    updateTask(db, taskID, tasklistID, title, description, dueDate, priority, false).then(() => {
-    }).catch((err) => {
-        if (err instanceof DateExpiredError) {
-            res.send("Date already was!");
-        } else if (err instanceof IdNotFoundError) {
-            res.send("wrongID: " + err.message);
-        } else if (err instanceof DateFormatError) {
-            res.send("Date is wrong format!")
-        } else if (err instanceof StringToLongError) {
-            res.send(err.message);
-        } else if (err instanceof NotAValidNumberError) {
-            res.send("Number was not in a valid range!");
-        }
-    });
+    // updateTask(db, taskID, title, description, dueDate, priority, false, tasklistID).then(() => {
+    // }).catch((err) => {
+    //     if (err instanceof DateExpiredError) {
+    //         res.send("Date already was!");
+    //     } else if (err instanceof IdNotFoundError) {
+    //         res.send("wrongID: " + err.message);
+    //     } else if (err instanceof DateFormatError) {
+    //         res.send("Date is wrong format!")
+    //     } else if (err instanceof StringToLongError) {
+    //         res.send(err.message);
+    //     } else if (err instanceof NotAValidNumberError) {
+    //         res.send("Number was not in a valid range!");
+    //     }
+    // });
     selectTaskByTaskID(db, taskID).then((task: Task) => {
         console.log(typeof task.isComplete);
         res.send(task);
@@ -145,7 +146,7 @@ app.put("/", (req, res) => {
 
 app.get('/emil', async (req, res) => {
     try {
-        await delteUserByEmail(db, 'test24@gmx.at');
+        await deleteUserByEmail(db, 'test24@gmx.at');
         const data = await selectEventByEventID(db, 1);
         res.send(data);
     } catch (err) {
@@ -165,6 +166,7 @@ app.get('/create-tables', (req, res) => {
     res.send("Works");
 });
 
+/*
 app.get('/testTasklist', (_, res) => {
     const list1: tasklist.Tasklist = {
         tasklistID: 42,
@@ -202,8 +204,7 @@ app.get('/testTags', (_, res) => {
     const tag = [tag1, tag2];
     res.send(tag);
 });
-
-
+*/
 app.listen(2000, () => {
     console.log(`Listening on http://localhost:2000`);
 });

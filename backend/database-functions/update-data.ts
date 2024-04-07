@@ -46,7 +46,7 @@ export async function updateUser(db: sqlite3.Database, email: string, username?:
         if (!checkPasswordFormat(hashedPassword)) {
             throw new StringWrongFormatError('password', '');
         }
-        updateSingleColumn(db, 'USERS', email, 'email', 'password', hashedPassword);
+        updateSingleColumn(db, 'USERS', email, 'email', 'hashedPassword', hashedPassword);
     }
 }
 
