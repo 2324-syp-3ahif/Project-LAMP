@@ -7,5 +7,5 @@ export interface Tasklist {
     sortingOrder: number,
     priority: number,
     isLocked: boolean,
-    ownerID: number
+    email: string,
 }
