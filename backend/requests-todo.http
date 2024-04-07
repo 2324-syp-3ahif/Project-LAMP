@@ -29,6 +29,8 @@ Content-Type: application/json
     "description": "Bsp 1-5"
 }
 
+
+
 ###	   Get Tasks by TasklistID
 GET {{taskHostname}}/tasklistID/1
 ###	   Get Tasks by UserID
@@ -52,7 +54,10 @@ Content-Type: application/json
 }
 ###	   Delete Task by ID
 DELETE {{taskHostname}}/12
-### Tag
+
+
+
+
 ###	   Get Tags by UserID
 GET {{tagHostname}}/lucahaas07@gmx.at
 ###	   Create Tag by UserID
@@ -60,6 +65,28 @@ POST {{tagHostname}}/lucahaas07@gmx.at/testing
 ###	   Edit Tag by ID
 PUT {{tagHostname}}/1/a1
 ###	   Delete Tag by ID
-### User
+DELETE {{tagHostname}}/3
+
+
+
+
 ###	   Get User by ID
+GET {{userHostname}}/lucahaas07@gmx.at
 ###	   Create User
+POST {{userHostname}}/philip.istDerBeste@geheim123.at
+Content-Type: application/json
+
+{
+    "username": "pipostesting",
+    "password": "geheim123"
+}
+###	   Edit User by ID
+PUT {{userHostname}}/luca.stinkt@hodenkobold.com
+Content-Type: application/json
+
+{
+    "username": "lucahaas07",
+    "password": "geheim123"
+}
+###	   Delete User by ID
+DELETE {{userHostname}}/philip.istDerBeste@geheim123.at

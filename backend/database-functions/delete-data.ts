@@ -17,7 +17,7 @@ export async function deleteTasklistByID(db: sqlite3.Database, tasklistID: numbe
     await deleteFromTable(db, `DELETE FROM USERASKLISTS WHERE tasklistID = ${tasklistID};`);
 }
 
-export async function delteUserByEmail(db: sqlite3.Database, email: string) {
+export async function deleteUserByEmail(db: sqlite3.Database, email: string) {
     await idNotFound(db, email, 'USERS', 'email');
     const tasklists = await select<Tasklist>(db, `SELECT * FROM TASKLISTS WHERE email = '${email}';`)
     tasklists.forEach((tasklist: Tasklist) => {

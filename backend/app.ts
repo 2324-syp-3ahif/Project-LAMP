@@ -25,7 +25,7 @@ import {
     deleteTagByID,
     deleteTaskByID,
     deleteTasklistByID,
-    delteUserByEmail
+    deleteUserByEmail
 } from './database-functions/delete-data';
 
 import {taskRouter} from "./routers/router-task";
@@ -145,7 +145,7 @@ app.put("/", (req, res) => {
 
 app.get('/emil', async (req, res) => {
     try {
-        await delteUserByEmail(db, 'test24@gmx.at');
+        await deleteUserByEmail(db, 'test24@gmx.at');
         const data = await selectEventByEventID(db, 1);
         res.send(data);
     } catch (err) {
