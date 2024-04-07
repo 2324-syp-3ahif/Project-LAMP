@@ -11,9 +11,15 @@
 ###    Get Tasklists by UserID
 GET {{tasklistHostname}}/luca.stinkt@hodenkobold.com
 ###	   Edit Tasklist by ID
-PUT {{tasklistHostname}}/1
+PUT {{tasklistHostname}}/test24@gmx.at/3
+Content-Type: application/json
+
+{
+    "title": "Hausaufgaben",
+    "description": "Hier sind alle Hausaufgaben drin"
+}
 ###	   Delete Tasklist by ID
-DELETE {{tasklistHostname}}/1
+DELETE {{tasklistHostname}}/6
 ###	   Create Tasklist by UserID
 POST {{tasklistHostname}}/luca.stinkt@hodenkobold.com
 Content-Type: application/json
@@ -36,19 +42,23 @@ Content-Type: application/json
     "description": "Bsp 1-5"
 }
 ###	   Edit Task by ID
-PUT {{taskHostname}}/3
+PUT {{taskHostname}}/4
 Content-Type: application/json
 
 {
     "title": "DeutschHUE",
-    "description": "Buch Seite 125",
-    "dueDate": "09.04.2024"
+    "description": "Buch Seite 126",
+    "dueDate": "09.04.2025"
 }
 ###	   Delete Task by ID
+DELETE {{taskHostname}}/12
 ### Tag
 ###	   Get Tags by UserID
+GET {{tagHostname}}/lucahaas07@gmx.at
 ###	   Create Tag by UserID
+POST {{tagHostname}}/lucahaas07@gmx.at/testing
 ###	   Edit Tag by ID
+PUT {{tagHostname}}/1/a1
 ###	   Delete Tag by ID
 ### User
 ###	   Get User by ID

@@ -12,7 +12,7 @@ import {StatusCodes} from "http-status-codes";
 import {Task} from "../interfaces/model/Task";
 import {selectTaskByTaskID} from "../database-functions/select-data";
 import {updateTask} from "../database-functions/update-data";
-import {deleteTaskById} from "../database-functions/delete-data";
+import {deleteTaskByID} from "../database-functions/delete-data";
 
 
 export const taskRouter = express.Router();
@@ -31,23 +31,6 @@ taskRouter.get("/tasklistID/:tasklistID", async (req, res) => {
         }
     })
 });
-
-// taskRouter.get("/userID/:userID", async (req, res) => {
-//   const userID = parseInt(req.params.userID);
-//     if (userID === undefined || isNaN(userID) || userID < 1) {
-//         res.status(StatusCodes.BAD_REQUEST).send("tasklistID must be a positive number");
-//         return;
-//     }
-//     selectTaskFromUserID(db, userID).then(tasks => {
-//         res.status(StatusCodes.OK).send(tasks);
-//     }).catch((err) => {
-//         if (err instanceof IdNotFoundError) {
-//             res.status(StatusCodes.BAD_REQUEST).send("NO user found");
-//         }
-//     })
-//     res.status(StatusCodes.NOT_IMPLEMENTED).send("Not implemented yet!");
-// });
-
 
 taskRouter.post("/:tasklistID", async (req, res) => {
     const tasklistID = parseInt(req.params.tasklistID);
@@ -81,7 +64,7 @@ taskRouter.post("/:tasklistID", async (req, res) => {
             tasklistID: tasklistID
     };
     await insertTask(db, result.title, result.dueDate, result.description, result.priority, result.tasklistID, 'luca.stinkt@hodenkobold.com').then(() => {
-            res.status(StatusCodes.OK).send(result);
+            res.status(StatusCodes.CREATED).send(result);
         }).catch((err) => {
             if (err instanceof DateExpiredError) {
                 res.status(StatusCodes.BAD_REQUEST).send("Date already was!");
@@ -133,20 +116,16 @@ taskRouter.put("/:taskID", async (req, res) => {
 });
 
 taskRouter.delete("/:taskID", async (req, res) => {
-
-    //ToDO: implement deleteTaskByID correctly
-
-    // const taskID = parseInt(req.params.taskID);
-    // if (taskID === undefined || isNaN(taskID) || taskID < 1) {
-    //     res.status(StatusCodes.BAD_REQUEST).send("taskID must be a positive Number");
-    //     return;
-    // }
-    // await deleteTaskById(db, taskID).then(() => {
-    //     res.status(StatusCodes.OK).send("Task deleted");
-    // }).catch((err: Error) => {
-    //     if (err instanceof IdNotFoundError) {
-    //         res.status(StatusCodes.BAD_REQUEST).send("NO task found");
-    //     }
-    // });
-    res.status(StatusCodes.NOT_IMPLEMENTED).send("Not implemented yet!");
+    const taskID = parseInt(req.params.taskID);
+    if (taskID === undefined || isNaN(taskID) || taskID < 1) {
+        res.status(StatusCodes.BAD_REQUEST).send("taskID must be a positive Number");
+        return;
+    }
+    await deleteTaskByID(db, taskID).then(() => {
+        res.status(StatusCodes.OK).send("Task deleted");
+    }).catch((err: Error) => {
+        if (err instanceof IdNotFoundError) {
+            res.status(StatusCodes.BAD_REQUEST).send("NO task found");
+        }
+    });
 });
