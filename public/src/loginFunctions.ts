@@ -36,14 +36,13 @@ signUpButton.addEventListener("click", async () => {
     const email = (document.getElementById("signup-email") as HTMLInputElement).value;
     const password = (document.getElementById("signup-password") as HTMLInputElement).value;
 
-    console.log(username, email, password);
-
     const response = await send("http://localhost:2000/api/register", "POST", {
         username: username,
         email: email,
         password: password
     });
-    if (response.status === 200) {
+    console.log(response);
+    if (response.ok) {
         mail = (document.getElementById("signup-email") as HTMLInputElement).value;
         signupWrapper.style.display = "none";
         loginWrapper.style.display = "inline-block";
@@ -57,7 +56,8 @@ loginButton.addEventListener("click", async () => {
         email: loginEmailInput.value,
         password: loginPasswordInput.value
     });
-    if (response.status === 200) {
+    console.log(response);
+    if (response.ok) {
         mail = loginEmailInput.value;
         loggedIn = true;
         footer.style.display = "block";

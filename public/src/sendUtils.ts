@@ -12,7 +12,8 @@ export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATC
         console.error('Error:', res.status);
         generateWarningPopUp(res.statusText, res.status);
     }
-    if (res.status !== 204) {
+    if (res.status !== 204 && res.status !== 201 && res.status !== 200) {
         return await res.json();
     }
+    return res;
 }
