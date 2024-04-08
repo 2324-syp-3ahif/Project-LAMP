@@ -1,6 +1,3 @@
-import {Task} from "./Task";
-import {Tag} from "./Tag";
-
 export interface Tasklist {
     tasklistID: number,
     title: string,
@@ -8,5 +5,5 @@ export interface Tasklist {
     sortingOrder: number,
     priority: number,
     isLocked: boolean,
-    ownerID: number
+    email: string,
 }

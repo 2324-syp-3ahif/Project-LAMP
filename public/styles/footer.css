@@ -1,0 +1,57 @@
+.footer {
+    padding: 50px 2.5%;
+    color: #EEEEEE;
+    background-color: #6096FC;
+    margin-top: 40px;
+    margin-bottom: 0;
+    font-size: 1em;
+}
+
+.footer h3 {
+    margin-bottom: 12px;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.footer ul {
+    padding: 0;
+    list-style: none;
+    line-height: 1.6;
+}
+
+.footer ul a {
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.6;
+}
+
+.footer ul a:hover {
+    opacity: 0.8;
+}
+
+@media (max-width:767px) {
+    .footer .item {
+        text-align: center;
+        padding-bottom: 20px;
+    }
+}
+
+.footer .item .text {
+    margin-bottom: 36px;
+}
+
+.footer .item .text p {
+    opacity: 0.6;
+}
+
+.footer .copyright {
+    text-align: center;
+    padding-top: 15px;
+    opacity: 0.6;
+}
+
+.footer-image {
+    height: 70px;
+    text-align: center;
+    margin-top: 5px;
+}

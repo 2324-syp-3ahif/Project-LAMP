@@ -22,15 +22,21 @@ export const tasklistRouter = express.Router();
 
 tasklistRouter.get("/:email", (req, res) => {
     const email = req.params.email;
+    console.log("email: " + email);
+
     if (!checkMailFormat(email)) {
+        console.log("email not valid");
         res.status(StatusCodes.BAD_REQUEST).send("email must be a valid email address");
         return;
     }
+    console.log("email valid");
     selectTasklistsByEmail(db, email).then(tasks => {
+        console.log("in db");
         res.status(StatusCodes.OK).send(tasks);
     }).catch((err) => {
+        console.log(err);
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("NO user found");
+            res.status(StatusCodes.BAD_REQUEST).send("No user found");
         }
     })
 });
@@ -64,7 +70,7 @@ tasklistRouter.post("/:email", async (req, res) => {
             res.status(StatusCodes.CREATED).send(tasks);
         }).catch((err) => {
             if (err instanceof IdNotFoundError) {
-                res.status(StatusCodes.BAD_REQUEST).send("NO user found");
+                res.status(StatusCodes.BAD_REQUEST).send("No user found");
             }
         })
     }).catch((err) => {
@@ -130,7 +136,7 @@ tasklistRouter.put("/:email/:tasklistID", async (req, res) => {
         });
     }).catch((err: Error) => {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("NO tasklist found");
+            res.status(StatusCodes.BAD_REQUEST).send("No tasklist found");
         }
     });
 });

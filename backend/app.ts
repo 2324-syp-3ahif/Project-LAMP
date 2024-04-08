@@ -14,7 +14,6 @@ import {
 import {dropTable} from './database-functions/drop-tables';
 import {insertTask} from './database-functions/insert-data';
 import {
-
     selectEventByEventID,
     selectEventsByEmail,
     selectTaskByTaskID,
@@ -34,6 +33,7 @@ import {eventRouter} from "./routers/router-event";
 import {tagRouter} from "./routers/router-tag";
 import {userRouter} from "./routers/router-user";
 import {mailRouter} from "./routers/router-mail";
+import {loginRouter} from "./routers/router-login";
 
 import sqlite from "sqlite3";
 import {IdNotFoundError} from "./interfaces/errors/IdNotFoundError";
@@ -47,7 +47,7 @@ import {Task} from "./interfaces/model/Task";
 import * as tasklist from './interfaces/model/Tasklist';
 
 import { join } from "path";
-import {loginRouter} from "./routers/router-login";
+import {Tag} from "./interfaces/model/Tag";
 
 const app = express();
 const port = process.env.PORT || 2000;
@@ -58,6 +58,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
+app.use("/api", loginRouter);
 app.use("/api/task", taskRouter);
 app.use("/api/tasklist", tasklistRouter);
 app.use("/api/event", eventRouter);
@@ -65,18 +66,9 @@ app.use("/api/tag", tagRouter);
 app.use("/api/user", userRouter);
 app.use("/api/mail", mailRouter);
 
-
 const path = join(__dirname, "../public");
 const options = { extensions: ["html", "js"] }; // , "css"
 app.use(express.static(path, options));
-
-app.get('/test/:userID', (req, res) => {
-});
-
-app.post('/hallo', (req, res) => {
-    console.log(req.body);
-    console.log(req.body.title);
-});
 
 app.post("/", (req, res) => {
     const title = req.body.title;
@@ -164,23 +156,46 @@ app.get('/create-tables', (req, res) => {
     createUserTasklistTable();
     res.send("Works");
 });
-console.log('testTasklist');
 
-// app.get('/testTasklist', (req, res) => {
-//     const list: tasklist.Tasklist = {
-//         tasklistID: 42,
-//         title: "HEHE",
-//         description: "i hope this may work",
-//         sortingOrder: 0,
-//         priority: 0,
-//         isLocked: false,
-//         ownerID: 1,
-//     }
-//     //send.send('http://localhost:2000/api/tasklist', 'POST', JSON.stringify(list));
-//     //res.send("Works");
-//     res.send(list);
-// });
+/*
+app.get('/testTasklist', (_, res) => {
+    const list1: tasklist.Tasklist = {
+        tasklistID: 42,
+        title: "HEHE",
+        description: "i hope this may work",
+        sortingOrder: 0,
+        priority: 0,
+        isLocked: false,
+        ownerID: 1,
+    }
+    const list2: tasklist.Tasklist = {
+        tasklistID: 43,
+        title: "ha",
+        description: "test",
+        sortingOrder: 0,
+        priority: 1,
+        isLocked: false,
+        ownerID: 1,
+    }
+    const list = [list1, list2];
+    //send.send('http://localhost:2000/api/tasklist', 'POST', JSON.stringify(list));
+    //res.send("Works");
+    res.send(list);
+});
 
+app.get('/testTags', (_, res) => {
+    const tag1: Tag = {
+        tagID: 1,
+        name: "Tag1",
+    }
+    const tag2: Tag = {
+        tagID: 2,
+        name: "Tag2",
+    }
+    const tag = [tag1, tag2];
+    res.send(tag);
+});
+*/
 app.listen(2000, () => {
     console.log(`Listening on http://localhost:2000`);
 });
