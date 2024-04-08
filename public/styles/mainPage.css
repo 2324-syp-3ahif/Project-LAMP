@@ -1,140 +1,104 @@
 body {
     font-family: sans-serif;
-    background-color: #ECFAFC;
-    padding: 300px 0 0;
+    background-color: #EEEEEE;
+    padding: 80px 0 0;
     margin: 0;
     width: 100%;
-    height: 100vh;
+    height: auto;
     min-width: 50%;
+    justify-content: center;
 }
 
-/* Navbar */
-.navbar {
-    position: fixed;
-    font-size: 18px;
-    z-index: 10;
-    background-color: #6096FC;
+.btn {
+    background-color: #3751AD;
+    color: #EEEEEE;
+    border: none;
+    border-radius: 15px;
+    padding: 10px;
+    margin: 10px;
+    cursor: pointer;
 }
 
-.dropdown {
-    background-color: #6096FC !important;
+.btn:hover {
+    background-color: #26397a !important;
+    color: #EEEEEE !important;
 }
 
-.image-navbar {
-    height: 40px;
-    margin: 5px 5px 5px 10px;
-}
-
-#account-picture {
-    height: 40px;
-    width: 40px;
-    border-radius: 50%;
-}
-
-#account-picture:hover {
-    transform: scale(1.10);
-    transition: all 0.3s ease 0s;
-}
-
-.nav-item {
-    text-decoration: none;
+/* Top items */
+.top-items {
+    display: flex;
+    width: 100%;
     align-self: center;
-    margin-right: 15px;
-    position: relative;
-    color: #EEEEEE;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
 }
 
-.nav-link {
-    color: #EEEEEE;
-}
-/* underline animation */
-.heading{
-    text-decoration: none;
-    display: inline-block;
-    position: relative;
-    color: #EEEEEE;
-}
-/* stay color */
-.heading:hover {
-    color: #EEEEEE;
-}
-.heading::after {
-    content: '';
-    position: absolute;
-    width: calc(100% - 10px);
-    transform: scaleX(0);
-    height: 2px;
-    bottom: 5px;
-    left: 5px;
-    background-color: #EEEEEE;
-    transform-origin: bottom right;
-    transition: transform 0.25s ease-out;
+#ordering-btn {
+    margin-right: 30px;
 }
 
-.heading:hover::after {
-    width: calc(100% - 10px);
-    color: #EEEEEE;
-    transform: scaleX(1);
-    transform-origin: bottom left;
+#create-tasklist-btn {
+    margin-right: 30px;
 }
 
-/* Footer */
-.footer {
-    padding: 50px 2.5%;
-    color: #EEEEEE;
-    background-color: #6096FC;
-    margin-top: 0;
-    margin-bottom: 0;
-    font-size: 1em;
+#filter-img {
+    height: 30px;
 }
 
-.footer h3 {
-    margin-bottom: 12px;
-    font-weight: bold;
-    font-size: 1.1em;
+#filter-btn {
+    background: none;
+    box-sizing: border-box;
+    border: solid 2px transparent;
+
 }
 
-.footer ul {
-    padding: 0;
-    list-style: none;
-    line-height: 1.6;
+#filter-btn:hover {
+    background-color: #EEEEEE !important;
+    color: #00C2DD !important;
+    border: solid 2px #3751AD;
 }
 
-.footer ul a {
-    color: inherit;
-    text-decoration: none;
-    opacity: 0.6;
+/* Create Tasklist Form */
+#create-form {
+    display: none;
+    width: 40%;
+    transform: translateX(75%);
+    padding: 20px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    background-color: #00c2dd;
+    color: #eeeeee;
+    border-radius: 20px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
 }
 
-.footer ul a:hover {
-    opacity: 0.8;
+#invite-btn #tags-btn {
+    align-self: flex-end;
 }
 
-@media (max-width:767px) {
-    .footer .item {
-        text-align: center;
-        padding-bottom: 20px;
-    }
+#tags-btn {
+    float: right;
 }
 
-.footer .item .text {
-    margin-bottom: 36px;
+.form-select {
+    margin: 10px 0;
 }
 
-.footer .item .text p {
-    opacity: 0.6;
+/* Invite Modal */
+#invite-user-btn {
+    margin-top: 10px;
+    background-color: #00C2DD !important;
+    color: #EEEEEE !important;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-.footer .copyright {
-    text-align: center;
-    padding-top: 15px;
-    opacity: 0.6;
-}
-
-.footer-image {
-    height: 70px;
-    text-align: center;
-    margin-top: 5px;
+#invite-user-btn:hover {
+    background-color: #EEEEEE !important;
+    color: #00C2DD !important;
 }
 .wrapper{
     z-index: 1;

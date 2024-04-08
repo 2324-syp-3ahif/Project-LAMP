@@ -6,5 +6,5 @@ export function checkSortingOrder(sortingOrder: number): boolean {
 
 }
 export function checkPriority(priority: number): boolean {
-    return priority !== undefined && !isNaN(priority) && priority >0;
+    return priority !== undefined && !isNaN(priority) && priority >= 0;
 }

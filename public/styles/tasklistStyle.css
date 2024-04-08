@@ -1,0 +1,39 @@
+#tasklists {
+    width: 40%;
+    margin: 0 auto;
+}
+
+.card {
+    background-color: #3751AD;
+    margin-top: 30px;
+    border-radius: 30px;
+    box-shadow: 0 10px 8px 0 rgba(0, 0, 0, 0.2);
+    align-self: center;
+}
+
+.card-title {
+    color: #262628;
+    padding: 8px;
+    font-size: 20px;
+    background-color: #EEEEEE;
+    border-radius: 15px;
+}
+
+.card-text {
+    color: #EEEEEE;
+    padding: 8px;
+    font-size: 18px;
+}
+.modal-content {
+    color: #EEEEEE;
+    background-color: #3751AD;
+}
+#filter-tags-modal {
+    display: flex;
+    flex-direction: column;
+    color: #EEEEEE;
+}
+
+#filter-tags-modal .active {
+    background-color: #00C2DD;
+}
