@@ -48,26 +48,31 @@ tasklistRouter.post("/:email", async (req, res) => {
         return;
     }
 
-    const title = req.body.title;
-    const description = req.body.description ?? "";
-    const sortingOrder = req.body.sortingOrder ?? 1;
-    const priority = req.body.priority ?? 1;
+    const tasklist: Tasklist = {
+        tasklistID: await getMaxId(db, 'TASKLISTS', 'tasklistID') + 1,
+        title: req.body.title,
+        description: req.body.description ?? "",
+        priority: req.body.priority ?? 1,
+        isLocked: false,
+        sortingOrder: req.body.sortingOrder ?? 1,
+        email: email
+    }
 
-    if (!utils.checkTitle(req.body.title)) {
+    if (!utils.checkTitle(tasklist.title)) {
         res.status(StatusCodes.BAD_REQUEST).send("title must be at least 1 character long");
         return;
     }
-    if (!utils.checkSortingOrder(sortingOrder)) {
+    if (!utils.checkSortingOrder(tasklist.sortingOrder)) {
         res.status(StatusCodes.BAD_REQUEST).send("sortingOrder must be a positive number");
         return;
     }
-    if (!utils.checkPriority(priority)) {
+    if (!utils.checkPriority(tasklist.priority)) {
         res.status(StatusCodes.BAD_REQUEST).send("priority must be a positive number");
     }
 
-    insertTasklist(db, title, description, priority, false, sortingOrder, email).then(() => {
-        selectTasklistsByEmail(db, email).then(tasks => {
-            res.status(StatusCodes.CREATED).send(tasks);
+    insertTasklist(db, tasklist.title, tasklist.description, tasklist.priority, tasklist.isLocked, tasklist.sortingOrder, tasklist.email).then(() => {
+        selectTasklistsByEmail(db, email).then(t => {
+            res.status(StatusCodes.CREATED).send(tasklist);
         }).catch((err) => {
             if (err instanceof IdNotFoundError) {
                 res.status(StatusCodes.BAD_REQUEST).send("No user found");
