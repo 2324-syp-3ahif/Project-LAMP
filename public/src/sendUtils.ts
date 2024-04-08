@@ -13,5 +13,6 @@ export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATC
         console.error('Error:', res.text());
         generateWarningPopUp(await res.text(), res.status);
     }
+    console.log("returning");
     return res;
 }
