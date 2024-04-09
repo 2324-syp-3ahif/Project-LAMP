@@ -2,6 +2,7 @@ import { send } from './sendUtils';
 import { Tasklist } from './model/Tasklist';
 import { Tag } from './model/Tag';
 import { checkMailFormat} from "./utils";
+import {Task} from "./model/Task";
 
 export async function load(mail: string) {
     const tasklistUrl: string = 'http://localhost:2000/api/tasklist/';
@@ -25,6 +26,8 @@ export async function load(mail: string) {
     if (listResp.ok && tagsResp.ok) {
         const lists: Tasklist[] = await listResp.json();
         const tags: Tag[] = await tagsResp.json();
+
+        await showAllTasklists(lists);
 
         createTasklistButton.addEventListener('click', async () => {
             console.log('create tasklist');
@@ -56,12 +59,8 @@ export async function load(mail: string) {
                 tasklistID: 0, // let server handle this
             };
             console.log(lists);
-            console.log("sending");
             await send(tasklistUrl + mail, 'POST', tasklist);
-            console.log("sended");
-            console.log(typeof tasklist);
-            console.log("tasklist");
-            //lists.push(tasklist);
+            lists.push(tasklist);
             createForm.style.display = 'none';
             await showAllTasklists(lists);
         });
@@ -102,20 +101,29 @@ export async function load(mail: string) {
 
         filterButton.addEventListener('click', async () => {
             console.log('filter');
+            const activeFilters : Tag[] = [];
             for (const tag of tags) {
                 const tagElement = document.createElement('button');
                 tagElement.classList.add('tag-btn');
                 tagElement.classList.add('btn');
                 tagElement.innerHTML = tag.name;
-                tagElement.addEventListener('click', () => {
+                tagElement.addEventListener('click', async () => {
                     if (tagElement.classList.contains('active')) {
                         tagElement.classList.remove('active');
-                        // TODO remove filter
+                        activeFilters.splice(activeFilters.indexOf(tag), 1);
                     } else {
                         tagElement.classList.add('active');
-                        // TODO add filter
+                        activeFilters.push(tag);
                     }
-                    // TODO filter by tag -> show only tasklists with this tag, can only work with tag router
+                    for (const list of lists) {
+                        taskLists.innerHTML = "";
+                        const tagsOfList: Tag[] = (await send(tagUrl + list.tasklistID, 'GET')).json;
+                        if (activeFilters.length === 0) {
+                            await showAllTasklists(lists);
+                        } else if (activeFilters.every((tag: Tag) => tagsOfList.includes(tag))) {
+                            await showTasklist(list);
+                        }
+                    }
                 });
                 filterTagsModal.appendChild(tagElement);
             }
@@ -123,7 +131,8 @@ export async function load(mail: string) {
 
         async function showAllTasklists(lists: Tasklist[]) {
             taskLists.innerHTML = "";
-            console.log(lists);
+
+            console.log("show all tasklists");
             for (const list of lists) {
                 const listEl: HTMLElement = await showTasklist(list);
                 taskLists.appendChild(listEl);
@@ -131,20 +140,31 @@ export async function load(mail: string) {
         }
 
         async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
+            console.log("expand");
             if (list.isLocked) {
                 alert('This tasklist is locked');
             } else {
+                await send(tasklistUrl + list.tasklistID, 'PATCH', {isLocked: true});
+
                 const tasksEl = document.createElement('div');
                 tasksEl.classList.add('tasks');
-                const tasks = await send(taskUrl + "tasklistID/" + list.tasklistID, 'GET');
+                const tasks: Task[] = (await send(taskUrl + "tasklistID/" + list.tasklistID, 'GET')).json;
+
                 for (const task of tasks) {
                     const taskEl = document.createElement('div');
-                    taskEl.innerHTML = task.title;
-                    tasks.appendChild(taskEl);
+                    // TOOD show all tasks like in GUI mockups (with extended version)
                     console.log("added task!");
                 }
+                const newTaskButton = document.createElement('button');
+                // TODO: add task element like in GUI mockups
+
                 listEl.appendChild(tasksEl);
-                // TODO close button to un-expand?
+
+                const close = document.createElement('a');
+                close.id = "close-button";
+                const binImg = document.createElement('img');
+                binImg.src = "./img/bin_icon.png";
+                close.appendChild(document.createElement('img'));
             }
         }
 
