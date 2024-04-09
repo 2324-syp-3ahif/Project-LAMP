@@ -141,31 +141,65 @@ export async function load(mail: string) {
 
         async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
             console.log("expand");
+
             if (list.isLocked) {
+                list.isLocked = false; // just for testing purposes
+                await send(tasklistUrl + "/" + mail + "/" + list.tasklistID, 'PUT', list);
                 alert('This tasklist is locked');
             } else {
-                await send(tasklistUrl + list.tasklistID, 'PATCH', {isLocked: true});
+                list.isLocked = true;
+                await send(tasklistUrl + "/" + mail + "/" + list.tasklistID, 'PUT', list);
+
+                const tagsEl = document.createElement('div');
+                tagsEl.classList.add('tags');
+                /* tag creation must be implemented for this
+                const allTags: Tag[] = await (await send(tagUrl + list.tasklistID, 'GET')).json;
+                allTags.forEach((tag: Tag) => {
+                    const tagElement = document.createElement('span');
+                    tagElement.innerHTML = tag.name;
+                    tagsEl.appendChild(tagElement);
+                }); */
 
                 const tasksEl = document.createElement('div');
                 tasksEl.classList.add('tasks');
-                const tasks: Task[] = (await send(taskUrl + "tasklistID/" + list.tasklistID, 'GET')).json;
+                const tasks: Task[] = await (await send(taskUrl + 'tasklistID/' +  list.tasklistID, 'GET')).json;
 
                 for (const task of tasks) {
                     const taskEl = document.createElement('div');
-                    // TOOD show all tasks like in GUI mockups (with extended version)
+                    // TODO show all tasks like in GUI mockups (with extended version)
                     console.log("added task!");
                 }
                 const newTaskButton = document.createElement('button');
                 // TODO: add task element like in GUI mockups
 
-                listEl.appendChild(tasksEl);
-
-                const close = document.createElement('a');
-                close.id = "close-button";
+                const deleteButton = document.createElement('a');
+                deleteButton.id = "delete-button";
                 const binImg = document.createElement('img');
                 binImg.src = "./img/bin_icon.png";
-                close.appendChild(document.createElement('img'));
+                deleteButton.appendChild(binImg);
+
+                listEl.appendChild(tagsEl);
+                listEl.appendChild(tasksEl);
+                listEl.appendChild(deleteButton);
+
+                listEl.addEventListener('click',  () => {
+                    closeTasklist(list, listEl, tagsEl, tasksEl, deleteButton);
+                });
+
+                setTimeout( () => {
+                    closeTasklist(list, listEl, tagsEl, tasksEl, deleteButton)
+                }, 120000); // close automatically after 2 minutes
+
             }
+        }
+
+        async function closeTasklist(list: Tasklist, listEl: HTMLElement, tagsEl: HTMLElement, tasksEl: HTMLElement, deleteButton: HTMLElement) {
+            // close again
+            listEl.removeChild(tagsEl);
+            listEl.removeChild(tasksEl);
+            listEl.removeChild(deleteButton);
+            list.isLocked = false;
+            await send(tasklistUrl + "/" + mail + "/" + list.tasklistID, 'PUT', list);
         }
 
         async function editTitle(listID: number, newTitle: string){
@@ -191,14 +225,7 @@ export async function load(mail: string) {
 
             const tags = document.createElement('div');
             tags.classList.add('tags');
-            /*
-            const allTags: Tag[] = await send(tagUrl + "tasklistID/" + list.tasklistID, 'GET');
-            allTags.forEach((tag: Tag) => {
-                const tagElement = document.createElement('span');
-                tagElement.innerHTML = tag.name;
-                tags.appendChild(tagElement);
-            });
-            */
+
             const description = document.createElement('p');
             description.innerHTML = list.description;
             description.classList.add("card-text");
