@@ -4,18 +4,17 @@ import {Tasklist} from "../interfaces/model/Tasklist";
 import {StatusCodes} from "http-status-codes";
 import {ConnectionToDatabaseLostError} from "../interfaces/errors/ConnectionToDatabaseLostError";
 import {DateFormatError} from "../interfaces/errors/DateFormatError";
-import {insertTask, insertTasklist} from "../database-functions/insert-data";
+import {insertTasklist} from "../database-functions/insert-data";
 import {db} from "../app";
 import {DateExpiredError} from "../interfaces/errors/DateExpiredError";
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
 import {StringToLongError} from "../interfaces/errors/StringToLongError";
 import {checkMailFormat} from "../utils";
-import {selectTaskByTaskID, selectTasklistsByEmail, selectTasksByTasklistID} from "../database-functions/select-data";
+import {selectTasklistsByEmail} from "../database-functions/select-data";
 import {NotAValidNumberError} from "../interfaces/errors/NotAValidNumberError";
 import {getMaxId} from "../database-functions/select-data";
-import {Task} from "../interfaces/model/Task";
-import {updateTask, updateTasklist} from "../database-functions/update-data";
-import {deleteTaskByID, deleteTasklistByID} from "../database-functions/delete-data";
+import {updateTasklist} from "../database-functions/update-data";
+import {deleteTasklistByID} from "../database-functions/delete-data";
 import {isAuthenticated} from "../middleware/auth-handlers";
 
 

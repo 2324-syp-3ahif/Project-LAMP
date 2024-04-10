@@ -19,12 +19,9 @@ const inviteUserBtn = document.getElementById('invite-user-btn') as HTMLButtonEl
 const deleteTasklistBtn = document.getElementById('delete-tasklist-btn') as HTMLButtonElement;
 const deleteModal = document.getElementById('delete-modal') as HTMLElement;
 
-
 let deleteTasklistID = -1;
 
 export async function load(mail: string) {
-    console.log("try load");
-
     const listResp = await send(tasklistUrl + "email/" + mail, 'GET');
     const tagsResp = await send(tagUrl + mail, 'GET');
 
@@ -197,7 +194,6 @@ export async function load(mail: string) {
             deleteButton.setAttribute('data-bs-toggle', 'modal');
             deleteButton.setAttribute('data-bs-target', '#delete-modal');
             deleteButton.addEventListener('click', () => {
-                console.log("delete here");
                 deleteTasklistID = list.tasklistID;
             });
 
@@ -219,7 +215,6 @@ export async function load(mail: string) {
     }
 
     async function closeTasklist(list: Tasklist, listEl: HTMLElement, tagsEl: HTMLElement, tasksEl: HTMLElement, deleteButton: HTMLElement) {
-        // close again
         listEl.removeChild(tagsEl);
         listEl.removeChild(tasksEl);
         listEl.removeChild(deleteButton);

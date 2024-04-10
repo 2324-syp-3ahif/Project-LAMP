@@ -4,7 +4,7 @@ import {checkMailFormat, checkPasswordFormat, checkStringFormat} from "../utils"
 import {db} from "../app";
 import {selectUserByEmail} from "../database-functions/select-data";
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
-import {deleteTagByID, deleteUserByEmail} from "../database-functions/delete-data";
+import {deleteUserByEmail} from "../database-functions/delete-data";
 import {insertUser} from "../database-functions/insert-data";
 import {IdAlreadyExistsError} from "../interfaces/errors/IdAlreadyExistsError";
 import {updateUser} from "../database-functions/update-data";
