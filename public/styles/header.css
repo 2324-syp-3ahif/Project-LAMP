@@ -1,7 +1,7 @@
 .navbar {
     position: fixed;
     font-size: 18px;
-    z-index: 0;
+    z-index: 50;
     background-color: #6096FC;
 }
 
