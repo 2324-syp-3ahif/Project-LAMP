@@ -1,8 +1,7 @@
-import { send } from './sendUtils';
-import { Tasklist } from './model/Tasklist';
-import { Tag } from './model/Tag';
-import { checkMailFormat} from "./utils";
-import {Task} from "./model/Task";
+import {send} from './sendUtils';
+import {Tasklist} from './model/Tasklist';
+import {Tag} from './model/Tag';
+import {checkMailFormat} from "./utils";
 
 export async function load(mail: string) {
     const tasklistUrl: string = 'http://localhost:2000/api/tasklist/';
@@ -19,9 +18,12 @@ export async function load(mail: string) {
     const createForm = document.getElementById('create-form') as HTMLFormElement;
     const submitButton = document.getElementById('submit-btn') as HTMLButtonElement;
     const inviteUserBtn = document.getElementById('invite-user-btn') as HTMLButtonElement;
+    const deleteTasklistBtn = document.getElementById('delete-tasklist-btn') as HTMLButtonElement;
 
     const listResp = await send(tasklistUrl + mail, 'GET');
     const tagsResp = await send(tagUrl + mail, 'GET');
+
+    let deleteTasklistID = -1;
 
     if (listResp.ok && tagsResp.ok) {
         const lists: Tasklist[] = await listResp.json();
@@ -101,7 +103,7 @@ export async function load(mail: string) {
 
         filterButton.addEventListener('click', async () => {
             console.log('filter');
-            const activeFilters : Tag[] = [];
+            const activeFilters: Tag[] = [];
             for (const tag of tags) {
                 const tagElement = document.createElement('button');
                 tagElement.classList.add('tag-btn');
@@ -129,116 +131,124 @@ export async function load(mail: string) {
             }
         });
 
-        async function showAllTasklists(lists: Tasklist[]) {
-            taskLists.innerHTML = "";
 
-            console.log("show all tasklists");
-            for (const list of lists) {
-                const listEl: HTMLElement = await showTasklist(list);
-                taskLists.appendChild(listEl);
-            }
+    }
+
+    async function showAllTasklists(lists: Tasklist[]) {
+        taskLists.innerHTML = "";
+
+        console.log("show all tasklists");
+        for (const list of lists) {
+            const listEl: HTMLElement = await showTasklist(list);
+            taskLists.appendChild(listEl);
         }
+    }
 
-        async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
-            console.log("expand");
+    async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
+        console.log("expand");
 
-            if (list.isLocked) {
-                list.isLocked = false; // just for testing purposes
-                await send(tasklistUrl + "/" + mail + "/" + list.tasklistID, 'PUT', list);
-                alert('This tasklist is locked');
-            } else {
-                list.isLocked = true;
-                await send(tasklistUrl + "/" + mail + "/" + list.tasklistID, 'PUT', list);
+        if (list.isLocked) {
+            list.isLocked = false; // just for testing purposes
+            await send(tasklistUrl + "/" + mail + "/" + list.tasklistID, 'PUT', list);
+            alert('This tasklist is locked');
+        } else {
+            list.isLocked = true;
+            await send(tasklistUrl + "/" + mail + "/" + list.tasklistID, 'PUT', list);
 
-                const tagsEl = document.createElement('div');
-                tagsEl.classList.add('tags');
-                /* tag creation must be implemented for this
-                const allTags: Tag[] = await (await send(tagUrl + list.tasklistID, 'GET')).json;
-                allTags.forEach((tag: Tag) => {
-                    const tagElement = document.createElement('span');
-                    tagElement.innerHTML = tag.name;
-                    tagsEl.appendChild(tagElement);
-                }); */
+            const tagsEl = document.createElement('div');
+            tagsEl.classList.add('tags');
+            /* tag creation must be implemented for this
+            const allTags: Tag[] = await (await send(tagUrl + list.tasklistID, 'GET')).json;
+            allTags.forEach((tag: Tag) => {
+                const tagElement = document.createElement('span');
+                tagElement.innerHTML = tag.name;
+                tagsEl.appendChild(tagElement);
+            }); */
 
-                const tasksEl = document.createElement('div');
-                tasksEl.classList.add('tasks');
-                const tasks: Task[] = await (await send(taskUrl + 'tasklistID/' +  list.tasklistID, 'GET')).json;
 
+            const tasksEl = document.createElement('div');
+            /* // TODO: fix
+            tasksEl.classList.add('tasks');
+            const tasksResp = await send(taskUrl + 'tasklistID/' +  list.tasklistID, 'GET');
+            if (tasksResp.ok)
+            const tasks: Task[] = await tasksResp.json();
+            *//*
                 for (const task of tasks) {
                     const taskEl = document.createElement('div');
                     // TODO show all tasks like in GUI mockups (with extended version)
                     console.log("added task!");
                 }
-                const newTaskButton = document.createElement('button');
-                // TODO: add task element like in GUI mockups
+                 */
+            const newTaskButton = document.createElement('button');
+            // TODO: add task element like in GUI mockups
 
-                const deleteButton = document.createElement('a');
-                deleteButton.id = "delete-button";
-                const binImg = document.createElement('img');
-                binImg.src = "./img/bin_icon.png";
-                deleteButton.appendChild(binImg);
+            const deleteButton = document.createElement('button');
+            deleteButton.id = "delete-button";
+            const binImg = document.createElement('img');
+            binImg.alt = 'filter img';
+            binImg.src = "./img/bin_icon.png";
+            binImg.id = 'filter-img';
+            deleteButton.appendChild(binImg);
 
-                listEl.appendChild(tagsEl);
-                listEl.appendChild(tasksEl);
-                listEl.appendChild(deleteButton);
-
-                listEl.addEventListener('click',  () => {
-                    closeTasklist(list, listEl, tagsEl, tasksEl, deleteButton);
-                });
-
-                setTimeout( () => {
-                    closeTasklist(list, listEl, tagsEl, tasksEl, deleteButton)
-                }, 120000); // close automatically after 2 minutes
-
-            }
-        }
-
-        async function closeTasklist(list: Tasklist, listEl: HTMLElement, tagsEl: HTMLElement, tasksEl: HTMLElement, deleteButton: HTMLElement) {
-            // close again
-            listEl.removeChild(tagsEl);
-            listEl.removeChild(tasksEl);
-            listEl.removeChild(deleteButton);
-            list.isLocked = false;
-            await send(tasklistUrl + "/" + mail + "/" + list.tasklistID, 'PUT', list);
-        }
-
-        async function editTitle(listID: number, newTitle: string){
-            const resp = send(tasklistUrl + listID, 'GET', );
-            const list: Tasklist = await resp;
-            list.title = newTitle;
-            await send(tasklistUrl + listID, 'PUT', list);
-            await showAllTasklists(lists);
-        }
-
-        async function showTasklist(list: Tasklist): Promise<HTMLElement> {
-            const listElement: HTMLElement = document.createElement('div');
-            listElement.classList.add('tasklist');
-            listElement.classList.add('card-body');
-            listElement.classList.add('card');
-
-            const title = document.createElement('h2');
-            title.innerHTML = list.title;
-            title.addEventListener('input', () => {
-                editTitle(list.tasklistID, title.innerHTML);
+            deleteButton.classList.add('btn');
+            deleteButton.setAttribute('data-bs-toggle', 'modal');
+            deleteButton.setAttribute('data-bs-target', '#delete-modal');
+            deleteButton.addEventListener('click', () => {
+                deleteTasklistID = list.tasklistID;
             });
-            title.classList.add("card-title");
+            listEl.appendChild(tagsEl);
+            listEl.appendChild(tasksEl);
+            listEl.appendChild(deleteButton);
 
-            const tags = document.createElement('div');
-            tags.classList.add('tags');
-
-            const description = document.createElement('p');
-            description.innerHTML = list.description;
-            description.classList.add("card-text");
-
-            listElement.appendChild(title);
-            listElement.appendChild(description);
-            listElement.appendChild(tags);
-
-            listElement.addEventListener('click', () => {
-                extendTasklist(listElement, list);
+            listEl.addEventListener('click', () => {
+                closeTasklist(list, listEl, tagsEl, tasksEl, deleteButton);
             });
 
-            return listElement;
+            setTimeout(() => {
+                closeTasklist(list, listEl, tagsEl, tasksEl, deleteButton)
+            }, 120000); // close automatically after 2 minutes
         }
+    }
+
+    async function closeTasklist(list: Tasklist, listEl: HTMLElement, tagsEl: HTMLElement, tasksEl: HTMLElement, deleteButton: HTMLElement) {
+        // close again
+        listEl.removeChild(tagsEl);
+        listEl.removeChild(tasksEl);
+        listEl.removeChild(deleteButton);
+        list.isLocked = false;
+        await send(tasklistUrl + "/" + mail + "/" + list.tasklistID, 'PUT', list);
+    }
+
+    async function showTasklist(list: Tasklist): Promise<HTMLElement> {
+        const listElement: HTMLElement = document.createElement('div');
+        listElement.classList.add('tasklist');
+        listElement.classList.add('card-body');
+        listElement.classList.add('card');
+
+        const title = document.createElement('h2');
+        title.innerHTML = list.title;
+        title.addEventListener('input', async () => {
+            list.title = title.innerHTML;
+            await send(tasklistUrl + list.tasklistID, 'PUT', list);
+            await showTasklist(list);
+        });
+        title.classList.add("card-title");
+
+        const tags = document.createElement('div');
+        tags.classList.add('tags');
+
+        const description = document.createElement('p');
+        description.innerHTML = list.description;
+        description.classList.add("card-text");
+
+        listElement.appendChild(title);
+        listElement.appendChild(description);
+        listElement.appendChild(tags);
+
+        listElement.addEventListener('click', () => {
+            extendTasklist(listElement, list);
+        });
+
+        return listElement;
     }
 }
