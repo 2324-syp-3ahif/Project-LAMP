@@ -19,7 +19,7 @@ Content-Type: application/json
     "description": "Hier sind alle Hausaufgaben drin"
 }
 ###	   Delete Tasklist by ID
-DELETE {{tasklistHostname}}/6
+DELETE {{tasklistHostname}}/15
 ###	   Create Tasklist by UserID
 POST {{tasklistHostname}}/luca.stinkt@hodenkobold.com
 Content-Type: application/json
