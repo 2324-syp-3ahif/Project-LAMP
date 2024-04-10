@@ -14,7 +14,7 @@ export async function deleteTasklistByID(db: sqlite3.Database, tasklistID: numbe
     await deleteFromTable(db, `DELETE FROM TASKS WHERE tasklistID = ${tasklistID};`);
     await deleteById(db, tasklistID, 'tasklistID', 'TASKLISTS');
     await deleteFromTable(db, `DELETE FROM TAGTASKLISTS WHERE tasklistID = ${tasklistID};`);
-    await deleteFromTable(db, `DELETE FROM USERASKLISTS WHERE tasklistID = ${tasklistID};`);
+    await deleteFromTable(db, `DELETE FROM USERTASKLISTS WHERE tasklistID = ${tasklistID};`);
 }
 
 export async function deleteUserByEmail(db: sqlite3.Database, email: string) {

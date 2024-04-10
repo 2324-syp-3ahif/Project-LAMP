@@ -155,6 +155,7 @@ tasklistRouter.delete("/:tasklistID", async (req, res) => {
 
     await deleteTasklistByID(db, tasklistID).then(() => {
         res.status(StatusCodes.OK).send("Tasklist deleted");
+        return;
     }).catch((err: Error) => {
         if (err instanceof IdNotFoundError) {
             res.status(StatusCodes.BAD_REQUEST).send("NO tasklist found");
