@@ -38,34 +38,35 @@ signUpButton.addEventListener("click", async () => await handleSignUp());
 loginButton.addEventListener("click", async () => await handleLogin());
 
 async function handleLogin(){
-    try{
         const response = await send("http://localhost:2000/api/login", "POST", {
             email: loginEmailInput.value,
             password: loginPasswordInput.value
         });
-        const accessToken = (await response.json()).accessToken;
-        if (accessToken !== null) {
-            sessionStorage.setItem('jwt', accessToken);
-            mail = loginEmailInput.value;
-            loginWrapper.style.display = "none";
-            overlay.style.display = "none";
-            await load(mail);
+        if (response.ok) {
+            const accessToken = (await response.json()).accessToken;
+            if (accessToken !== null) {
+                sessionStorage.setItem('jwt', accessToken);
+                mail = loginEmailInput.value;
+                loginWrapper.style.display = "none";
+                overlay.style.display = "none";
+                await load(mail);
+            }
         }
-    } catch (e){
-        alert("Failed to login");
-    }
+        else {
+            generateWarningPopUp("Login failed", response.status)
+        }
 }
 async function handleSignUp(){
-    try{
-        await send("http://localhost:2000/api/register", "POST", {
+    const response = await send("http://localhost:2000/api/register", "POST", {
             username: signUpUsernameInput.value,
             email: signUpEmailInput.value,
             password: signUpPasswordInput.value
-        });
+    });
+    if (response.ok) {
         signupWrapper.style.display = "none";
         loginWrapper.style.display = "block";
-    } catch (e){
-        alert("Failed to sign up");
+    } else {
+        generateWarningPopUp("Sign up failed", response.status)
     }
 }
 function logout(){
