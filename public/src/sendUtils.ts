@@ -9,10 +9,8 @@ export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATC
     }
     const res = await fetch(route, options);
     if (!res.ok) {
-        console.log(res.body);
         console.error('Error:', res.text());
         generateWarningPopUp(await res.text(), res.status);
     }
-    console.log("returning");
     return res;
 }

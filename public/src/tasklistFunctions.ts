@@ -19,11 +19,13 @@ export async function load(mail: string) {
     const submitButton = document.getElementById('submit-btn') as HTMLButtonElement;
     const inviteUserBtn = document.getElementById('invite-user-btn') as HTMLButtonElement;
     const deleteTasklistBtn = document.getElementById('delete-tasklist-btn') as HTMLButtonElement;
+    const deleteModal = document.getElementById('delete-modal') as HTMLElement;
 
     const listResp = await send(tasklistUrl + mail, 'GET');
     const tagsResp = await send(tagUrl + mail, 'GET');
 
     let deleteTasklistID = -1;
+
 
     if (listResp.ok && tagsResp.ok) {
         const lists: Tasklist[] = await listResp.json();
@@ -31,8 +33,16 @@ export async function load(mail: string) {
 
         await showAllTasklists(lists);
 
+        deleteTasklistBtn.addEventListener('click', async () => {
+            if (deleteTasklistID !== -1) {
+                lists.splice(lists.findIndex((list: Tasklist) => list.tasklistID === deleteTasklistID), 1);
+                await send(tasklistUrl + deleteTasklistID, 'DELETE');
+                deleteTasklistID = -1;
+                await showAllTasklists(lists);
+            }
+        });
+
         createTasklistButton.addEventListener('click', async () => {
-            console.log('create tasklist');
             createForm.style.display = 'flex';
         });
 
@@ -60,7 +70,6 @@ export async function load(mail: string) {
                 //lastView: new Date(),
                 tasklistID: 0, // let server handle this
             };
-            console.log(lists);
             await send(tasklistUrl + mail, 'POST', tasklist);
             lists.push(tasklist);
             createForm.style.display = 'none';
@@ -136,8 +145,6 @@ export async function load(mail: string) {
 
     async function showAllTasklists(lists: Tasklist[]) {
         taskLists.innerHTML = "";
-
-        console.log("show all tasklists");
         for (const list of lists) {
             const listEl: HTMLElement = await showTasklist(list);
             taskLists.appendChild(listEl);
@@ -145,15 +152,13 @@ export async function load(mail: string) {
     }
 
     async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
-        console.log("expand");
-
         if (list.isLocked) {
             list.isLocked = false; // just for testing purposes
-            await send(tasklistUrl + "/" + mail + "/" + list.tasklistID, 'PUT', list);
+            await send(tasklistUrl + mail + "/" + list.tasklistID, 'PUT', list);
             alert('This tasklist is locked');
         } else {
             list.isLocked = true;
-            await send(tasklistUrl + "/" + mail + "/" + list.tasklistID, 'PUT', list);
+            await send(tasklistUrl + mail + "/" + list.tasklistID, 'PUT', list);
 
             const tagsEl = document.createElement('div');
             tagsEl.classList.add('tags');
@@ -164,7 +169,6 @@ export async function load(mail: string) {
                 tagElement.innerHTML = tag.name;
                 tagsEl.appendChild(tagElement);
             }); */
-
 
             const tasksEl = document.createElement('div');
             /* // TODO: fix
@@ -194,13 +198,20 @@ export async function load(mail: string) {
             deleteButton.setAttribute('data-bs-toggle', 'modal');
             deleteButton.setAttribute('data-bs-target', '#delete-modal');
             deleteButton.addEventListener('click', () => {
+                console.log("delete here");
                 deleteTasklistID = list.tasklistID;
             });
+
             listEl.appendChild(tagsEl);
             listEl.appendChild(tasksEl);
             listEl.appendChild(deleteButton);
 
-            listEl.addEventListener('click', () => {
+            listEl.addEventListener('click', (e) => {
+                console.log("try to return")
+                if (e.target !== listEl) {
+                    console.log("returning")
+                    return;
+                }
                 closeTasklist(list, listEl, tagsEl, tasksEl, deleteButton);
             });
 
@@ -216,7 +227,7 @@ export async function load(mail: string) {
         listEl.removeChild(tasksEl);
         listEl.removeChild(deleteButton);
         list.isLocked = false;
-        await send(tasklistUrl + "/" + mail + "/" + list.tasklistID, 'PUT', list);
+        await send(tasklistUrl + mail + "/" + list.tasklistID, 'PUT', list);
     }
 
     async function showTasklist(list: Tasklist): Promise<HTMLElement> {
