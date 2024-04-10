@@ -2,30 +2,31 @@ import {send} from './sendUtils';
 import {Tasklist} from './model/Tasklist';
 import {Tag} from './model/Tag';
 import {checkMailFormat} from "./utils";
+const tasklistUrl: string = 'http://localhost:2000/api/tasklist/';
+const tagUrl: string = 'http://localhost:2000/api/tag/';
+const taskUrl: string = 'http://localhost:2000/api/task/';
+
+const taskLists = document.getElementById('tasklists') as HTMLElement;
+const createTasklistButton = document.getElementById('create-tasklist-btn') as HTMLButtonElement;
+const orderPriorityButton = document.getElementById('order-priority') as HTMLButtonElement;
+const orderViewButton = document.getElementById('order-view') as HTMLButtonElement;
+const orderCreateButton = document.getElementById('order-creation') as HTMLButtonElement;
+const filterButton = document.getElementById('filter-btn') as HTMLButtonElement;
+const filterTagsModal = document.getElementById('filter-tags-modal') as HTMLElement;
+const createForm = document.getElementById('create-form') as HTMLFormElement;
+const submitButton = document.getElementById('submit-btn') as HTMLButtonElement;
+const inviteUserBtn = document.getElementById('invite-user-btn') as HTMLButtonElement;
+const deleteTasklistBtn = document.getElementById('delete-tasklist-btn') as HTMLButtonElement;
+const deleteModal = document.getElementById('delete-modal') as HTMLElement;
+
+
+let deleteTasklistID = -1;
 
 export async function load(mail: string) {
-    const tasklistUrl: string = 'http://localhost:2000/api/tasklist/';
-    const tagUrl: string = 'http://localhost:2000/api/tag/';
-    const taskUrl: string = 'http://localhost:2000/api/task/';
-
-    const taskLists = document.getElementById('tasklists') as HTMLElement;
-    const createTasklistButton = document.getElementById('create-tasklist-btn') as HTMLButtonElement;
-    const orderPriorityButton = document.getElementById('order-priority') as HTMLButtonElement;
-    const orderViewButton = document.getElementById('order-view') as HTMLButtonElement;
-    const orderCreateButton = document.getElementById('order-creation') as HTMLButtonElement;
-    const filterButton = document.getElementById('filter-btn') as HTMLButtonElement;
-    const filterTagsModal = document.getElementById('filter-tags-modal') as HTMLElement;
-    const createForm = document.getElementById('create-form') as HTMLFormElement;
-    const submitButton = document.getElementById('submit-btn') as HTMLButtonElement;
-    const inviteUserBtn = document.getElementById('invite-user-btn') as HTMLButtonElement;
-    const deleteTasklistBtn = document.getElementById('delete-tasklist-btn') as HTMLButtonElement;
-    const deleteModal = document.getElementById('delete-modal') as HTMLElement;
+    console.log("try load");
 
     const listResp = await send(tasklistUrl + mail, 'GET');
     const tagsResp = await send(tagUrl + mail, 'GET');
-
-    let deleteTasklistID = -1;
-
 
     if (listResp.ok && tagsResp.ok) {
         const lists: Tasklist[] = await listResp.json();
@@ -38,6 +39,7 @@ export async function load(mail: string) {
                 lists.splice(lists.findIndex((list: Tasklist) => list.tasklistID === deleteTasklistID), 1);
                 await send(tasklistUrl + deleteTasklistID, 'DELETE');
                 deleteTasklistID = -1;
+                deleteModal.style.display = 'none';
                 await showAllTasklists(lists);
             }
         });
@@ -139,8 +141,6 @@ export async function load(mail: string) {
                 filterTagsModal.appendChild(tagElement);
             }
         });
-
-
     }
 
     async function showAllTasklists(lists: Tasklist[]) {
@@ -207,9 +207,7 @@ export async function load(mail: string) {
             listEl.appendChild(deleteButton);
 
             listEl.addEventListener('click', (e) => {
-                console.log("try to return")
                 if (e.target !== listEl) {
-                    console.log("returning")
                     return;
                 }
                 closeTasklist(list, listEl, tagsEl, tasksEl, deleteButton);
@@ -257,6 +255,9 @@ export async function load(mail: string) {
         listElement.appendChild(tags);
 
         listElement.addEventListener('click', () => {
+            if (deleteTasklistID !== -1) {
+                return;
+            }
             extendTasklist(listElement, list);
         });
 
