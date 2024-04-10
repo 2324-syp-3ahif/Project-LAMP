@@ -16,11 +16,12 @@ import {getMaxId} from "../database-functions/select-data";
 import {Task} from "../interfaces/model/Task";
 import {updateTask, updateTasklist} from "../database-functions/update-data";
 import {deleteTaskByID, deleteTasklistByID} from "../database-functions/delete-data";
+import {isAuthenticated} from "../middleware/auth-handlers";
 
 
 export const tasklistRouter = express.Router();
 
-tasklistRouter.get("/:email", (req, res) => {
+tasklistRouter.get("/:email", isAuthenticated, (req, res) => {
     const email = req.params.email;
     console.log("email: " + email);
 
@@ -41,7 +42,7 @@ tasklistRouter.get("/:email", (req, res) => {
     })
 });
 
-tasklistRouter.post("/:email", async (req, res) => {
+tasklistRouter.post("/:email", isAuthenticated, async (req, res) => {
     const email = req.params.email;
     if (!checkMailFormat(email)) {
         res.status(StatusCodes.BAD_REQUEST).send("email must be a valid email address");
@@ -85,7 +86,7 @@ tasklistRouter.post("/:email", async (req, res) => {
     })
 });
 
-tasklistRouter.put("/:email/:tasklistID", async (req, res) => {
+tasklistRouter.put("/:email/:tasklistID", isAuthenticated, async (req, res) => {
     const tasklistID = parseInt(req.params.tasklistID);
     const email = req.params.email;
 
@@ -146,7 +147,7 @@ tasklistRouter.put("/:email/:tasklistID", async (req, res) => {
     });
 });
 
-tasklistRouter.delete("/:tasklistID", async (req, res) => {
+tasklistRouter.delete("/:tasklistID", isAuthenticated, async (req, res) => {
     const tasklistID = parseInt(req.params.tasklistID);
     if (tasklistID === undefined || isNaN(tasklistID) || tasklistID < 1) {
         res.status(StatusCodes.BAD_REQUEST).send("tasklistID must be a positiv Number");
