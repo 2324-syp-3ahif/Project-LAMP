@@ -1,5 +1,5 @@
-import {send} from "./sendUtils";
 import {load} from "./tasklistFunctions";
+import {send} from "./sendUtils";
 
 const switchModeToLogin = document.getElementById("switch-to-login") as HTMLElement;
 const switchModeToSignUp = document.getElementById("switch-to-signup") as HTMLElement;
@@ -11,7 +11,6 @@ const loginEmailInput = document.getElementById("login-email") as HTMLInputEleme
 const loginPasswordInput = document.getElementById("login-password") as HTMLInputElement;
 const signUpButton = document.getElementById("sign-up-button") as HTMLInputElement;
 const loginButton = document.getElementById("login-button") as HTMLInputElement;
-let loggedIn: boolean = false;
 let mail: string = "";
 
 overlay.className = "overlay";
@@ -22,12 +21,12 @@ switchModeToLogin.addEventListener("click", () => {
 });
 switchModeToSignUp.addEventListener("click", () => {
     loginWrapper.style.display = "none";
-    signupWrapper.style.display = "inline-block";
+    signupWrapper.style.display = "block";
 });
 window.onload = () => {
-    if (!loggedIn) {
+    if (sessionStorage.getItem('jwt') === null) {
         footer.style.display = "none";
-        loginWrapper.style.display = "inline-block";
+        loginWrapper.style.display = "block";
         document.body.appendChild(overlay);
     }
 }
@@ -54,20 +53,31 @@ signUpButton.addEventListener("click", async () => {
     }
 });
 loginButton.addEventListener("click", async () => {
-    const response = await send("http://localhost:2000/api/login", "POST", {
-        email: loginEmailInput.value,
-        password: loginPasswordInput.value
-    });
-    console.log(response);
-    if (response.ok) {
-        mail = loginEmailInput.value;
-        loggedIn = true;
-        footer.style.display = "block";
-        loginWrapper.style.display = "none";
-        overlay.style.display = "none";
-        await load(mail);
-    }
-    else {
+    await handleLogin();
+});
+
+async function handleLogin(){
+    try{
+        const response = await send("http://localhost:2000/api/login", "POST", {
+            email: loginEmailInput.value,
+            password: loginPasswordInput.value
+        });
+        const accessToken = response.accessToken;
+        if (accessToken !== null) {
+            sessionStorage.setItem('jwt', accessToken);
+            mail = loginEmailInput.value;
+            footer.style.display = "block";
+            loginWrapper.style.display = "none";
+            overlay.style.display = "none";
+            await load(mail);
+        }
+    } catch (e){
+        console.log(e);
         alert("Failed to log in");
     }
-});
+}
+
+function logout(){
+    sessionStorage.removeItem("jwt");
+    window.location.reload();
+}

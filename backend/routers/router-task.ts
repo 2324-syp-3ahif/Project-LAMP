@@ -13,11 +13,12 @@ import {Task} from "../interfaces/model/Task";
 import {selectTaskByTaskID} from "../database-functions/select-data";
 import {updateTask} from "../database-functions/update-data";
 import {deleteTaskByID} from "../database-functions/delete-data";
+import {isAuthenticated} from "../middleware/auth-handlers";
 
 
 export const taskRouter = express.Router();
 
-taskRouter.get("/tasklistID/:tasklistID", async (req, res) => {
+taskRouter.get("/tasklistID/:tasklistID", isAuthenticated, async (req, res) => {
     const tasklistID = parseInt(req.params.tasklistID);
     if (tasklistID === undefined || isNaN(tasklistID) || tasklistID < 1) {
         res.status(StatusCodes.BAD_REQUEST).send("tasklistID must be a positive number");
@@ -32,7 +33,7 @@ taskRouter.get("/tasklistID/:tasklistID", async (req, res) => {
     })
 });
 
-taskRouter.post("/:tasklistID", async (req, res) => {
+taskRouter.post("/:tasklistID", isAuthenticated, async (req, res) => {
     const tasklistID = parseInt(req.params.tasklistID);
     if (tasklistID === undefined || isNaN(tasklistID) || tasklistID < 1) {
         res.status(StatusCodes.BAD_REQUEST).send("userID must be a positiv Number");
@@ -80,7 +81,7 @@ taskRouter.post("/:tasklistID", async (req, res) => {
         });
 });
 
-taskRouter.put("/:taskID", async (req, res) => {
+taskRouter.put("/:taskID", isAuthenticated, async (req, res) => {
     const taskID = parseInt(req.params.taskID);
     if (taskID === undefined || isNaN(taskID) || taskID < 1) {
         res.status(StatusCodes.BAD_REQUEST).send("taskID must be a positiv Number");
@@ -115,7 +116,7 @@ taskRouter.put("/:taskID", async (req, res) => {
     });
 });
 
-taskRouter.delete("/:taskID", async (req, res) => {
+taskRouter.delete("/:taskID", isAuthenticated, async (req, res) => {
     const taskID = parseInt(req.params.taskID);
     if (taskID === undefined || isNaN(taskID) || taskID < 1) {
         res.status(StatusCodes.BAD_REQUEST).send("taskID must be a positive Number");

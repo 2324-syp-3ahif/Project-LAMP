@@ -10,10 +10,11 @@ import {Tag} from "../interfaces/model/Tag";
 import {updateTag} from "../database-functions/update-data";
 import {StringWrongFormatError} from "../interfaces/errors/StringWrongFormatError";
 import {deleteTagByID} from "../database-functions/delete-data";
+import {isAuthenticated} from "../middleware/auth-handlers";
 
 export const tagRouter = express.Router();
 
-tagRouter.get("/:param", (req, res) => {
+tagRouter.get("/:param", isAuthenticated,  (req, res) => {
     if (checkMailFormat(req.params.param)) {
         selectTagsByEmail(db, req.params.param).then(tags => {
             res.status(StatusCodes.OK).send(tags);
@@ -38,7 +39,7 @@ tagRouter.get("/:param", (req, res) => {
     }
 });
 
-tagRouter.post("/:email/:name", async (req, res) => {
+tagRouter.post("/:email/:name", isAuthenticated, async (req, res) => {
     const email = req.params.email;
     if (!checkMailFormat(req.params.email)) {
         res.status(StatusCodes.BAD_REQUEST).send("email must be a valid email address");
@@ -62,7 +63,7 @@ tagRouter.post("/:email/:name", async (req, res) => {
         });
 });
 
-tagRouter.put("/:tagID/:name" , async (req, res) => {
+tagRouter.put("/:tagID/:name", isAuthenticated, async (req, res) => {
     const tagID = parseInt(req.params.tagID);
     if (isNaN(tagID) || tagID < 1) {
         res.status(StatusCodes.BAD_REQUEST).send("tagID must be a number");
@@ -89,7 +90,7 @@ tagRouter.put("/:tagID/:name" , async (req, res) => {
     });
 });
 
-tagRouter.delete("/:tagID", async (req, res) => {
+tagRouter.delete("/:tagID", isAuthenticated, async (req, res) => {
     const tagID = parseInt(req.params.tagID);
     if (isNaN(tagID) || tagID < 1) {
         res.status(StatusCodes.BAD_REQUEST).send("tagID must be a number");

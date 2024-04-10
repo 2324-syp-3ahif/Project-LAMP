@@ -1,18 +1,23 @@
 export function generateWarningPopUp(message: string, errorCode: number): void{
     alert("Error " + errorCode + ": " + message);
 }
-export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", data?: object): Promise<any> {
+    export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", data?: object): Promise<any> {
     let options: RequestInit = { method };
+    options.headers = { "Content-Type": "application/json" };
+    const jwt = sessionStorage.getItem('jwt');
+    if (jwt !== null) {
+        options.headers['Authorization'] = `Bearer ${jwt}`;
+    }
     if (data) {
-        options.headers = { "Content-Type": "application/json" };
         options.body = JSON.stringify(data);
     }
     const res = await fetch(route, options);
     if (!res.ok) {
-        console.log(res.body);
-        console.error('Error:', res.text());
-        generateWarningPopUp(await res.text(), res.status);
+        const error = new Error(`${method} ${res.url} ${res.status} (${res.statusText})`);
+        throw error;
     }
-    console.log("returning");
+    if (res.status !== 204) {
+        return await res.json();
+    }
     return res;
 }

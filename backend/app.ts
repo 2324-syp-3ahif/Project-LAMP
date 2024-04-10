@@ -48,6 +48,7 @@ import * as tasklist from './interfaces/model/Tasklist';
 
 import { join } from "path";
 import {Tag} from "./interfaces/model/Tag";
+import {isAuthenticated} from "./middleware/auth-handlers";
 
 const app = express();
 const port = process.env.PORT || 2000;
@@ -70,7 +71,7 @@ const path = join(__dirname, "../public");
 const options = { extensions: ["html", "js"] }; // , "css"
 app.use(express.static(path, options));
 
-app.post("/", (req, res) => {
+app.post("/", isAuthenticated,  (req, res) => {
     const title = req.body.title;
     const dueDate = req.body.dueDate;
     const description = req.body.description;
@@ -101,7 +102,7 @@ app.post("/", (req, res) => {
     });
 });
 
-app.put("/", (req, res) => {
+app.put("/", isAuthenticated, (req, res) => {
     const taskID = req.body.taskID;
     const title = req.body.title;
     const dueDate = req.body.dueDate;
@@ -135,7 +136,7 @@ app.put("/", (req, res) => {
 });
 
 
-app.get('/emil', async (req, res) => {
+app.get('/emil', isAuthenticated, async (req, res) => {
     try {
         await deleteUserByEmail(db, 'test24@gmx.at');
         const data = await selectEventByEventID(db, 1);
@@ -145,7 +146,7 @@ app.get('/emil', async (req, res) => {
     }
 });
 
-app.get('/create-tables', (req, res) => {
+app.get('/create-tables', isAuthenticated, (req, res) => {
     dropTable('TASK');
     createTasksTable();
     createTasklistsTable();

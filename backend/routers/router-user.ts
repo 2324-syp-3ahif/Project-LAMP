@@ -8,10 +8,11 @@ import {deleteTagByID, deleteUserByEmail} from "../database-functions/delete-dat
 import {insertUser} from "../database-functions/insert-data";
 import {IdAlreadyExistsError} from "../interfaces/errors/IdAlreadyExistsError";
 import {updateUser} from "../database-functions/update-data";
+import {isAuthenticated} from "../middleware/auth-handlers";
 
 export const userRouter = express.Router();
 
-userRouter.get("/:email", async (req, res) => {
+userRouter.get("/:email", isAuthenticated, async (req, res) => {
    const email = req.params.email;
     if (!checkMailFormat(email)) {
          res.status(StatusCodes.BAD_REQUEST).send("email must be a valid email address");
@@ -26,7 +27,7 @@ userRouter.get("/:email", async (req, res) => {
     });
 });
 
-userRouter.post("/:email", async (req, res) => {
+userRouter.post("/:email", isAuthenticated, async (req, res) => {
     const email = req.params.email;
     if (!checkMailFormat(email)) {
         res.status(StatusCodes.BAD_REQUEST).send("email must be a valid email address");
@@ -57,7 +58,7 @@ userRouter.post("/:email", async (req, res) => {
     });
 });
 
-userRouter.put("/:email", async (req, res) => {
+userRouter.put("/:email", isAuthenticated, async (req, res) => {
     const email = req.params.email;
     if (!checkMailFormat(email)) {
         res.status(StatusCodes.BAD_REQUEST).send("email must be a valid email address");
@@ -84,7 +85,7 @@ userRouter.put("/:email", async (req, res) => {
     });
 });
 
-userRouter.delete("/:email", async (req, res) => {
+userRouter.delete("/:email", isAuthenticated, async (req, res) => {
     const email = req.params.email;
     if (!checkMailFormat(email)) {
         res.status(StatusCodes.BAD_REQUEST).send("email must be a valid email address");
