@@ -39,7 +39,7 @@ export async function load(mail: string) {
                 lists.splice(lists.findIndex((list: Tasklist) => list.tasklistID === deleteTasklistID), 1);
                 await send(tasklistUrl + deleteTasklistID, 'DELETE');
                 deleteTasklistID = -1;
-                deleteModal.style.display = 'none';
+                deleteModal.style.display = "hide";
                 await showAllTasklists(lists);
             }
         });
@@ -70,7 +70,7 @@ export async function load(mail: string) {
                 sortingOrder: parseInt(sortingOrder),
                 email: mail,
                 //lastView: new Date(),
-                tasklistID: 0, // let server handle this
+                tasklistID: await (await send(tasklistUrl + "next/ID", "GET")).json(), // let server handle this
             };
             await send(tasklistUrl + mail, 'POST', tasklist);
             lists.push(tasklist);

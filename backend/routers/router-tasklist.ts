@@ -163,3 +163,8 @@ tasklistRouter.delete("/:tasklistID", isAuthenticated, async (req, res) => {
         }
     });
 });
+
+tasklistRouter.get("/next/ID", isAuthenticated, async (req, res) => {
+    const nextID = await getMaxId(db, 'TASKLISTS', 'tasklistID') + 1;
+    res.status(StatusCodes.OK).send(nextID.toString());
+});
