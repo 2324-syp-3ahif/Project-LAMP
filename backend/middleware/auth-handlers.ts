@@ -2,7 +2,7 @@ import {NextFunction, Response, Request} from "express";
 import jwt, {JwtPayload} from "jsonwebtoken";
 export const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     try {
-        const token = req.headers.authorization?.replace('Bearer ', '')
+        const token = req.headers['authorization']?.replace('Bearer ', '')
         if (!token) {
             throw new Error("No bearer token available");
         }
