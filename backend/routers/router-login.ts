@@ -30,17 +30,17 @@ loginRouter.post("/login", async (req, res) => {
             accessToken: token,
         });
     } catch (e){
-        res.sendStatus(StatusCodes.UNAUTHORIZED);
+        res.status(StatusCodes.UNAUTHORIZED).send("Wrong password!");
     }
 });
 loginRouter.post("/register", async (req, res) => {
     try{
         await insertUser(connectToDatabase(), req.body.email, req.body.username, req.body.password);
-        res.sendStatus(StatusCodes.CREATED);
+        res.status(StatusCodes.CREATED).send("User created!");
     } catch (e){
         console.log(e);
         // TODO: also say what requirements are not met (in the frontend maybe, not here in the backend)
         // TODO: log error in browser (what exactly went wrong e.g. password too short, email already exists, etc.)
-        res.sendStatus(StatusCodes.BAD_REQUEST);
+        res.status(StatusCodes.BAD_REQUEST).send("User already exists!");
     }
 });
