@@ -4,7 +4,7 @@ export function checkMailFormat(mail: string): boolean{
 }
 
 export function checkPasswordFormat(password: string): boolean{
-    const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
     return regex.test(password);
 }
 
