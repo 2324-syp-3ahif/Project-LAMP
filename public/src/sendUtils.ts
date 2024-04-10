@@ -13,8 +13,9 @@ export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATC
     }
     const res = await fetch(route, options);
     if (!res.ok) {
-        const error = new Error(`${method} ${res.url} ${res.status} (${res.statusText})`);
-        throw error;
+        console.log(res.body);
+        console.error('Error:', res.text());
+        generateWarningPopUp(await res.text(), res.status);
     }
     return res;
 }
