@@ -16,8 +16,5 @@ export function generateWarningPopUp(message: string, errorCode: number): void{
         const error = new Error(`${method} ${res.url} ${res.status} (${res.statusText})`);
         throw error;
     }
-    if (res.status !== 204) {
-        return await res.json();
-    }
     return res;
 }

@@ -36,7 +36,7 @@ loginRouter.post("/login", async (req, res) => {
 loginRouter.post("/register", async (req, res) => {
     try{
         await insertUser(connectToDatabase(), req.body.email, req.body.username, req.body.password);
-        res.sendStatus(StatusCodes.OK);
+        res.sendStatus(StatusCodes.CREATED);
     } catch (e){
         console.log(e);
         // TODO: also say what requirements are not met (in the frontend maybe, not here in the backend)
