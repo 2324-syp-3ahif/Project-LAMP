@@ -21,7 +21,7 @@ import {isAuthenticated} from "../middleware/auth-handlers";
 
 export const tasklistRouter = express.Router();
 
-tasklistRouter.get("/:email", isAuthenticated, (req, res) => {
+tasklistRouter.get("/email/:email", isAuthenticated, (req, res) => {
     const email = req.params.email;
     console.log("email: " + email);
 
@@ -164,7 +164,7 @@ tasklistRouter.delete("/:tasklistID", isAuthenticated, async (req, res) => {
     });
 });
 
-tasklistRouter.get("/next/ID", isAuthenticated, async (req, res) => {
+tasklistRouter.get("/nextID", isAuthenticated, async (req, res) => {
     const nextID = await getMaxId(db, 'TASKLISTS', 'tasklistID') + 1;
     res.status(StatusCodes.OK).send(nextID.toString());
 });

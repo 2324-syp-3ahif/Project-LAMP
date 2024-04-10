@@ -25,7 +25,7 @@ let deleteTasklistID = -1;
 export async function load(mail: string) {
     console.log("try load");
 
-    const listResp = await send(tasklistUrl + mail, 'GET');
+    const listResp = await send(tasklistUrl + "email/" + mail, 'GET');
     const tagsResp = await send(tagUrl + mail, 'GET');
 
     if (listResp.ok && tagsResp.ok) {
@@ -70,7 +70,7 @@ export async function load(mail: string) {
                 sortingOrder: parseInt(sortingOrder),
                 email: mail,
                 //lastView: new Date(),
-                tasklistID: await (await send(tasklistUrl + "next/ID", "GET")).json(), // let server handle this
+                tasklistID: await (await send(tasklistUrl + "nextID", "GET")).json(), // let server handle this
             };
             await send(tasklistUrl + mail, 'POST', tasklist);
             lists.push(tasklist);
@@ -83,9 +83,8 @@ export async function load(mail: string) {
             const emailText = email.value;
             email.value = "";
             if (checkMailFormat(emailText)) {
-                const nextId = await send(tasklistUrl + mail, 'GET');
-                // TODO get next tasklistID from server with GET request
-                await send("http://localhost:2000/api/mail/invite/" + emailText, 'POST', {email: email});
+                const nextId = await send(tasklistUrl + "nextID", 'GET');
+                await send("http://localhost:2000/api/mail/invite/" + emailText + "/" + nextId, 'POST', {email: email});
             } else {
                 alert('Invalid email address');
             }
