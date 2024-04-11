@@ -17,6 +17,8 @@ const signUpPasswordInput = document.getElementById("signup-password") as HTMLIn
 const signUpUsernameInput = document.getElementById("signup-username") as HTMLInputElement;
 let mail: string = "";
 
+console.log("in login");
+
 overlay.className = "overlay";
 
 switchModeToLogin.addEventListener("click", () => {

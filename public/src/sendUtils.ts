@@ -16,8 +16,7 @@ export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATC
         sessionStorage.removeItem('jwt');
         generateWarningPopUp("Please authenticate!", res.status);
         window.location.href = "/";
-    }
-    if (!res.ok && res.status !== 401) {
+    } else if (!res.ok) {
         console.log(res.body);
         console.error('Error:', res.text());
         generateWarningPopUp(await res.text(), res.status);
