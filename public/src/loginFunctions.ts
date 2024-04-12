@@ -15,8 +15,6 @@ const loginButton = document.getElementById("login-button") as HTMLInputElement;
 const signUpEmailInput = document.getElementById("signup-email") as HTMLInputElement;
 const signUpPasswordInput = document.getElementById("signup-password") as HTMLInputElement;
 const signUpUsernameInput = document.getElementById("signup-username") as HTMLInputElement;
-let mail: string = "";
-
 console.log("in login");
 
 overlay.className = "overlay";
@@ -29,12 +27,13 @@ switchModeToSignUp.addEventListener("click", () => {
     loginWrapper.style.display = "none";
     signupWrapper.style.display = "block";
 });
-window.onload = () => {
+window.onload = async () => {
+    const token = sessionStorage.getItem('jwt');
     if (sessionStorage.getItem('jwt') === null) {
         // (document.querySelector("footer") as HTMLElement).style.display = "none";
         loginWrapper.style.display = "block";
         document.body.appendChild(overlay);
-    }
+    } else await load(sessionStorage.getItem('mail') as string);
 }
 signUpButton.addEventListener("click", async () => await handleSignUp());
 loginButton.addEventListener("click", async () => await handleLogin());
@@ -48,10 +47,10 @@ async function handleLogin(){
             const accessToken = (await response.json()).accessToken;
             if (accessToken !== null) {
                 sessionStorage.setItem('jwt', accessToken);
-                mail = loginEmailInput.value;
+                sessionStorage.setItem('mail', loginEmailInput.value);
                 loginWrapper.style.display = "none";
                 overlay.style.display = "none";
-                await load(mail);
+                await load(sessionStorage.getItem('mail') as string);
             }
         }
         else {
