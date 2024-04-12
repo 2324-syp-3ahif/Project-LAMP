@@ -71,5 +71,5 @@ async function handleSignUp(){
 }
 function logout(){
     sessionStorage.removeItem("jwt");
-    window.location.reload();
+    window.location.href = "/";
 }
