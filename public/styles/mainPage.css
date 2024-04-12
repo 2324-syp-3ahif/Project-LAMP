@@ -34,6 +34,10 @@ body {
     z-index: 25;
 }
 
+.dropdown-item {
+    cursor: pointer;
+}
+
 #ordering-btn {
     margin-right: 30px;
 }
@@ -50,7 +54,6 @@ body {
     background: none;
     box-sizing: border-box;
     border: solid 2px transparent;
-
 }
 
 #filter-btn:hover {
