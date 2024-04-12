@@ -18,8 +18,8 @@ export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATC
         window.location.href = "/";
     } else if (!res.ok) {
         console.log(res.body);
-        console.error('Error:', res.text());
         generateWarningPopUp(await res.text(), res.status);
+        console.error('Error:', res.text());
     }
     return res;
 }

@@ -14,7 +14,7 @@ const orderCreateButton = document.getElementById('order-creation') as HTMLButto
 const filterButton = document.getElementById('filter-btn') as HTMLButtonElement;
 const filterTagsModal = document.getElementById('filter-tags-modal') as HTMLElement;
 const createForm = document.getElementById('create-form') as HTMLFormElement;
-const submitButton = document.getElementById('create-tasklist-btn') as HTMLButtonElement;
+const submitButton = document.getElementById('submit-btn') as HTMLButtonElement;
 const inviteUserBtn = document.getElementById('invite-user-btn') as HTMLButtonElement;
 const deleteTasklistBtn = document.getElementById('delete-tasklist-btn') as HTMLButtonElement;
 const deleteModal = document.getElementById('delete-modal') as HTMLElement;
@@ -63,7 +63,7 @@ export async function load(mail: string) {
         await showAllTasklists();
     });
 
-    deleteTasklistBtn.addEventListener('click', deleteTask);
+    deleteTasklistBtn.addEventListener('click', deleteTaskList);
     submitButton.addEventListener('click', createTasklist);
     inviteUserBtn.addEventListener('click', invite);
     filterButton.addEventListener('click', filterTasklists);
@@ -103,13 +103,12 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
     listElement.appendChild(description);
     listElement.appendChild(tags);
 
-    listElement.addEventListener('click', () => {
-        if (globalDeleteTasklistID !== -1) {
+    listElement.addEventListener('click', (e) => {
+        if (listElement.classList.contains("extended") || e.target === deleteTasklistBtn){
             return;
         }
         extendTasklist(listElement, list);
     });
-
     return listElement;
 }
 
@@ -121,6 +120,7 @@ async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
     } else {
         list.isLocked = true;
         await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
+        listEl.classList.add("extended");
 
         const tagsEl = document.createElement('div');
         tagsEl.classList.add('tags');
@@ -157,7 +157,7 @@ async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
         listEl.appendChild(deleteButton);
 
         listEl.addEventListener('click', (e) => {
-            if (globalDeleteTasklistID !== -1) {
+            if (e.target === deleteButton) {
                 return;
             }
             closeTasklist(list, listEl, tagsEl, tasksEl, deleteButton);
@@ -168,16 +168,19 @@ async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
         }, 120000); // close automatically after 2 minutes
     }
 }
+
 async function closeTasklist(list: Tasklist, listEl: HTMLElement, tagsEl: HTMLElement, tasksEl: HTMLElement, deleteButton: HTMLElement) {
     listEl.removeChild(tagsEl);
     listEl.removeChild(tasksEl);
     listEl.removeChild(deleteButton);
+    listEl.classList.remove("extended");
+
     list.isLocked = false;
     globalTasklists[globalTasklists.findIndex((tasklist: Tasklist) => tasklist.tasklistID === list.tasklistID)] = list;
     await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
 }
 
-async function deleteTask() {
+async function deleteTaskList() {
     if (globalDeleteTasklistID !== -1) {
         globalTasklists.splice(globalTasklists.findIndex((list: Tasklist) => list.tasklistID === globalDeleteTasklistID), 1);
         await send(tasklistUrl + globalDeleteTasklistID, 'DELETE');
@@ -223,6 +226,7 @@ async function createTasklist() {
         //lastView: new Date(),
         tasklistID: await (await send(tasklistUrl + "nextID", "GET")).json(), // let server handle this
     };
+
     await send(tasklistUrl + globalMail, 'POST', tasklist);
     globalTasklists.push(tasklist);
     createForm.style.display = 'none';
