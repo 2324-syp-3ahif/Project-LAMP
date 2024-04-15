@@ -8,18 +8,18 @@ const createForm = document.getElementById('create-task-form') as HTMLFormElemen
 const createTaskBtn = document.getElementById('submit-task-btn')
 const taskOverlay = document.createElement('div')
 
-taskOverlay.className = "TaskOverlay"
-taskOverlay.style.display = "none";
-document.appendChild(taskOverlay);
+// taskOverlay.className = "TaskOverlay"
+// taskOverlay.style.display = "none";
+// document.appendChild(taskOverlay);
 
 export async function loadTasks(taskList: Tasklist) {
-    const data= await send(taskUrl + taskList.tasklistID, 'GET');
+    const data= await send('http://localhost:2000/api/task/tasklistID/' + taskList.tasklistID, 'GET');
     if(!data.ok){
         return;
     }
     const tasks: Task[] = await data.json();
 
-    console.log(tasks);
+
     return;
 }
 
@@ -47,10 +47,10 @@ async function processTask(tasklistID: number){
     } else if (description.length > 255) {
         alert('Description is too long, must be less than 255 characters');
         return;
-    } else if (date !== undefined && Number.isNaN(date)){
+    } else if (Number.isNaN(date)){
         alert('Date has wrong format')
         return;
-    } else if(date !== undefined && !checkTimeString(time)){
+    } else if(!checkTimeString(time)){
         alert('Time has wrong format')
         return;
     }

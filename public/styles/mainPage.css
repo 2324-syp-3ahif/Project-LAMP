@@ -108,7 +108,7 @@ body {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -65%);
     max-width: 540px; /* max-width is now 90% of the viewport width */
     width: 100%; /* width is now 90% of the parent element's width */
     background: white;
