@@ -17,6 +17,8 @@
     font-size: 20px;
     background-color: #EEEEEE;
     border-radius: 15px;
+    width: 100%;
+
 }
 
 .card-text {
@@ -36,4 +38,17 @@
 
 #filter-tags-modal .active {
     background-color: #00C2DD;
+}
+
+.round-Button {
+    background: #EEEEEE;
+    height: 25px;
+    width: 25px;
+    margin-left: 10px;
+    margin-top: 7px;
+    margin-right: 4px;
+    border-radius: 50%;
+}
+.title-newTaskButton-Div{
+    width: 100%;
 }

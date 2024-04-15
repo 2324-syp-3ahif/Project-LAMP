@@ -32,15 +32,15 @@ Content-Type: application/json
 
 
 ###	   Get Tasks by TasklistID
-GET {{taskHostname}}/tasklistID/1
+GET {{taskHostname}}/tasklistID/34
 ###	   Get Tasks by UserID
 GET {{taskHostname}}/userID/1
 ###	   Create Task by TasklistID
-POST {{taskHostname}}/1
+POST {{taskHostname}}/34
 Content-Type: application/json
 
 {
-    "title": "MatheHUE",
+    "title": "sonstiges",
     "description": "Bsp 1-5"
 }
 ###	   Edit Task by ID
