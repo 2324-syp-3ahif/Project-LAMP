@@ -2,9 +2,10 @@ import {send} from './sendUtils';
 import {Tasklist} from './model/Tasklist';
 import {Tag} from './model/Tag';
 import {checkMailFormat} from "./utils";
+import {createNewTask, loadTasks} from "./taskFuntions";
 const tasklistUrl: string = 'http://localhost:2000/api/tasklist/';
 const tagUrl: string = 'http://localhost:2000/api/tag/';
-const taskUrl: string = 'http://localhost:2000/api/task/';
+
 
 const taskLists = document.getElementById('tasklists') as HTMLElement;
 const createTasklistButton = document.getElementById('create-tasklist-btn') as HTMLButtonElement;
@@ -13,8 +14,8 @@ const orderViewButton = document.getElementById('order-view') as HTMLButtonEleme
 const orderCreateButton = document.getElementById('order-creation') as HTMLButtonElement;
 const filterButton = document.getElementById('filter-btn') as HTMLButtonElement;
 const filterTagsModal = document.getElementById('filter-tags-modal') as HTMLElement;
-const createForm = document.getElementById('create-form') as HTMLFormElement;
-const submitButton = document.getElementById('submit-btn') as HTMLButtonElement;
+const createForm = document.getElementById('create-tasklist-form') as HTMLFormElement;
+const submitButton = document.getElementById('submit-tasklist-btn') as HTMLButtonElement;
 const inviteUserBtn = document.getElementById('invite-user-btn') as HTMLButtonElement;
 const deleteTasklistBtn = document.getElementById('delete-tasklist-btn') as HTMLButtonElement;
 const deleteModal = document.getElementById('delete-modal') as HTMLElement;
@@ -82,6 +83,10 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
     listElement.classList.add('tasklist');
     listElement.classList.add('card-body');
     listElement.classList.add('card');
+    const titleButtonELement = document.createElement('div');
+    titleButtonELement.classList.add('d-flex')
+    titleButtonELement.classList.add('flex-row')
+    titleButtonELement.classList.add('title-newTaskButton-Div')
 
     const title = document.createElement('h2');
     title.innerHTML = list.title;
@@ -92,14 +97,21 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
     });
     title.classList.add("card-title");
 
+    const newTaskButton = document.createElement('button');
+    newTaskButton.classList.add('round-Button')
+    newTaskButton.addEventListener('click', async () => {
+        await createNewTask(list.tasklistID);
+    });
     const tags = document.createElement('div');
     tags.classList.add('tags');
 
     const description = document.createElement('p');
     description.innerHTML = list.description;
     description.classList.add("card-text");
+    titleButtonELement.appendChild(title);
+    titleButtonELement.appendChild(newTaskButton);
 
-    listElement.appendChild(title);
+    listElement.appendChild(titleButtonELement);
     listElement.appendChild(description);
     listElement.appendChild(tags);
 
@@ -134,8 +146,8 @@ async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
 
         const tasksEl = document.createElement('div');
 
-        const newTaskButton = document.createElement('button');
         // TODO: add task element like in GUI mockups
+        loadTasks(list);
 
         const deleteButton = document.createElement('button');
         deleteButton.id = "delete-button";
@@ -203,8 +215,8 @@ async function invite() {
 }
 
 async function createTasklist() {
-    const title = (document.getElementById('name-input') as HTMLInputElement).value;
-    const description = (document.getElementById('description-input') as HTMLInputElement).value;
+    const title = (document.getElementById('name-tasklist-input') as HTMLInputElement).value;
+    const description = (document.getElementById('description-tasklist-input') as HTMLInputElement).value;
     const priority = (document.getElementById('priority-input') as HTMLInputElement).value;
     const sortingOrder = (document.getElementById('sorting-order-input') as HTMLInputElement).value;
 
