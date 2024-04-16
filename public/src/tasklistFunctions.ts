@@ -147,7 +147,7 @@ async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
         const tasksEl = document.createElement('div');
 
         // TODO: add task element like in GUI mockups
-        loadTasks(list);
+        await loadTasks(list, tasksEl);
 
         const deleteButton = document.createElement('button');
         deleteButton.id = "delete-button";
