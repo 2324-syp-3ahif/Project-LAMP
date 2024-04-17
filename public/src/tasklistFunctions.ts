@@ -2,7 +2,7 @@ import {send} from './sendUtils';
 import {Tasklist} from './model/Tasklist';
 import {Tag} from './model/Tag';
 import {checkMailFormat} from "./utils";
-import {createNewTask, loadTasks} from "./taskFuntions";
+import {checkBoxes, closePLS, createNewTask, loadTasks, setClosePLS} from "./taskFuntions";
 const tasklistUrl: string = 'http://localhost:2000/api/tasklist/';
 const tagUrl: string = 'http://localhost:2000/api/tag/';
 
@@ -19,9 +19,9 @@ const submitButton = document.getElementById('submit-tasklist-btn') as HTMLButto
 const inviteUserBtn = document.getElementById('invite-user-btn') as HTMLButtonElement;
 const deleteTasklistBtn = document.getElementById('delete-tasklist-btn') as HTMLButtonElement;
 const deleteModal = document.getElementById('delete-modal') as HTMLElement;
-
+export let listElements: HTMLInputElement[] = [];
 let globalDeleteTasklistID = -1;
-let globalTasklists: Tasklist[] =[];
+let globalTasklists: Tasklist[] = [];
 let globalTags: Tag[] = [];
 let globalMail: string = "";
 
@@ -119,12 +119,17 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
         if (listElement.classList.contains("extended") || e.target === deleteTasklistBtn){
             return;
         }
+        checkBoxes.forEach(checkbox => {
+            if(e.target === checkbox) {
+                return;
+            }
+        });
         extendTasklist(listElement, list);
     });
     return listElement;
 }
 
-async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
+export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
     if (list.isLocked) {
         list.isLocked = false; // just for testing purposes
         await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
@@ -169,9 +174,20 @@ async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
         listEl.appendChild(deleteButton);
 
         listEl.addEventListener('click', (e) => {
-            if (e.target === deleteButton) {
+            if (e.target === deleteButton || !closePLS) {
+                setClosePLS(true);
                 return;
             }
+            checkBoxes.forEach(checkbox => {
+               if(e.target === checkbox) {
+                   return
+               }
+            });
+            listElements.forEach(listelm => {
+                if(e.target === listelm) {
+                    return
+                }
+            });
             closeTasklist(list, listEl, tagsEl, tasksEl, deleteButton);
         });
 
@@ -182,14 +198,14 @@ async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
 }
 
 async function closeTasklist(list: Tasklist, listEl: HTMLElement, tagsEl: HTMLElement, tasksEl: HTMLElement, deleteButton: HTMLElement) {
-    listEl.removeChild(tagsEl);
-    listEl.removeChild(tasksEl);
-    listEl.removeChild(deleteButton);
-    listEl.classList.remove("extended");
+        listEl.removeChild(tagsEl);
+        listEl.removeChild(tasksEl);
+        listEl.removeChild(deleteButton);
+        listEl.classList.remove("extended");
 
-    list.isLocked = false;
-    globalTasklists[globalTasklists.findIndex((tasklist: Tasklist) => tasklist.tasklistID === list.tasklistID)] = list;
-    await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
+        list.isLocked = false;
+        globalTasklists[globalTasklists.findIndex((tasklist: Tasklist) => tasklist.tasklistID === list.tasklistID)] = list;
+        await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
 }
 
 async function deleteTaskList() {

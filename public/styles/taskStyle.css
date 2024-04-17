@@ -1,4 +1,23 @@
 .task-header {
     background: white;
-    margin: 5px;
+    border-radius: 9px;
+    margin-bottom: 12px;
+    height: 35px;
+    justify-content: space-between;
+}
+
+.task-checkbox {
+    height: 17px;
+    width: 17px;
+    margin: 10px;
+    align-self: center;
+}
+
+.task-title {
+  align-self: flex-end;
+}
+
+.task-date {
+    align-self: center;
+    margin: 10px;
 }

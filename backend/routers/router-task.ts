@@ -90,7 +90,7 @@ taskRouter.put("/:taskID", isAuthenticated, async (req, res) => {
     await selectTaskByTaskID(db, taskID).then((task: Task) => {
         task.title = req.body.title ?? task.title;
         task.description = req.body.description ?? task.description;
-        task.dueDate = req.body.dueDate ?? new Date(task.dueDate);
+        task.dueDate = req.body.dueDate ?? task.dueDate;
         task.priority = req.body.priority ?? task.priority;
         task.isComplete = req.body.isComplete ?? task.isComplete;
 
