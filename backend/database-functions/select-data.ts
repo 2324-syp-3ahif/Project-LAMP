@@ -1,4 +1,4 @@
-import sqlite3 from "sqlite3";
+import * as sqlite3 from "sqlite3";
 import { promisify } from 'util';
 
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
