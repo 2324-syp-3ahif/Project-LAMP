@@ -104,14 +104,12 @@ async function processTask(tasklistID: number){
     } else if (description.length > 255) {
         alert('Description is too long, must be less than 255 characters');
         return;
-    } else if (!checkDateString(date)){
-        alert('Date has wrong format')
-        return;
     }
     // else if(!checkTimeString(time)){
     //     alert('Time has wrong format')
     //     return;
     // }
+    console.log(`date: ${date}`);
     const task: object = {
         title: title,
         date: date,
@@ -119,14 +117,14 @@ async function processTask(tasklistID: number){
         description: description,
         priority: priority
     }
-    await send(taskUrl + tasklistID, 'POST', task)
+    await send(taskUrl + tasklistID, 'POST', task);
+    return;
 }
 
 async function prozessCheckBox(checkBox: HTMLInputElement, task: Task){
     task.isComplete = checkBox.checked;
     await send(taskUrl + task.taskID, 'PUT', task)
 }
-
 function styleTaskForIsCompleted(isCompleted:boolean, taskElement: HTMLDivElement){
     if (isCompleted){
         taskElement.classList.add('checked');
@@ -134,17 +132,6 @@ function styleTaskForIsCompleted(isCompleted:boolean, taskElement: HTMLDivElemen
         taskElement.classList.remove('checked')
     }
 }
-
-// function checkTimeString(input: string): boolean {
-//     const regex = /^(0?[1-9]|1[0-9]|2[0-3])(:|.)[0-5][0-9]$/;
-//     return regex.test(input);
-// }
-
-function checkDateString(input: string): boolean {
-    const regex = /^\d{1,2}\.\d{1,2}\.\d{4}$/;
-    return (input === undefined) ? true : regex.test(input);
-}
-
 function formatDate(date: Date): string {
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');

@@ -19,7 +19,7 @@ export async function updateTask(db: sqlite3.Database, taskID: number, tasklistI
         stringLenghtCheck(description, 255, 'description', '');
     } if (dueDate !== undefined) {
         dateFormatCheck(dueDate, 'dueDate', '');
-        //dateSmallerNowChecker(dueDate);
+        dateSmallerNowChecker(dueDate);
         dd = dueDate.toISOString();
     } if (priority !== undefined) {
         numberChecker(priority, 0, 10, "sortingOrder", '');
