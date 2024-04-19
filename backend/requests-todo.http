@@ -36,15 +36,16 @@ GET {{taskHostname}}/tasklistID/34
 ###	   Get Tasks by UserID
 GET {{taskHostname}}/userID/1
 ###	   Create Task by TasklistID
-POST {{taskHostname}}/34
+POST {{taskHostname}}/35
 Content-Type: application/json
 
 {
-    "title": "sonstiges",
-    "description": "Bsp 1-5"
+    "title": "Deutsch",
+    "description": "Bsp 1-5",
+    "dueDate": "04.04.2025"
 }
 ###	   Edit Task by ID
-PUT {{taskHostname}}/4
+PUT {{taskHostname}}/14
 Content-Type: application/json
 
 {

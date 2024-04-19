@@ -15,7 +15,6 @@ const loginButton = document.getElementById("login-button") as HTMLInputElement;
 const signUpEmailInput = document.getElementById("signup-email") as HTMLInputElement;
 const signUpPasswordInput = document.getElementById("signup-password") as HTMLInputElement;
 const signUpUsernameInput = document.getElementById("signup-username") as HTMLInputElement;
-console.log("in login");
 
 overlay.className = "overlay";
 
