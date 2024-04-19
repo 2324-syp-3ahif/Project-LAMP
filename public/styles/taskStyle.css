@@ -12,7 +12,10 @@
     margin: 10px;
     align-self: center;
 }
-
+.checked {
+    background-color: #838093;
+    text-decoration: line-through;
+}
 .task-title {
   align-self: flex-end;
 }

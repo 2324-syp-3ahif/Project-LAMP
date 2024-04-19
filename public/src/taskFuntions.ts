@@ -46,10 +46,12 @@ export async function loadTasks(taskList: Tasklist, taskContainer: HTMLDivElemen
         checkBox.classList.add('task-checkbox');
         checkBoxes.push(checkBox);
         checkBox.checked = task.isComplete;
-        checkBox.addEventListener('click', async () => {
+        styleTaskForIsCompleted(checkBox.checked, taskHeader);
+        checkBox.addEventListener('click', async (event) => {
+            event.stopPropagation();
+            styleTaskForIsCompleted(checkBox.checked, taskHeader);
             await prozessCheckBox(checkBox, task);
-            closePLS = false;
-        })
+        });
         const taskTitle = document.createElement('h5');
         taskTitle.classList.add('task-title');
         taskTitle.textContent = task.title;
@@ -125,6 +127,13 @@ async function prozessCheckBox(checkBox: HTMLInputElement, task: Task){
     await send(taskUrl + task.taskID, 'PUT', task)
 }
 
+function styleTaskForIsCompleted(isCompleted:boolean, taskElement: HTMLDivElement){
+    if (isCompleted){
+        taskElement.classList.add('checked');
+    } else {
+        taskElement.classList.remove('checked')
+    }
+}
 
 // function checkTimeString(input: string): boolean {
 //     const regex = /^(0?[1-9]|1[0-9]|2[0-3])(:|.)[0-5][0-9]$/;
