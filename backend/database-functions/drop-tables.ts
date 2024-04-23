@@ -1,13 +1,10 @@
 import {connectToDatabase} from "./connect";
+import {promisify} from "util";
+import sqlite3 from "sqlite3";
 
-export function dropTable(tableName: string) {
-    const db = connectToDatabase();
+export async function dropTable(db: sqlite3.Database, tableName: string) {
+    const dropFunctions = promisify(db.run.bind(db));
     const query: string = `DROP TABLE ${tableName};`;
-    db.run(query, [], (err) => {
-        if (err) {
-            console.log(err.message);
-        } else {
-            console.log("Table dropped!");
-        }
-    })
+    await dropFunctions(query);
+    console.log("Table dropped!");
 }
