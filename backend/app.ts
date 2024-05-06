@@ -13,6 +13,7 @@ import {loginRouter} from "./routers/router-login";
 
 import sqlite from "sqlite3";
 import { join } from "path";
+import {test} from "./database-functions/select-data";
 
 const app = express();
 const port = process.env.PORT || 2000;
@@ -34,6 +35,12 @@ app.use("/api/mail", mailRouter);
 const path = join(__dirname, "../public");
 const options = { extensions: ["html", "js"] }; // , "css"
 app.use(express.static(path, options));
+
+
+app.get("/", (req, res) => {
+    test(db);
+});
+
 
 app.listen(2000, () => {
     console.log(`Listening on http://localhost:` + port);
