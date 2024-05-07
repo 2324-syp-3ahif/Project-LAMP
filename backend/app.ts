@@ -13,6 +13,7 @@ import {loginRouter} from "./routers/router-login";
 
 import sqlite from "sqlite3";
 import { join } from "path";
+import cookieParser from "cookie-parser";
 
 const app = express();
 const port = process.env.PORT || 2000;
@@ -21,6 +22,7 @@ export const db: sqlite.Database = connectToDatabase();
 dotenv.config();
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.static('public'));
 
 app.use("/api", loginRouter);
