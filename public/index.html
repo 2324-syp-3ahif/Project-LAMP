@@ -76,8 +76,8 @@
                     <button type="button" class="btn btn-primary" id="invite-btn" data-bs-toggle="modal" data-bs-target="#invite-modal">Invite!</button>
                 </div>
                 <div class="mb-2">
-                    <label for="tags-btn" class="form-label">Add tags to find your tasklist easier</label>
-                    <button type="button" class="btn btn-primary" id="tags-btn">Add Tags</button>
+                    <label for="add-tags-btn" class="form-label">Add tags to find your tasklist easier</label>
+                    <button type="button" class="btn btn-primary" id="add-tags-btn" data-bs-toggle="modal" data-bs-target="#add-tags-modal">Add Tags</button>
                 </div>
                 <select class="form-select" aria-label="Select priority" id="priority-input">
                     <option selected>Select Priority</option>
@@ -103,6 +103,25 @@
                     <div class="modal-body" id="invite-users-modal">
                         <input type="email" class="form-control" id="email-input" aria-label="invite-input">
                         <button type="button" class="btn btn-primary" id="invite-user-btn">Invite</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="add-tags-modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add tags to filter tasklists</h5>
+                    </div>
+                    <div class="modal-body" id="tags-modal-body">
+                        <div id="add-tag">
+                            <input type="email" class="form-control" id="add-tag-modal-input" aria-label="tag-input">
+                            <button type="button" class="btn btn-primary" id="add-tag-modal-btn">Add Tag</button>
+                        </div>
+                        <div id="tags-list">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

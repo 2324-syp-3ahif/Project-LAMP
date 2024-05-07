@@ -19,6 +19,7 @@ const submitButton = document.getElementById('submit-tasklist-btn') as HTMLButto
 const inviteUserBtn = document.getElementById('invite-user-btn') as HTMLButtonElement;
 const deleteTasklistBtn = document.getElementById('delete-tasklist-btn') as HTMLButtonElement;
 const deleteModal = document.getElementById('delete-modal') as HTMLElement;
+const addTagsButton = document.getElementById('add-tags-btn') as HTMLButtonElement;
 export let listElements: HTMLInputElement[] = [];
 let globalDeleteTasklistID = -1;
 let globalTasklists: Tasklist[] = [];
@@ -68,7 +69,32 @@ export async function load(mail: string) {
     submitButton.addEventListener('click', createTasklist);
     inviteUserBtn.addEventListener('click', invite);
     filterButton.addEventListener('click', filterTasklists);
+    addTagsButton.addEventListener('click', showAddTagsModal);
 }
+/*
+async function showAddTagsModal() {
+    console.log("HERE");
+    const addTagsModal = document.getElementById('add-tags-modal') as HTMLElement;
+    const tags = document.getElementById('tags') as HTMLElement;
+    tags.innerHTML = "";
+    addTagsModal.style.display = 'block';
+    for (const tag of globalTags) {
+        const tagElement = document.createElement('button');
+        tagElement.classList.add('tag-btn');
+        tagElement.classList.add('btn');
+        tagElement.innerHTML = tag.name;
+        tagElement.addEventListener('click', async () => {
+            if (tagElement.classList.contains('active')) {
+                tagElement.classList.remove('active');
+            } else {
+                tagElement.classList.add('active');
+            }
+        });
+        tags.appendChild(tagElement);
+    }
+    addTagsModal.style.display = 'block';
+}
+ */
 
 async function showAllTasklists() {
     taskLists.innerHTML = "";
