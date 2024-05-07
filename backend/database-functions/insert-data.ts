@@ -1,4 +1,4 @@
-import sqlite3 from "sqlite3";
+import * as sqlite3 from "sqlite3";
 import {checkDateFormat, checkPasswordFormat, checkStringFormat} from "../utils";
 import {DateExpiredError} from "../interfaces/errors/DateExpiredError";
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
@@ -12,7 +12,7 @@ import {Task} from "../interfaces/model/Task";
 import {checkMailFormat} from '../utils';
 import {StringWrongFormatError} from "../interfaces/errors/StringWrongFormatError";
 import {IdAlreadyExistsError} from "../interfaces/errors/IdAlreadyExistsError";
-import bcrypt from "bcrypt";
+import * as bcrypt from "bcrypt";
 import {Tag} from "../interfaces/model/Tag";
 
 export async function insertTasklist(db: sqlite3.Database, title: string, description: string, priority: number, isLocked: boolean, sortingOrder: number, ownerEmail: string): Promise<void> {

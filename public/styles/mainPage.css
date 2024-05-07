@@ -63,7 +63,7 @@ body {
 }
 
 /* Create Tasklist Form */
-#create-form {
+#create-tasklist-form {
     display: none;
     width: 40%;
     transform: translateX(75%);
@@ -87,6 +87,8 @@ body {
 
 .form-select {
     margin: 10px 0;
+    max-height: 37px;
+    align-self: flex-end;
 }
 
 /* Invite Modal */
@@ -108,7 +110,7 @@ body {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -65%);
     max-width: 540px; /* max-width is now 90% of the viewport width */
     width: 100%; /* width is now 90% of the parent element's width */
     background: white;
@@ -125,6 +127,16 @@ body {
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 99;
 }
+.TaskOverlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+}
+
 #login-wrapper{
     display: none;
 }
@@ -224,3 +236,25 @@ form .text h3 a:hover{
     justify-content: center;
     display: flex;
 }
+
+#create-task-form {
+    display: none;
+    width: 40%;
+    max-width: 325px;
+    padding: 20px;
+    /*align-items: center;*/
+    /*justify-content: center;*/
+    margin-top: 20px;
+    background-color: #00c2dd;
+    color: #eeeeee;
+    border-radius: 20px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+}
+
+#date-task-input-div {
+    margin-right: 10px;
+}
+
+
+
+

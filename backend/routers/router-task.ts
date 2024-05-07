@@ -2,7 +2,7 @@ import express from "express";
 import * as utils from "./routerUtils";
 import {getMaxId, selectTasksByTasklistID} from "../database-functions/select-data";
 import {db} from "../app";
-import {insertTask} from "../database-functions/insert-data";
+import {dateFormatCheck, insertTask} from "../database-functions/insert-data";
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
 import {DateExpiredError} from "../interfaces/errors/DateExpiredError";
 import {DateFormatError} from "../interfaces/errors/DateFormatError";
@@ -14,7 +14,6 @@ import {selectTaskByTaskID} from "../database-functions/select-data";
 import {updateTask} from "../database-functions/update-data";
 import {deleteTaskByID} from "../database-functions/delete-data";
 import {isAuthenticated} from "../middleware/auth-handlers";
-
 
 export const taskRouter = express.Router();
 
@@ -33,16 +32,22 @@ taskRouter.get("/tasklistID/:tasklistID", isAuthenticated, async (req, res) => {
     })
 });
 
-taskRouter.post("/:tasklistID", isAuthenticated, async (req, res) => {
+taskRouter.post("/:tasklistID", /*isAuthenticated,*/ async (req, res) => {
     const tasklistID = parseInt(req.params.tasklistID);
     if (tasklistID === undefined || isNaN(tasklistID) || tasklistID < 1) {
         res.status(StatusCodes.BAD_REQUEST).send("userID must be a positiv Number");
         return;
     }
+
     if (!utils.checkTitle(req.body.title)) {
         res.status(StatusCodes.BAD_REQUEST).send("title must be at least 1 character long");
         return;
     }
+    const dueDate = req.body.dueDate;
+    // if (dueDate === undefined || Date.parse(dueDate) === NaN! ){
+    //     res.status(StatusCodes.BAD_REQUEST).send("date must lie in the future! and have the format dd.mm.yyyy")
+    //     return;
+    // }
     const title = req.body.title;
     const description = req.body.description ?? "";
     const sortingOrder = req.body.sortingOrder ?? 1;
@@ -58,7 +63,7 @@ taskRouter.post("/:tasklistID", isAuthenticated, async (req, res) => {
     const result: Task = {
             taskID: await getMaxId(db, 'TASKS', 'taskID') + 1,
             title: title,
-            dueDate: new Date(Date.now() + 9999),
+            dueDate: dueDate,
             priority: priority,
             description: description,
             isComplete: false,
@@ -90,7 +95,7 @@ taskRouter.put("/:taskID", isAuthenticated, async (req, res) => {
     await selectTaskByTaskID(db, taskID).then((task: Task) => {
         task.title = req.body.title ?? task.title;
         task.description = req.body.description ?? task.description;
-        task.dueDate = req.body.dueDate ?? new Date(task.dueDate);
+        task.dueDate = req.body.dueDate ?? task.dueDate;
         task.priority = req.body.priority ?? task.priority;
         task.isComplete = req.body.isComplete ?? task.isComplete;
 
@@ -130,3 +135,4 @@ taskRouter.delete("/:taskID", isAuthenticated, async (req, res) => {
         }
     });
 });
+
