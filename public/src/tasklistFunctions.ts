@@ -69,7 +69,7 @@ export async function load(mail: string) {
     submitButton.addEventListener('click', createTasklist);
     inviteUserBtn.addEventListener('click', invite);
     filterButton.addEventListener('click', filterTasklists);
-    addTagsButton.addEventListener('click', showAddTagsModal);
+    //addTagsButton.addEventListener('click', showAddTagsModal);
 }
 /*
 async function showAddTagsModal() {
@@ -101,10 +101,13 @@ async function showAllTasklists() {
     for (const list of globalTasklists) {
         const listEl: HTMLElement = await showTasklist(list);
         taskLists.appendChild(listEl);
+        console.log(listEl);
+        console.log(list);
     }
 }
 
 async function showTasklist(list: Tasklist): Promise<HTMLElement> {
+    console.log("in show singular tasklist");
     const listElement: HTMLElement = document.createElement('div');
     listElement.classList.add('tasklist');
     listElement.classList.add('card-body');
@@ -140,7 +143,7 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
     listElement.appendChild(titleButtonELement);
     listElement.appendChild(description);
     listElement.appendChild(tags);
-
+    console.log("added everything");
     listElement.addEventListener('click', (e) => {
         if (listElement.classList.contains("extended") || e.target === deleteTasklistBtn){
             return;
@@ -152,6 +155,7 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
         });
         extendTasklist(listElement, list);
     });
+    console.log("return listelement");
     return listElement;
 }
 
