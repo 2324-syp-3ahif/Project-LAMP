@@ -14,10 +14,16 @@ import {loginRouter} from "./routers/router-login";
 import sqlite from "sqlite3";
 import { join } from "path";
 import cookieParser from "cookie-parser";
+import {createTables} from "./database-functions/create-tables";
 
 const app = express();
 const port = process.env.PORT || 2000;
-export const db: sqlite.Database = connectToDatabase();
+
+async function startUp() {
+    await createTables();
+}
+startUp();
+
 
 dotenv.config();
 app.use(cors());
