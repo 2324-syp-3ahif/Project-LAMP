@@ -15,7 +15,7 @@ async function createTasksTable() {
     const db = await connectToDatabase();
     await db.run(`
         CREATE TABLE IF NOT EXISTS TASKS(
-       taskID INTEGER primary key AUTOINCREMENT,
+          taskID INTEGER primary key AUTOINCREMENT,
           title TEXT,
           description TEXT,
           dueDate INTEGER,
@@ -42,7 +42,7 @@ async function createTasklistsTable() {
           isLocked INTEGER,
           userID INTEGER NOT NULL, 
           lastViewed INTEGER,
-          creationINTEGER INTEGER,
+          creationDate INTEGER,
           FOREIGN KEY(userID) REFERENCES USERS(userID)
           ) strict;`);
     console.log('Successfully created TASLISTS ');
