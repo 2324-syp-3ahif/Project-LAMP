@@ -2,8 +2,6 @@ import {DateExpiredError} from "../interfaces/errors/DateExpiredError";
 import {StringToLongError} from "../interfaces/errors/StringToLongError";
 import {NotAValidNumberError} from "../interfaces/errors/NotAValidNumberError";
 import {connectToDatabase} from "./connect";
-import sqlite3 from "sqlite3";
-import {promisify} from "util";
 
 export async function deleteFromTable(query: string, ...params: any[]): Promise<void> {
     const db = await connectToDatabase();
