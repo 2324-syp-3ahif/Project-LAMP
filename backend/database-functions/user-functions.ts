@@ -1,27 +1,31 @@
-import sqlite3 from "sqlite3";
 import {Tasklist} from "../interfaces/model/Tasklist";
-import {deleteTasklistByID} from "./tasklist-functions";
-import {
-    deleteById,
-    deleteFromTable,
-    idFound,
-    idNotFound,
-    select,
-    selectRowByID,
-    stringLenghtCheck
-} from "./util-functions";
+import {deleteTasklistByTasklistID} from "./tasklist-functions";
+import {deleteFromTable, stringLenghtCheck, updateSingleColumn} from "./util-functions";
 import {checkMailFormat, checkPasswordFormat, checkStringFormat} from "../utils";
 import {StringWrongFormatError} from "../interfaces/errors/StringWrongFormatError";
 import {User} from "../interfaces/model/User";
 import bcrypt from "bcrypt";
+import {connectToDatabase} from "./connect";
+import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
+import {IdAlreadyExistsError} from "../interfaces/errors/IdAlreadyExistsError";
+import {ConnectionToDatabaseLostError} from "../interfaces/errors/ConnectionToDatabaseLostError";
 
-export async function selectUserByEmail(db: sqlite3.Database, email: string): Promise<User> {
-    return await selectRowByID<User>(db, email, 'USERS', 'email');
+export async function selectUserByUserID(userID: number): Promise<User> {
+    const db = await connectToDatabase();
+    const stmt = await db.prepare('SELECT * FROM USERS WHERE userID = ?')
+    await stmt.bind(userID);
+    const result = await stmt.get<User>();
+    if (result === undefined) {
+        throw new IdNotFoundError('USERS', 'userID');
+    }
+    await stmt.finalize();
+    await db.close();
+    return result;
 }
 
-export async function insertUser(db: sqlite3.Database, email: string, username: string, password: string): Promise<void> {
-    stringLenghtCheck(email, 50, 'email', ' cannot have more characters than ');
-    stringLenghtCheck(username, 50, 'username', ' cannot have more characters than ');
+export async function insertUser(email: string, username: string, password: string): Promise<number> {
+    stringLenghtCheck(email, 50, 'email');
+    stringLenghtCheck(username, 50, 'username');
     if (!checkMailFormat(email)) {
         throw new StringWrongFormatError('email');
     } if (!checkPasswordFormat(password)) {
@@ -29,18 +33,42 @@ export async function insertUser(db: sqlite3.Database, email: string, username: 
     } if (!checkStringFormat(username)) {
         throw new StringWrongFormatError('username');
     }
-    await idFound<User>(db, email, 'USERS', 'email');
 
-    const query: string = `INSERT INTO USERS (email, username, hashedPassword) VALUES (?,?,?);`;
-    db.run(query, [email, username, await bcrypt.hash(password, 10)]);
+    const db = await connectToDatabase();
+    const stmt = await db.prepare('INSERT INTO USERS (email, username, hashedPassword) values (?, ?, ?);');
+    await stmt.bind(email, username, await bcrypt.hash(password, 10));
+    try {
+        const operationResult = await stmt.run();
+        await stmt.finalize();
+        return operationResult.lastID!;
+    } catch(error: any) {
+        if (error.code === 'SQLITE_CONSTRAINT') {
+            throw new IdAlreadyExistsError('email');
+        } else {
+            throw new ConnectionToDatabaseLostError();
+        }
+    } finally {
+        await db.close();
+    }
 }
 
-export async function deleteUserByEmail(db: sqlite3.Database, email: string) {
-    await idNotFound(db, email, 'USERS', 'email');
-    const tasklists = await select<Tasklist>(db, `SELECT * FROM TASKLISTS WHERE email = '${email}';`)
+export async function updateUser(userID: number, password: string): Promise<void> {
+    await selectUserByUserID(userID);
+    if (!checkPasswordFormat(password)) {
+        throw new StringWrongFormatError('password');
+    }
+    await updateSingleColumn('USERS', userID, 'userID', 'hashedPassword', await bcrypt.hash(password, 10));
+}
+
+export async function deleteUserByUserID(userID: number) {
+    await selectUserByUserID(userID);
+    const db = await connectToDatabase();
+    const stmt = await db.prepare('SELECT * FROM TASKLISTS WHERE userID = ?');
+    await stmt.bind(userID);
+    const tasklists = await stmt.all<Tasklist[]>();
     tasklists.forEach((tasklist: Tasklist) => {
-        deleteTasklistByID(db, tasklist.tasklistID);
+        deleteTasklistByTasklistID(tasklist.tasklistID);
     });
-    await deleteById(db, email, 'email', 'USERS');
-    await deleteFromTable(db, `DELETE FROM USERTASKLISTS WHERE email = '${email}';`);
+    await deleteFromTable("DELETE FROM USERTASKLISTS WHERE userID = ?;", userID);
+    await deleteFromTable("DELETE FROM USERS WHERE userID = ?;", userID);
 }

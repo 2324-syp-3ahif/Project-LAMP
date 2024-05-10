@@ -1,18 +1,30 @@
-import sqlite3 from "sqlite3";
-import {Tasklist} from "../interfaces/model/Tasklist";
-import {Tag} from "../interfaces/model/Tag";
 import {IdAlreadyExistsError} from "../interfaces/errors/IdAlreadyExistsError";
-import {idNotFound, select} from "./util-functions";
+import {selectTasklistByTasklistID} from "./tasklist-functions";
+import {selectTagByTagID} from "./tag-functions";
+import {connectToDatabase} from "./connect";
 
-export async function addTagToTasklist(db: sqlite3.Database, tasklistID: number, tagID: number): Promise<void> {
-    await idNotFound<Tasklist>(db, tasklistID, 'TASKLISTS', 'tasklistID');
-    await idNotFound<Tag>(db, tagID, 'TAGS', 'tagID');
+export async function addTagToTasklist(tasklistID: number, tagID: number): Promise<void> {
+    await selectTasklistByTasklistID(tasklistID);
+    await selectTagByTagID(tagID);
 
-    const data = await select<string>(db, `SELECT * FROM TAGTASKLISTS WHERE tasklistID = ${tasklistID} and tagID = ${tagID};`);
+    await alreadyAdded(tasklistID, tagID);
+    const db = await connectToDatabase();
+    const insertStmt = await db.prepare("INSERT INTO TAGTASKLISTS (tasklistID, tagID) VALUES (?, ?);");
+    await insertStmt.bind(tasklistID, tagID);
+    await insertStmt.run();
+    await insertStmt.finalize();
+    await db.close();
+}
+
+async function alreadyAdded(tasklistID: number, tagID: number): Promise<boolean> {
+    const db = await connectToDatabase();
+    const stmt = await db.prepare("SELECT * FROM TAGTASKLISTS WHERE tasklistID = ?1 and tagID = ?2;");
+    await stmt.bind({ 1: tasklistID, 2: tagID});
+    const data = await stmt.all<any[]>();
+    await stmt.finalize();
+    await db.close();
     if (data.length !== 0) {
-        throw new IdAlreadyExistsError('tagID', 'idAlreadyAdded');
+        throw new IdAlreadyExistsError("tagID tasklistID");
     }
-
-    const query: string = `INSERT INTO TAGTASKLISTS (tasklistID, tagID) VALUES (?,?);`;
-    db.run(query, [tasklistID, tagID]);
+    return data.length !== 0;
 }

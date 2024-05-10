@@ -1,51 +1,83 @@
-import sqlite3 from "sqlite3";
-import {
-    deleteById,
-    deleteFromTable,
-    getMaxId,
-    idNotFound,
-    select,
-    stringLenghtCheck,
-    updateSingleColumn
-} from "./util-functions";
-import {User} from "../interfaces/model/User";
+import {deleteFromTable, stringLenghtCheck, updateSingleColumn} from "./util-functions";
 import {Tag} from "../interfaces/model/Tag";
 import {checkStringFormat} from "../utils";
 import {StringWrongFormatError} from "../interfaces/errors/StringWrongFormatError";
+import {connectToDatabase} from "./connect";
+import {selectTasklistByTasklistID} from "./tasklist-functions";
+import {selectUserByUserID} from "./user-functions";
+import {ConnectionToDatabaseLostError} from "../interfaces/errors/ConnectionToDatabaseLostError";
+import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
 
-export async function selectTagsByTasklistID(db: sqlite3.Database, tasklistID: number): Promise<Tag[]> {
-    const query: string = `SELECT * FROM TAGS WHERE tagID in (SELECT tagID FROM TAGTASKLISTS WHERE tasklistID = ${tasklistID});`;
-    return select<Tag>(db, query);
+export async function selectTagsByTasklistID(tasklistID: number): Promise<Tag[]> {
+    await selectTasklistByTasklistID(tasklistID);
+    const db = await connectToDatabase();
+    const stmt = await db.prepare('SELECT * FROM TAGS WHERE tagID IN (SELECT tagID FROM TAGTASKLISTS WHERE tasklistID = ?);');
+    await stmt.bind(tasklistID);
+    const result = await stmt.all<Tag[]>();
+    await stmt.finalize();
+    await db.close();
+    return result;
 }
 
-export async function selectTagsByEmail(db: sqlite3.Database, email: string): Promise<Tag[]> {
-    const query: string = `SELECT * FROM TAGS WHERE email IS '${email}';`;
-    return select<Tag>(db, query);
+export async function selectTagByTagID(tagID: number): Promise<Tag> {
+    const db = await connectToDatabase();
+    const stmt = await db.prepare('SELECT * FROM TAGS WHERE tagID = ?;');
+    await stmt.bind(tagID);
+    const result = await stmt.get<Tag>();
+    await stmt.finalize();
+    await db.close();
+    if (result === undefined) {
+        throw new IdNotFoundError('tagID');
+    }
+    return result;
 }
 
-export async function insertTag(db: sqlite3.Database, name: string, email: string): Promise<void> {
-    stringLenghtCheck(name, 50, 'tagname', ' cannot have more characters than ');
-    await idNotFound<User>(db, email, 'USERS', 'email');
-
-    const query: string = `INSERT INTO TAGS (tagID, name, email) VALUES (?,?,?);`;
-    const id: number = (await getMaxId(db,'TAGS', 'tagID',)) + 1;
-    db.run(query, [id, name, email]);
+export async function selectTagsByUserID(userID: number): Promise<Tag[]> {
+    await selectUserByUserID(userID);
+    const db = await connectToDatabase();
+    const stmt = await db.prepare('SELECT * FROM TAGS WHERE userID = ?;');
+    await stmt.bind(userID);
+    const result = await stmt.all<Tag[]>();
+    await stmt.finalize();
+    await db.close();
+    return result;
 }
 
-export async function updateTag(db: sqlite3.Database, tagID: number, name: string) {
-    await idNotFound<Tag>(db, tagID, 'TAGS', 'tagID');
+export async function insertTag(name: string, userID: number): Promise<number> {
+    stringLenghtCheck(name, 50, 'tagname');
+    await selectUserByUserID(userID);
+    const db = await connectToDatabase();
+    const stmt = await db.prepare('INSERT INTO TAGS (name, userID) VALUES (?,?);');
+    await stmt.bind(name, userID);
+    try {
+        const operationResult = await stmt.run();
+        await stmt.finalize();
+        return operationResult.lastID!;
+    } catch(error: any) {
+        if (error.code === 'SQLITE_CONSTRAINT') {
+            throw new Error('tagname already exists');
+        } else {
+            throw new ConnectionToDatabaseLostError();
+        }
+    } finally {
+        await db.close();
+    }
+}
+
+export async function updateTag(tagID: number, name: string) {
+    await selectTagByTagID(tagID);
 
     if (name !== undefined) {
         if (!checkStringFormat(name)) {
-            throw new StringWrongFormatError('name', '');
+            throw new StringWrongFormatError('name');
         }
-        updateSingleColumn(db, 'TAGS', tagID, 'tagID', 'name', name);
+        await updateSingleColumn('TAGS', tagID, 'tagID', 'name', name);
     }
 }
 
 
-export async function deleteTagByID(db: sqlite3.Database, tagID: number) {
-    await idNotFound(db, tagID, 'TAGS', 'tagID');
-    await deleteById(db, tagID, 'tagID', 'TAGS');
-    await deleteFromTable(db, `DELETE FROM TAGTASKLISTS WHERE tagID = ${tagID};`);
+export async function deleteTag(tagID: number) {
+    await selectTagByTagID(tagID);
+    await deleteFromTable(`DELETE FROM TAGTASKLISTS WHERE tagID = ${tagID};`);
+    await deleteFromTable('DELETE FROM TAGS WHERE tagID = ?', tagID);
 }

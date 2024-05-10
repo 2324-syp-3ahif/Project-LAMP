@@ -1,66 +1,87 @@
-import sqlite3 from "sqlite3";
 import {
-    dateFormatCheck,
     dateSmallerNowChecker,
-    deleteById, idNotFound,
+    deleteFromTable,
     numberChecker,
-    select,
-    selectRowByID, stringLenghtCheck, updateSingleColumn
+    stringLenghtCheck,
+    updateSingleColumn
 } from "./util-functions";
-import {Tasklist} from "../interfaces/model/Tasklist";
-import {User} from "../interfaces/model/User";
 import {Task} from "../interfaces/model/Task";
+import {connectToDatabase} from "./connect";
+import {selectTasklistByTasklistID} from "./tasklist-functions";
+import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
+import {selectUserByUserID} from "./user-functions";
+import {ConnectionToDatabaseLostError} from "../interfaces/errors/ConnectionToDatabaseLostError";
 
-export async function selectTasksByTasklistID(db: sqlite3.Database, tasklistID: number): Promise<Task[]> {
-    const query: string = `SELECT * FROM TASKS WHERE tasklistID = ${tasklistID}`;
-    await selectRowByID(db, tasklistID, 'TASKLISTS', 'tasklistID');
-    return await select<Task>(db, query);
+export async function selectTasksByTasklistID(tasklistID: number): Promise<Task[]> {
+    await selectTasklistByTasklistID(tasklistID);
+    const db = await connectToDatabase();
+    const stmt = await db.prepare('SELECT * FROM TASKS WHERE tasklistID = ?');
+    await stmt.bind(tasklistID);
+    const result = await stmt.all<Task[]>();
+    await stmt.finalize();
+    await db.close();
+    return result;
 }
 
-export async function selectTaskByTaskID(db: sqlite3.Database, taskID: number): Promise<Task> {
-    return await selectRowByID<Task>(db, taskID, 'TASKS', 'taskID');
+export async function selectTaskByTaskID(taskID: number): Promise<Task> {
+    const db = await connectToDatabase();
+    const stmt = await db.prepare('SELECT * FROM TASKS WHERE taskID = ?');
+    await stmt.bind(taskID);
+    const result = await stmt.get<Task>();
+    if (result === undefined) {
+        throw new IdNotFoundError('taskID');
+    }
+    await stmt.finalize();
+    await db.close();
+    return result;
 }
 
-export async function insertTask(db: sqlite3.Database, title: string, dueDate: Date, description: string, priority: number, tasklistID: number, email: string): Promise<void> {
+export async function insertTask(title: string, description: string, dueDate: number, priority: number, tasklistID: number, userID: number): Promise<number> {
     numberChecker(priority, 0, 10, 'priority', `Priority must be between 0 and 10`);
-    dateFormatCheck(dueDate, 'dueDate', ' is not the right format!');
     dateSmallerNowChecker(dueDate);
-    stringLenghtCheck(title, 50, 'title', ' cannot have more characters than ');
-    stringLenghtCheck(description, 255, 'description', ' cannot have more characters than ');
+    stringLenghtCheck(title, 50, 'title');
+    stringLenghtCheck(description, 255, 'description');
 
-    await idNotFound<Tasklist>(db, tasklistID, 'TASKLISTS', 'tasklistID');
-    await idNotFound<User>(db, email, 'USERS', 'email');
+    await selectTasklistByTasklistID(tasklistID);
+    await selectUserByUserID(userID);
 
-    const query: string = `INSERT INTO TASKS (title, description, dueDate, priority, isComplete, tasklistID, email) VALUES (?,?,?,?,?,?,?);`;
-    db.run(query, [title, description, dueDate.toString(), priority, false, tasklistID, email]);
+    const db = await connectToDatabase();
+    const stmt = await db.prepare('INSERT INTO TASKS (title, description, dueDate, priority, isComplete, tasklistID, userID) VALUES (?,?,?,?,?,?,?);');
+    await stmt.bind(title, description, dueDate, priority, false, tasklistID, userID);
+    try {
+        const operationResult = await stmt.run();
+        await stmt.finalize();
+        return operationResult.lastID!;
+    } catch (error: any) {
+        throw new ConnectionToDatabaseLostError();
+    } finally {
+        await db.close();
+    }
 }
 
-export async function deleteTaskByID(db: sqlite3.Database, taskID: number) {
-    await idNotFound(db, taskID, 'TASKS', 'taskID');
-    await deleteById(db, taskID, 'taskID', 'TASKS');
+export async function deleteTaskByTaskID(taskID: number) {
+    await selectTaskByTaskID(taskID);
+    await deleteFromTable('DELETE FROM TASKS WHERE taskID = ?;', taskID);
 }
 
-export async function updateTask(db: sqlite3.Database, taskID: number, tasklistID?: number, title?: string, description?: string, dueDate?: Date, priority?: number, isComplete?: boolean): Promise<void> {
-    let dd = undefined;
+export async function updateTask(taskID: number, tasklistID?: number, title?: string, description?: string, dueDate?: number, priority?: number, isComplete?: boolean): Promise<void> {
     if (tasklistID !== undefined) {
-        await idNotFound<Tasklist>(db, tasklistID, 'TASKLISTS', 'tasklistID');
+        await selectTasklistByTasklistID(tasklistID);
     } if (title !== undefined) {
-        stringLenghtCheck(title, 50, 'title', '');
+        stringLenghtCheck(title, 50, 'title');
     } if (description !== undefined) {
-        stringLenghtCheck(description, 255, 'description', '');
+        stringLenghtCheck(description, 255, 'description');
     } if (dueDate !== undefined) {
-        dateFormatCheck(dueDate, 'dueDate', '');
         dateSmallerNowChecker(dueDate);
-        dd = dueDate.toISOString();
     } if (priority !== undefined) {
         numberChecker(priority, 0, 10, "sortingOrder", '');
     }
-    const array = [title, description, dd, priority, isComplete, tasklistID];
+    const array = [title, description, dueDate, priority, isComplete ? 1 : 0, tasklistID];
     const names = ["title", "description", "dueDate", "priority", "isComplete", "tasklistID"];
-    await idNotFound<Task>(db, taskID, 'TASKS', 'taskID');
+    await selectTaskByTaskID(taskID);
     for (let i = 0; i < array.length; i++) {
         if (array[i] !== undefined) {
-            updateSingleColumn(db, 'TASKS', taskID, 'taskID', names[i], array[i]);
+            await updateSingleColumn('TASKS', taskID, 'taskID', names[i], array[i]);
         }
     }
 }

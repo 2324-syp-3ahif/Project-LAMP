@@ -1,67 +1,87 @@
-import sqlite3 from "sqlite3";
-
-import {
-    dateFormatCheck,
-    dateSmallerNowChecker,
-    deleteById, getMaxId,
-    idNotFound, select,
-    selectRowByID,
-    stringLenghtCheck, updateSingleColumn
-} from "./util-functions";
-import {User} from "../interfaces/model/User";
+import {dateSmallerNowChecker, stringLenghtCheck} from "./util-functions";
 import {Event} from "../interfaces/model/Event";
+import {connectToDatabase} from "./connect";
+import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
+import {MissingParametersError} from "../interfaces/errors/MissingParametersError";
+import {selectUserByUserID} from "./user-functions";
 
-export async function selectEventByEventID(db: sqlite3.Database, eventID: number): Promise<Event> {
-    return await selectRowByID<Event>(db, eventID, 'EVENTS', 'eventID');
-}
-
-export async function selectEventsByEmail(db: sqlite3.Database, email: string): Promise<Event[]> {
-    await idNotFound<User>(db, email, 'USERS', 'email');
-    return await select<Event>(db, `SELECT * FROM EVENTS WHERE email = '${email}'`);
-}
-
-export async function insertEvent(db: sqlite3.Database, name: string, description: string, startTime: Date, endTime: Date, fullDay: boolean, email: string): Promise<void> {
-    dateFormatCheck(startTime, 'startTime', ' is not the right format!');
-    dateSmallerNowChecker(startTime);
-    dateFormatCheck(endTime, 'endTime', ' is not the right format!');
-    dateSmallerNowChecker(endTime);
-    stringLenghtCheck(name, 50, 'name', ' cannot have more characters than ');
-    stringLenghtCheck(description, 255, 'description', ' cannot have more characters than ');
-
-    await idNotFound<User>(db, email, 'USERS', 'email');
-
-    const id: number = (await getMaxId(db, 'EVENTS', 'eventID')) + 1;
-    const query: string = `INSERT INTO EVENTS (eventID, name, startTime, endTime, fullDay, description, email) VALUES (?, ?,?,?,?,?,?);`;
-    db.run(query, [id, name, startTime, endTime, fullDay, description, email]);
-}
-
-export async function updateEvent(db: sqlite3.Database, eventID: number, name?: string, description?: string, startTime?: Date, endTime?: Date, fullDay?: boolean) : Promise<void> {
-    let st = undefined;
-    let et = undefined;
-    if (name !== undefined) {
-        stringLenghtCheck(name, 50, 'name', '');
-    } if (description !== undefined) {
-        stringLenghtCheck(description, 255, 'description', '');
-    } if (startTime !== undefined) {
-        dateFormatCheck(startTime, 'startTime', '');
-        dateSmallerNowChecker(startTime);
-        st = startTime.toISOString();
-    } if (endTime !== undefined) {
-        dateFormatCheck(endTime, 'dueDate', '');
-        dateSmallerNowChecker(endTime);
-        et = endTime.toISOString();
+export async function selectEventByEventID(eventID: number): Promise<Event> {
+    const db = await connectToDatabase();
+    const stmt = await db.prepare('SELECT * FROM EVENTS WHERE eventID = ?')
+    await stmt.bind(eventID);
+    const result = await stmt.get<Event>();
+    if (result === undefined) {
+        throw new IdNotFoundError('EVENTS', 'eventID');
     }
+    await stmt.finalize();
+    await db.close();
+    return result;
+}
 
-    const array = [name, description, st, et];
-    const names = ["name", "description", "startTime", "endTime"];
-    for (let i = 0; i < array.length; i++) {
-        if (array[i] !== undefined) {
-            updateSingleColumn(db, 'EVENTS', eventID, 'eventID', names[i], array[i]);
+//TODO: Maybe not throw an error if the user does not exist
+export async function selectEventsByUserID(userID: number): Promise<Event[]> {
+    await selectUserByUserID(userID);
+    const db = await connectToDatabase();
+    const stmt = await db.prepare("SELECT * FROM EVENTS WHERE userID = ?");
+    await stmt.bind(userID);
+    const result = await stmt.all<Event[]>();
+    await stmt.finalize();
+    await db.close();
+    return result;
+}
+
+export async function insertEvent(name: string, description: string, startTime: number, endTime: number, fullDay: boolean, userID: number): Promise<number> {
+    stringLenghtCheck(name, 50, 'name');
+    stringLenghtCheck(description, 255, 'description');
+    dateSmallerNowChecker(startTime);
+    dateSmallerNowChecker(endTime);
+
+    const db = await connectToDatabase();
+    const stmt = await db.prepare('INSERT INTO EVENTS (name, startTime, endTime, fullDay, description, userID) values (?1, ?2, ?3, ?4, ?5, ?6)');
+    await stmt.bind({1: name, 2: startTime, 3: endTime, 4: fullDay ? 1 : 0, 5: description, 6: userID});
+    const operationResult = await stmt.run();
+    if (operationResult.lastID === undefined) {
+        console.log(operationResult);
+        throw new Error('Could not insert event');
+    }
+    await stmt.finalize();
+    await db.close();
+    return operationResult.lastID;
+}
+
+export async function updateEvent(event: object): Promise<void> {
+    let query = 'UPDATE EVENTS SET';
+    let eventID: any = undefined;
+    let bool = false;
+    const values = [];
+    for (const [name, value] of Object.entries(event)) {
+        if (name !== 'eventID' && value !== undefined) {
+            query = query + `${bool ? "," : bool = true} ${name} = ?`;
+            values.push(value);
+        } else if (name === 'eventID') {
+            eventID = value;
         }
     }
+    query = query + ` WHERE eventID = ?;`;
+    if (values.length === 0) {
+        throw new MissingParametersError();
+    }
+    values.push(eventID);
+    await selectEventByEventID(eventID);
+    const db = await connectToDatabase();
+    const stmt = await db.prepare(query);
+    await stmt.bind(...values);
+    const operationResult = await stmt.run();
+    await stmt.finalize();
+    await db.close();
 }
 
-export async function deleteEventByID(db: sqlite3.Database, eventID: number) {
-    await idNotFound(db, eventID, 'EVENTS', 'eventID');
-    await deleteById(db, eventID, 'eventID', 'EVENTS');
+export async function deleteEventByID(eventID: number) {
+    await selectEventByEventID(eventID);
+    const db = await connectToDatabase();
+    const stmt = await db.prepare('DELETE FROM EVENTS WHERE eventID = ?');
+    await stmt.bind(eventID);
+    await stmt.run();
+    await stmt.finalize();
+    await db.close();
 }
