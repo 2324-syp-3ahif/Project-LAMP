@@ -37,12 +37,12 @@ async function createTasklistsTable() {
           tasklistID INTEGER primary key AUTOINCREMENT,
           title TEXT,
           description TEXT,
-          sortingOrder int,
-          priority int,
+          sortingOrder INTEGER,
+          priority INTEGER,
           isLocked INTEGER,
           userID INTEGER NOT NULL, 
-          lastViewed int,
-          creationINTEGER int,
+          lastViewed INTEGER,
+          creationINTEGER INTEGER,
           FOREIGN KEY(userID) REFERENCES USERS(userID)
           ) strict;`);
     console.log('Successfully created TASLISTS ');
