@@ -5,7 +5,8 @@ import {Task} from "./model/Task";
 import {extendTasklist} from "./tasklistFunctions";
 
 const taskUrl: string = 'http://localhost:2000/api/task/';
-const createForm = document.getElementById('create-task-form') as HTMLFormElement;
+//const createForm = document.getElementById('create-task-form') as HTMLFormElement;
+const createForm = document.getElementById('create-task-modal') as HTMLDialogElement;
 const createTaskBtn = document.getElementById('submit-task-btn')
 const taskOverlay = document.createElement('div')
 export let checkBoxes: HTMLInputElement[] = [];
@@ -81,12 +82,12 @@ export async function loadTasks(taskList: Tasklist, taskContainer: HTMLDivElemen
 }
 
 export async function createNewTask(tasklistID: number){
-    createForm.style.display = 'block';
+    createForm.showModal();
     // taskOverlay.style.display = 'block'
     createTaskBtn!.addEventListener('click', async () =>{
         await processTask(tasklistID);
         // taskOverlay.style.display = 'none';
-        createForm.style.display = 'none';
+        createForm.close();
     });
 }
 

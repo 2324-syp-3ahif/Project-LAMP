@@ -152,35 +152,56 @@
                 </p>
             </form>
         </div>
-        <div class="wrapper" id="create-task-form">
-            <form>
-                <div class="mb-2">
-                    <label for="name-task-input" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="name-task-input">
-                </div>
-                <div class="d-flex flex-row">
-                    <div class="mb-2" id="date-task-input-div">
-                        <label for="date-task-input" class="form-label">Date</label>
-                        <input type="text" class="form-control" id="date-task-input">
+        <!-- Modal -->
+        <div class="modal fade" id="create-task-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="create-task-modal-title">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                    <select class="form-select" aria-label="Select priority" id="priority-task-input">
-                        <option selected>Select Priority</option>
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                    </select>
-<!--                    <div class="mb-2" id="time-task-input-div">-->
-<!--                        <label for="time-task-input" class="form-label">Time</label>-->
-<!--                        <input type="text" class="form-control" id="time-task-input">-->
-<!--                    </div>-->
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
                 </div>
-                <div class="mb-2">
-                    <label for="description-task-input" class="form-label">Add description</label>
-                    <input type="text" class="form-control" id="description-task-input">
-                </div>
-                <button type="button" class="btn btn-primary" id="submit-task-btn">Create Task</button>
-            </form>
+            </div>
         </div>
+
+        <!--        <div class="wrapper" id="create-task-form">-->
+<!--            <form>-->
+<!--                <div class="mb-2">-->
+<!--                    <label for="name-task-input" class="form-label">Name</label>-->
+<!--                    <input type="text" class="form-control" id="name-task-input">-->
+<!--                </div>-->
+<!--                <div class="d-flex flex-row">-->
+<!--                    <div class="mb-2" id="date-task-input-div">-->
+<!--                        <label for="date-task-input" class="form-label">Date</label>-->
+<!--                        <input type="text" class="form-control" id="date-task-input">-->
+<!--                    </div>-->
+<!--                    <select class="form-select" aria-label="Select priority" id="priority-task-input">-->
+<!--                        <option selected>Select Priority</option>-->
+<!--                        <option value="0">0</option>-->
+<!--                        <option value="1">1</option>-->
+<!--                        <option value="2">2</option>-->
+<!--                    </select>-->
+<!--&lt;!&ndash;                    <div class="mb-2" id="time-task-input-div">&ndash;&gt;-->
+<!--&lt;!&ndash;                        <label for="time-task-input" class="form-label">Time</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <input type="text" class="form-control" id="time-task-input">&ndash;&gt;-->
+<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                </div>-->
+<!--                <div class="mb-2">-->
+<!--                    <label for="description-task-input" class="form-label">Add description</label>-->
+<!--                    <input type="text" class="form-control" id="description-task-input">-->
+<!--                </div>-->
+<!--                <button type="button" class="btn btn-primary" id="submit-task-btn">Create Task</button>-->
+<!--            </form>-->
+<!--        </div>-->
 
         <div id="tasklists"></div>
         <div class="modal fade" id="delete-modal" tabindex="-1">

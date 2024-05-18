@@ -79,55 +79,7 @@ async function showAllTasklists() {
 }
 
 async function showTasklist(list: Tasklist): Promise<HTMLElement> {
-    const listElement: HTMLElement = document.createElement('div');
-    listElement.classList.add('tasklist');
-    listElement.classList.add('card-body');
-    listElement.classList.add('card');
-    const titleButtonELement = document.createElement('div');
-    titleButtonELement.classList.add('d-flex')
-    titleButtonELement.classList.add('flex-row')
-    titleButtonELement.classList.add('title-newTaskButton-Div')
-
-    const title = document.createElement('h2');
-    title.innerHTML = list.title;
-    title.addEventListener('input', async () => {
-        list.title = title.innerHTML;
-        await send(tasklistUrl + list.tasklistID, 'PUT', list);
-        await showTasklist(list);
-    });
-    title.classList.add("card-title");
-
-    const newTaskButton = document.createElement('button');
-    newTaskButton.classList.add('round-Button')
-    newTaskButton.addEventListener('click', async () => {
-        await createNewTask(list.tasklistID);
-    });
-    const tags = document.createElement('div');
-    tags.classList.add('tags');
-
-    const description = document.createElement('p');
-    description.innerHTML = list.description;
-    description.classList.add("card-text");
-    titleButtonELement.appendChild(title);
-    titleButtonELement.appendChild(newTaskButton);
-
-    listElement.appendChild(titleButtonELement);
-    listElement.appendChild(description);
-    listElement.appendChild(tags);
-
-    listElement.addEventListener('click', (e) => {
-        if (listElement.classList.contains("extended") || e.target === deleteTasklistBtn){
-            return;
-        }
-        checkBoxes.forEach(checkbox => {
-            if(e.target === checkbox) {
-                return;
-            }
-        });
-        extendTasklist(listElement, list);
-    });
-    return listElement;
-}
+#}
 
 export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
     if (list.isLocked) {
