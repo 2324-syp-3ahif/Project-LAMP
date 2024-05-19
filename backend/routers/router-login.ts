@@ -1,5 +1,5 @@
 import express from "express";
-import jwt, {JwtPayload} from "jsonwebtoken";
+import {JwtPayload} from "jsonwebtoken";
 import {StatusCodes} from "http-status-codes";
 import bcrypt from "bcrypt";
 import {selectUserByEmail, insertUser} from "../database-functions/user-functions";
@@ -32,8 +32,6 @@ loginRouter.post("/register", async (req, res) => {
         res.status(StatusCodes.CREATED).json({ accessToken });
     } catch (e){
         console.log(e);
-        // TODO: also say what requirements are not met (in the frontend maybe, not here in the backend)
-        // TODO: log error in browser (what exactly went wrong e.g. password too short, email already exists, etc.)
         res.status(StatusCodes.BAD_REQUEST).send("User already exists!");
     }
 });

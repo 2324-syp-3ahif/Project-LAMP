@@ -3,7 +3,6 @@ import {Tasklist} from './model/Tasklist';
 import {Tag} from './model/Tag';
 import {checkMailFormat} from "./utils";
 import {checkBoxes, closePLS, createNewTask, loadTasks, setClosePLS} from "./taskFuntions";
-import {getUserID} from "../../backend/database-functions/user-functions";
 const tasklistUrl: string = 'http://localhost:2000/api/tasklist/';
 const tagUrl: string = 'http://localhost:2000/api/tag/';
 
@@ -83,10 +82,10 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
     listElement.classList.add('tasklist');
     listElement.classList.add('card-body');
     listElement.classList.add('card');
-    const titleButtonELement = document.createElement('div');
-    titleButtonELement.classList.add('d-flex')
-    titleButtonELement.classList.add('flex-row')
-    titleButtonELement.classList.add('title-newTaskButton-Div')
+    const titleButtonElement = document.createElement('div');
+    titleButtonElement.classList.add('d-flex')
+    titleButtonElement.classList.add('flex-row')
+    titleButtonElement.classList.add('title-newTaskButton-Div')
 
     const title = document.createElement('h2');
     title.innerHTML = list.title;
@@ -108,10 +107,10 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
     const description = document.createElement('p');
     description.innerHTML = list.description;
     description.classList.add("card-text");
-    titleButtonELement.appendChild(title);
-    titleButtonELement.appendChild(newTaskButton);
+    titleButtonElement.appendChild(title);
+    titleButtonElement.appendChild(newTaskButton);
 
-    listElement.appendChild(titleButtonELement);
+    listElement.appendChild(titleButtonElement);
     listElement.appendChild(description);
     listElement.appendChild(tags);
 
@@ -150,8 +149,6 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
         }); */
 
         const tasksEl = document.createElement('div');
-
-        // TODO: add task element like in GUI mockups
         await loadTasks(list, tasksEl);
 
         const deleteButton = document.createElement('button');
@@ -255,7 +252,7 @@ async function createTasklist() {
         email: globalMail
     };
 
-    const tasklist: Tasklist = await send(tasklistUrl + globalMail, 'POST', data);
+    const tasklist: Tasklist = await (await send(tasklistUrl + globalMail, 'POST', data)).json();
     globalTasklists.push(tasklist);
     createForm.style.display = 'none';
     await showAllTasklists();
