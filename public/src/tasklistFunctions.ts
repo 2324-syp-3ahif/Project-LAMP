@@ -7,7 +7,6 @@ import {getUserID} from "../../backend/database-functions/user-functions";
 const tasklistUrl: string = 'http://localhost:2000/api/tasklist/';
 const tagUrl: string = 'http://localhost:2000/api/tag/';
 
-
 const taskLists = document.getElementById('tasklists') as HTMLElement;
 const createTasklistButton = document.getElementById('create-tasklist-btn') as HTMLButtonElement;
 const orderPriorityButton = document.getElementById('order-priority') as HTMLButtonElement;
@@ -244,6 +243,8 @@ async function createTasklist() {
         alert('Description is too long, must be less than 255 characters');
         return;
     }
+
+    console.log("sorting order: " + sortingOrder);
 
     const data = {
         title: title,

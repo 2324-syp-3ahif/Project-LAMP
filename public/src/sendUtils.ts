@@ -30,10 +30,10 @@ export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATC
             return refreshTokenRes;
         }
     } else if (!res.ok) {
+        const error = await res.text();
         console.log(res.body);
-        console.error('Error:', await res.text());
-        generateWarningPopUp(await res.text(), res.status);
-        console.error('Error:', res.text());
+        console.error("Error: " + error);
+        generateWarningPopUp(error, res.status);
     }
     return res;
 }

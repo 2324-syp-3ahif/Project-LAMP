@@ -21,12 +21,16 @@ export async function selectTasklistByTasklistID(tasklistID: number): Promise<Ta
 
 export async function selectTasklistsByEmail(email: string): Promise<Tasklist[]> {
     const db = await connectToDatabase();
+    console.log(email);
     const stmt = await db.prepare("SELECT * FROM TASKLISTS WHERE tasklistID in (SELECT tasklistID FROM USERTASKLISTS WHERE userID = ?);");
     await stmt.bind(await getUserID(email));
+    console.log(await getUserID(email));
     const result = await stmt.all<Tasklist[]>();
+    /*
     if (result.length === 0) {
         throw new IdNotFoundError('USERS', 'userID');
     }
+     */
     await stmt.finalize();
     await db.close();
     return result;
