@@ -14,7 +14,7 @@ export async function deleteFromTable(query: string, ...params: any[]): Promise<
 
 export function dateSmallerNowChecker(dueDate: number) {
     if (dueDate <= new Date(Date.now()).valueOf()) {
-        throw new DateExpiredError("Date already happend");
+        throw new DateExpiredError("Date already happened");
     }
 }
 
@@ -25,7 +25,7 @@ export function stringLenghtCheck(field: string, length: number, causer: string)
 }
 
 export function numberChecker(num: number, min: number, max: number, causer: string, message: string) {
-    if (num <= min || num > max) {
+    if (num < min || num > max) {
         throw new NotAValidNumberError(causer, message);
     }
 }

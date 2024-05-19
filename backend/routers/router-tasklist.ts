@@ -61,10 +61,8 @@ tasklistRouter.post("/:email", isAuthenticated, async (req, res) => {
         const tasklistID: number = await insertTasklist(req.body.title, req.body.description, req.body.priority, req.body.sortingOrder, req.body.email);
         res.status(StatusCodes.OK).send(await selectTasklistByTasklistID(tasklistID));
     } catch(err) {
-        if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("No user found");
-        } else {
-            res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("Database connection lost");
+        if (err instanceof Error) {
+            res.status(StatusCodes.BAD_REQUEST).send(err.message);
         }
     }
 });
@@ -116,7 +114,7 @@ tasklistRouter.put("/:email/:tasklistID", isAuthenticated, async (req, res) => {
             } else if (err instanceof IdNotFoundError) {
                 res.status(StatusCodes.BAD_REQUEST).send("wrongID: " + err.message);
             } else if (err instanceof DateFormatError) {
-                res.status(StatusCodes.BAD_REQUEST).send("Date is wrong format!")
+                res.status(StatusCodes.BAD_REQUEST).send("Date is in a wrong format!")
             } else if (err instanceof StringToLongError) {
                 res.status(StatusCodes.BAD_REQUEST).send(err.message);
             } else if (err instanceof NotAValidNumberError) {
@@ -124,16 +122,14 @@ tasklistRouter.put("/:email/:tasklistID", isAuthenticated, async (req, res) => {
             }
         });
     }).catch((err: Error) => {
-        if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("No tasklist found");
-        }
+        res.status(StatusCodes.BAD_REQUEST).send(err.message);
     });
 });
 
 tasklistRouter.delete("/:tasklistID", isAuthenticated, async (req, res) => {
     const tasklistID = parseInt(req.params.tasklistID);
     if (tasklistID === undefined || isNaN(tasklistID) || tasklistID < 1) {
-        res.status(StatusCodes.BAD_REQUEST).send("tasklistID must be a positiv Number");
+        res.status(StatusCodes.BAD_REQUEST).send("tasklistID must be a positive number");
         return;
     }
 
@@ -142,7 +138,7 @@ tasklistRouter.delete("/:tasklistID", isAuthenticated, async (req, res) => {
         return;
     }).catch((err: Error) => {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("NO tasklist found");
+            res.status(StatusCodes.BAD_REQUEST).send("No tasklist found");
         }
     });
 });
