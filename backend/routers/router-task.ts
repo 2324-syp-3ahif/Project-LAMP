@@ -23,7 +23,7 @@ taskRouter.get("/tasklistID/:tasklistID", isAuthenticated, async (req, res) => {
         res.status(StatusCodes.OK).send(tasks);
     } catch(err) {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("NO user found");
+            res.status(StatusCodes.BAD_REQUEST).send("No user found");
         }
     }
 });

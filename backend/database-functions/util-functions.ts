@@ -18,7 +18,7 @@ export function dateSmallerNowChecker(dueDate: number) {
     }
 }
 
-export function stringLenghtCheck(field: string, length: number, causer: string) {
+export function stringLengthCheck(field: string, length: number, causer: string) {
     if (field.length > length) {
         throw new StringToLongError(causer, `${causer} cannot have more characters than ${length}`);
     }

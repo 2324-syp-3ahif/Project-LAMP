@@ -1,7 +1,5 @@
 import {load} from "./tasklistFunctions";
 import {generateWarningPopUp, send} from "./sendUtils";
-import {StatusCodes} from "http-status-codes";
-import {JwtPayload} from "jsonwebtoken";
 
 const ELEMENTS = {
     switchModeToLogin: document.getElementById("switch-to-login") as HTMLElement,

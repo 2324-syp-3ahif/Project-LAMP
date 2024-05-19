@@ -3,7 +3,7 @@ import {isAuthenticated} from "../middleware/auth-handlers";
 
 export const eventRouter = express.Router();
 
-eventRouter.get("/", isAuthenticated, (req, res) => {
+eventRouter.get("/", isAuthenticated, (_, res) => {
     res.status(200).send("Hello World!, from Event Router");
 });
 

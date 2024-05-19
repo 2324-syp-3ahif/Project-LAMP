@@ -1,4 +1,3 @@
-import sqlite3 from "sqlite3";
 import {connectToDatabase} from "./connect";
 
 export async function createTables() {
@@ -45,7 +44,7 @@ async function createTasklistsTable() {
           creationDate INTEGER,
           FOREIGN KEY(userID) REFERENCES USERS(userID)
           ) strict;`);
-    console.log('Successfully created TASLISTS ');
+    console.log('Successfully created TASKLISTS ');
     await db.close();
 }
 

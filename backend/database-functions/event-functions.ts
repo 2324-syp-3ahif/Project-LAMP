@@ -1,4 +1,4 @@
-import {dateSmallerNowChecker, stringLenghtCheck} from "./util-functions";
+import {dateSmallerNowChecker, stringLengthCheck} from "./util-functions";
 import {Event} from "../interfaces/model/Event";
 import {connectToDatabase} from "./connect";
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
@@ -31,8 +31,8 @@ export async function selectEventsByEmail(email: string): Promise<Event[]> {
 }
 
 export async function insertEvent(name: string, description: string, startTime: number, endTime: number, fullDay: boolean, userID: number): Promise<number> {
-    stringLenghtCheck(name, 50, 'name');
-    stringLenghtCheck(description, 255, 'description');
+    stringLengthCheck(name, 50, 'name');
+    stringLengthCheck(description, 255, 'description');
     dateSmallerNowChecker(startTime);
     dateSmallerNowChecker(endTime);
 

@@ -1,6 +1,6 @@
 import {Tasklist} from "../interfaces/model/Tasklist";
 import {deleteTasklistByTasklistID} from "./tasklist-functions";
-import {deleteFromTable, stringLenghtCheck, updateSingleColumn} from "./util-functions";
+import {deleteFromTable, stringLengthCheck, updateSingleColumn} from "./util-functions";
 import {checkMailFormat, checkPasswordFormat, checkStringFormat} from "../utils";
 import {StringWrongFormatError} from "../interfaces/errors/StringWrongFormatError";
 import {User} from "../interfaces/model/User";
@@ -37,8 +37,8 @@ export async function getUserID(email: string): Promise<number> {
 }
 
 export async function insertUser(email: string, username: string, password: string): Promise<number> {
-    stringLenghtCheck(email, 50, 'email');
-    stringLenghtCheck(username, 50, 'username');
+    stringLengthCheck(email, 50, 'email');
+    stringLengthCheck(username, 50, 'username');
     if (!checkMailFormat(email)) {
         throw new StringWrongFormatError('email');
     } if (!checkPasswordFormat(password)) {

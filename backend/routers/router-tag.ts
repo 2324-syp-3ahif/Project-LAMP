@@ -17,7 +17,7 @@ tagRouter.get("/:param", isAuthenticated,  async (req, res) => {
             res.status(StatusCodes.OK).send(tags);
         } catch (err: any) {
             if (err instanceof IdNotFoundError) {
-                res.status(StatusCodes.BAD_REQUEST).send("NO user found");
+                res.status(StatusCodes.BAD_REQUEST).send("No user found");
             }
         }
     }
@@ -27,7 +27,7 @@ tagRouter.get("/:param", isAuthenticated,  async (req, res) => {
             res.status(StatusCodes.OK).send(tags);
         } catch(err: any) {
             if (err instanceof IdNotFoundError) {
-                res.status(StatusCodes.BAD_REQUEST).send("NO user found");
+                res.status(StatusCodes.BAD_REQUEST).send("No user found");
             }
         }
     } else if (isNaN(parseInt(req.params.param))) {
@@ -54,7 +54,7 @@ tagRouter.post("/:email/:name", isAuthenticated, async (req, res) => {
         res.status(StatusCodes.CREATED).send({tagID: id, name: name});
     } catch(err: any) {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("NO user found");
+            res.status(StatusCodes.BAD_REQUEST).send("No user found");
         }
     }
 });
@@ -75,7 +75,7 @@ tagRouter.put("/:tagID/:name", isAuthenticated, async (req, res) => {
         res.status(StatusCodes.OK).send({tagID: tagID, name: name});
     } catch(err: any) {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("NO user found");
+            res.status(StatusCodes.BAD_REQUEST).send("No user found");
         }
         if (err instanceof StringWrongFormatError) {
             res.status(StatusCodes.BAD_REQUEST).send("name must be plain text and between 1 and 50 characters long");
@@ -94,7 +94,7 @@ tagRouter.delete("/:tagID", isAuthenticated, async (req, res) => {
         res.status(StatusCodes.OK).send("tag deleted");
     } catch(err: any) {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("NO user found");
+            res.status(StatusCodes.BAD_REQUEST).send("No user found");
         }
     }
 });

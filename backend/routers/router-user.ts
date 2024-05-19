@@ -18,7 +18,7 @@ userRouter.get("/:email", isAuthenticated, async (req, res) => {
         res.status(StatusCodes.OK).send(user);
     }).catch((err: Error) => {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("NO user found");
+            res.status(StatusCodes.BAD_REQUEST).send("No user found");
         }
     });
 });

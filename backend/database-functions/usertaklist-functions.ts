@@ -3,7 +3,7 @@ import {selectTasklistByTasklistID} from "./tasklist-functions";
 import {getUserID, selectUserByEmail} from "./user-functions";
 import {IdAlreadyExistsError} from "../interfaces/errors/IdAlreadyExistsError";
 
-export async function addColaboratorToTasklist(tasklistID: number, email: string): Promise<void> {
+export async function addCollaboratorToTasklist(tasklistID: number, email: string): Promise<void> {
     const db = await connectToDatabase();
     try {
         await selectTasklistByTasklistID(tasklistID);

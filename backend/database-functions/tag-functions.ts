@@ -1,4 +1,4 @@
-import {deleteFromTable, stringLenghtCheck, updateSingleColumn} from "./util-functions";
+import {deleteFromTable, stringLengthCheck, updateSingleColumn} from "./util-functions";
 import {Tag} from "../interfaces/model/Tag";
 import {checkStringFormat} from "../utils";
 import {StringWrongFormatError} from "../interfaces/errors/StringWrongFormatError";
@@ -44,7 +44,7 @@ export async function selectTagsByEmail(email: string): Promise<Tag[]> {
 }
 
 export async function insertTag(name: string, email: string): Promise<number> {
-    stringLenghtCheck(name, 50, 'tagname');
+    stringLengthCheck(name, 50, 'tagname');
     await selectUserByEmail(email);
     const db = await connectToDatabase();
     const stmt = await db.prepare('INSERT INTO TAGS (name, userID) VALUES (?,?);');

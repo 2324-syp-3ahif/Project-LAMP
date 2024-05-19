@@ -1,6 +1,6 @@
-import {deleteFromTable, numberChecker, stringLenghtCheck, updateSingleColumn} from "./util-functions";
+import {deleteFromTable, numberChecker, stringLengthCheck, updateSingleColumn} from "./util-functions";
 import {Tasklist} from "../interfaces/model/Tasklist";
-import {addColaboratorToTasklist} from "./usertaklist-functions";
+import {addCollaboratorToTasklist} from "./usertaklist-functions";
 import {connectToDatabase} from "./connect";
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
 import {ConnectionToDatabaseLostError} from "../interfaces/errors/ConnectionToDatabaseLostError";
@@ -26,11 +26,6 @@ export async function selectTasklistsByEmail(email: string): Promise<Tasklist[]>
     await stmt.bind(await getUserID(email));
     console.log(await getUserID(email));
     const result = await stmt.all<Tasklist[]>();
-    /*
-    if (result.length === 0) {
-        throw new IdNotFoundError('USERS', 'userID');
-    }
-     */
     await stmt.finalize();
     await db.close();
     return result;
@@ -39,8 +34,8 @@ export async function selectTasklistsByEmail(email: string): Promise<Tasklist[]>
 export async function insertTasklist(title: string, description: string, priority: number, sortingOrder: number, email: string): Promise<number> {
     numberChecker(priority, 0, 10, 'priority', `Priority must be between 0 and 10`);
     numberChecker(sortingOrder, 0, 8, 'priority', `Priority must be between 0 and 8`);
-    stringLenghtCheck(title, 50, 'title');
-    stringLenghtCheck(description, 255, 'description');
+    stringLengthCheck(title, 50, 'title');
+    stringLengthCheck(description, 255, 'description');
     await selectUserByEmail(email);
     const date: number = Date.now();
     const db = await connectToDatabase();
@@ -52,7 +47,7 @@ export async function insertTasklist(title: string, description: string, priorit
         if (operationResult === undefined || operationResult.lastID === undefined) {
             throw new Error('No lastID found');
         }
-        await addColaboratorToTasklist(operationResult.lastID , email);
+        await addCollaboratorToTasklist(operationResult.lastID , email);
         return operationResult.lastID!;
     } catch (error: any) {
         throw new ConnectionToDatabaseLostError();
@@ -63,9 +58,9 @@ export async function insertTasklist(title: string, description: string, priorit
 
 export async function updateTasklist(tasklistID: number, title?: string, description?: string, sortingOrder?: number, priority?: number, isLocked?: number) : Promise<void> {
     if (title !== undefined) {
-        stringLenghtCheck(title, 50, 'title');
+        stringLengthCheck(title, 50, 'title');
     } if (description !== undefined) {
-        stringLenghtCheck(description, 255, 'description');
+        stringLengthCheck(description, 255, 'description');
     } if (sortingOrder !== undefined) {
         numberChecker(sortingOrder, 0, 8, 'sortingOrder', '');
     } if (priority !== undefined) {
