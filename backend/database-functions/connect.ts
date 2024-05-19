@@ -1,4 +1,4 @@
-import sqlite3 from "sqlite3";
+import * as sqlite3 from "sqlite3";
 import {open, Database} from "sqlite";
 
 const config = {

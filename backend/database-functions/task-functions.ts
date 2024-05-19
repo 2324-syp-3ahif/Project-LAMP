@@ -9,7 +9,7 @@ import {Task} from "../interfaces/model/Task";
 import {connectToDatabase} from "./connect";
 import {selectTasklistByTasklistID} from "./tasklist-functions";
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
-import {selectUserByUserID} from "./user-functions";
+import {getUserID, selectUserByEmail} from "./user-functions";
 import {ConnectionToDatabaseLostError} from "../interfaces/errors/ConnectionToDatabaseLostError";
 
 export async function selectTasksByTasklistID(tasklistID: number): Promise<Task[]> {
@@ -36,14 +36,15 @@ export async function selectTaskByTaskID(taskID: number): Promise<Task> {
     return result;
 }
 
-export async function insertTask(title: string, description: string, dueDate: number, priority: number, tasklistID: number, userID: number): Promise<number> {
+export async function insertTask(title: string, description: string, dueDate: number, priority: number, tasklistID: number, email: string): Promise<number> {
     numberChecker(priority, 0, 10, 'priority', `Priority must be between 0 and 10`);
     dateSmallerNowChecker(dueDate);
     stringLenghtCheck(title, 50, 'title');
     stringLenghtCheck(description, 255, 'description');
 
     await selectTasklistByTasklistID(tasklistID);
-    await selectUserByUserID(userID);
+    await selectUserByEmail(email);
+    const userID = await getUserID(email);
 
     const db = await connectToDatabase();
     const stmt = await db.prepare('INSERT INTO TASKS (title, description, dueDate, priority, isComplete, tasklistID, userID) VALUES (?,?,?,?,?,?,?);');

@@ -3,6 +3,7 @@ import {Tasklist} from './model/Tasklist';
 import {Tag} from './model/Tag';
 import {checkMailFormat} from "./utils";
 import {checkBoxes, closePLS, createNewTask, loadTasks, setClosePLS} from "./taskFuntions";
+import {getUserID} from "../../backend/database-functions/user-functions";
 const tasklistUrl: string = 'http://localhost:2000/api/tasklist/';
 const tagUrl: string = 'http://localhost:2000/api/tag/';
 
@@ -131,11 +132,11 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
 
 export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
     if (list.isLocked) {
-        list.isLocked = false; // just for testing purposes
+        list.isLocked = 0; // just for testing purposes
         await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
         alert('This tasklist is locked');
     } else {
-        list.isLocked = true;
+        list.isLocked = 1;
         await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
         listEl.classList.add("extended");
 
@@ -203,7 +204,7 @@ async function closeTasklist(list: Tasklist, listEl: HTMLElement, tagsEl: HTMLEl
         listEl.removeChild(deleteButton);
         listEl.classList.remove("extended");
 
-        list.isLocked = false;
+        list.isLocked = 0;
         globalTasklists[globalTasklists.findIndex((tasklist: Tasklist) => tasklist.tasklistID === list.tasklistID)] = list;
         await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
 }
@@ -244,18 +245,16 @@ async function createTasklist() {
         return;
     }
 
-    const tasklist: Tasklist = {
+    const data = {
         title: title,
         description: description,
         priority: parseInt(priority),
-        isLocked: false,
+        isLocked: 0,
         sortingOrder: parseInt(sortingOrder),
-        email: globalMail,
-        //lastView: new Date(),
-        tasklistID: await (await send(tasklistUrl + "nextID", "GET")).json(), // let server handle this
+        email: globalMail
     };
 
-    await send(tasklistUrl + globalMail, 'POST', tasklist);
+    const tasklist: Tasklist = await send(tasklistUrl + globalMail, 'POST', data);
     globalTasklists.push(tasklist);
     createForm.style.display = 'none';
     await showAllTasklists();

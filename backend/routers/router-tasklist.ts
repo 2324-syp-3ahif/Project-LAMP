@@ -4,85 +4,69 @@ import {Tasklist} from "../interfaces/model/Tasklist";
 import {StatusCodes} from "http-status-codes";
 import {ConnectionToDatabaseLostError} from "../interfaces/errors/ConnectionToDatabaseLostError";
 import {DateFormatError} from "../interfaces/errors/DateFormatError";
-import {insertTasklist} from "../database-functions/insert-data";
-import {db} from "../app";
+import {
+    insertTasklist,
+    selectTasklistsByEmail,
+    updateTasklist,
+    deleteTasklistByTasklistID,
+    selectTasklistByTasklistID
+} from "../database-functions/tasklist-functions";
 import {DateExpiredError} from "../interfaces/errors/DateExpiredError";
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
 import {StringToLongError} from "../interfaces/errors/StringToLongError";
 import {checkMailFormat} from "../utils";
-import {selectTasklistsByEmail} from "../database-functions/select-data";
 import {NotAValidNumberError} from "../interfaces/errors/NotAValidNumberError";
-import {getMaxId} from "../database-functions/select-data";
-import {updateTasklist} from "../database-functions/update-data";
-import {deleteTasklistByID} from "../database-functions/delete-data";
 import {isAuthenticated} from "../middleware/auth-handlers";
+import {getUserID} from "../database-functions/user-functions";
 
 
 export const tasklistRouter = express.Router();
 
-tasklistRouter.get("/email/:email", isAuthenticated, (req, res) => {
+tasklistRouter.get("/email/:email", isAuthenticated, async (req, res) => {
     const email = req.params.email;
-    console.log("email: " + email);
-
     if (!checkMailFormat(email)) {
-        console.log("email not valid");
         res.status(StatusCodes.BAD_REQUEST).send("email must be a valid email address");
         return;
     }
-    console.log("email valid");
-    selectTasklistsByEmail(db, email).then(tasks => {
-        console.log("in db");
-        res.status(StatusCodes.OK).send(tasks);
-    }).catch((err) => {
+    try {
+        const tasklists: Tasklist[] = await selectTasklistsByEmail(email);
+        res.status(StatusCodes.OK).send(tasklists);
+    } catch(err) {
         console.log(err);
         if (err instanceof IdNotFoundError) {
             res.status(StatusCodes.BAD_REQUEST).send("No user found");
         }
-    })
+    }
 });
 
 tasklistRouter.post("/:email", isAuthenticated, async (req, res) => {
-    const email = req.params.email;
-    if (!checkMailFormat(email)) {
+    if (!checkMailFormat(req.params.email)) {
         res.status(StatusCodes.BAD_REQUEST).send("email must be a valid email address");
         return;
     }
 
-    const tasklist: Tasklist = {
-        tasklistID: await getMaxId(db, 'TASKLISTS', 'tasklistID') + 1,
-        title: req.body.title,
-        description: req.body.description ?? "",
-        priority: req.body.priority ?? 1,
-        isLocked: false,
-        sortingOrder: req.body.sortingOrder ?? 1,
-        email: email
-    }
-
-    if (!utils.checkTitle(tasklist.title)) {
+    if (!utils.checkTitle(req.body.title)) {
         res.status(StatusCodes.BAD_REQUEST).send("title must be at least 1 character long");
         return;
     }
-    if (!utils.checkSortingOrder(tasklist.sortingOrder)) {
+    if (!utils.checkSortingOrder(req.body.sortingOrder)) {
         res.status(StatusCodes.BAD_REQUEST).send("sortingOrder must be a positive number");
         return;
     }
-    if (!utils.checkPriority(tasklist.priority)) {
+    if (!utils.checkPriority(req.body.priority)) {
         res.status(StatusCodes.BAD_REQUEST).send("priority must be a positive number");
     }
 
-    insertTasklist(db, tasklist.title, tasklist.description, tasklist.priority, tasklist.isLocked, tasklist.sortingOrder, tasklist.email).then(() => {
-        selectTasklistsByEmail(db, email).then(t => {
-            res.status(StatusCodes.CREATED).send(tasklist);
-        }).catch((err) => {
-            if (err instanceof IdNotFoundError) {
-                res.status(StatusCodes.BAD_REQUEST).send("No user found");
-            }
-        })
-    }).catch((err) => {
-        if (err instanceof ConnectionToDatabaseLostError) {
+    try {
+        const tasklistID: number = await insertTasklist(req.body.title, req.body.description, req.body.priority, req.body.sortingOrder, req.body.email);
+        res.status(StatusCodes.OK).send(await selectTasklistByTasklistID(tasklistID));
+    } catch(err) {
+        if (err instanceof IdNotFoundError) {
+            res.status(StatusCodes.BAD_REQUEST).send("No user found");
+        } else {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("Database connection lost");
         }
-    })
+    }
 });
 
 tasklistRouter.put("/:email/:tasklistID", isAuthenticated, async (req, res) => {
@@ -97,7 +81,7 @@ tasklistRouter.put("/:email/:tasklistID", isAuthenticated, async (req, res) => {
         res.status(StatusCodes.BAD_REQUEST).send("email must be a valid email address");
         return;
     }
-    selectTasklistsByEmail(db, email).then((tasklists: Tasklist[]) => {
+    selectTasklistsByEmail(email).then((tasklists: Tasklist[]) => {
         const tasklist = tasklists.find(tasklist => tasklist.tasklistID === tasklistID);
         if ( tasklist === undefined) {
             res.status(StatusCodes.BAD_REQUEST).send("tasklistID not found");
@@ -124,7 +108,7 @@ tasklistRouter.put("/:email/:tasklistID", isAuthenticated, async (req, res) => {
             return;
         }
 
-        updateTasklist(db, tasklistID, tasklist.title, tasklist.description, tasklist.sortingOrder, tasklist.priority, tasklist.isLocked).then(() => {
+        updateTasklist(tasklistID, tasklist.title, tasklist.description, tasklist.sortingOrder, tasklist.priority, tasklist.isLocked).then(() => {
             res.status(StatusCodes.OK).send(tasklist);
         }).catch((err: Error) => {
             if (err instanceof DateExpiredError) {
@@ -153,7 +137,7 @@ tasklistRouter.delete("/:tasklistID", isAuthenticated, async (req, res) => {
         return;
     }
 
-    await deleteTasklistByID(db, tasklistID).then(() => {
+    await deleteTasklistByTasklistID(tasklistID).then(() => {
         res.status(StatusCodes.OK).send("Tasklist deleted");
         return;
     }).catch((err: Error) => {
@@ -161,9 +145,4 @@ tasklistRouter.delete("/:tasklistID", isAuthenticated, async (req, res) => {
             res.status(StatusCodes.BAD_REQUEST).send("NO tasklist found");
         }
     });
-});
-
-tasklistRouter.get("/nextID", isAuthenticated, async (req, res) => {
-    const nextID = await getMaxId(db, 'TASKLISTS', 'tasklistID') + 1;
-    res.status(StatusCodes.OK).send(nextID.toString());
 });

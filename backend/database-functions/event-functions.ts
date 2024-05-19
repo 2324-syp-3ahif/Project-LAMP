@@ -3,7 +3,7 @@ import {Event} from "../interfaces/model/Event";
 import {connectToDatabase} from "./connect";
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
 import {MissingParametersError} from "../interfaces/errors/MissingParametersError";
-import {selectUserByUserID} from "./user-functions";
+import {getUserID, selectUserByEmail} from "./user-functions";
 
 export async function selectEventByEventID(eventID: number): Promise<Event> {
     const db = await connectToDatabase();
@@ -19,11 +19,11 @@ export async function selectEventByEventID(eventID: number): Promise<Event> {
 }
 
 //TODO: Maybe not throw an error if the user does not exist
-export async function selectEventsByUserID(userID: number): Promise<Event[]> {
-    await selectUserByUserID(userID);
+export async function selectEventsByEmail(email: string): Promise<Event[]> {
+    await selectUserByEmail(email);
     const db = await connectToDatabase();
     const stmt = await db.prepare("SELECT * FROM EVENTS WHERE userID = ?");
-    await stmt.bind(userID);
+    await stmt.bind(await getUserID(email));
     const result = await stmt.all<Event[]>();
     await stmt.finalize();
     await db.close();

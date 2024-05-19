@@ -1,9 +1,9 @@
 export interface Task {
     taskID: number,
     title: string,
-    dueDate: Date,
+    dueDate: number,
     priority: number,
     description: string,
-    isComplete: boolean,
+    isComplete: number,
     tasklistID: number,
 }
