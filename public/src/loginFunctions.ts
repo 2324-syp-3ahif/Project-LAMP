@@ -1,4 +1,3 @@
-import {load} from "./tasklistFunctions";
 import {generateWarningPopUp, send} from "./sendUtils";
 
 const ELEMENTS = {
@@ -14,7 +13,6 @@ const ELEMENTS = {
     signUpPasswordInput: document.getElementById("signup-password") as HTMLInputElement,
     signUpUsernameInput: document.getElementById("signup-username") as HTMLInputElement,
 };
-
 const overlay = document.createElement("div");
 overlay.className = "overlay";
 
@@ -23,9 +21,12 @@ ELEMENTS.switchModeToSignUp.addEventListener("click", switchToSignUp);
 ELEMENTS.signUpButton.addEventListener("click", handleSignUp);
 ELEMENTS.loginButton.addEventListener("click", handleLogin);
 
-window.onload = handlePageLoad;
+let load = async function (mail: string): Promise<void> {
 
-async function handlePageLoad() {
+}
+
+export async function handlePageLoad(func: (mail: string) => Promise<void>) {
+    load = func;
     const token = localStorage.getItem('jwt');
     const timestamp = localStorage.getItem('timestamp');
     if (token && timestamp) {
@@ -34,7 +35,7 @@ async function handlePageLoad() {
         if (currentTime < sessionTime) {
             const isTokenValid = await verifyToken();
             if (isTokenValid) {
-                await load(localStorage.getItem('mail') as string);
+                await func(localStorage.getItem('mail') as string);
                 return;
             }
         } else {
