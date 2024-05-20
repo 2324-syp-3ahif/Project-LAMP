@@ -30,7 +30,7 @@ async function handlePageLoad() {
     const timestamp = localStorage.getItem('timestamp');
     if (token && timestamp) {
         const currentTime = new Date().getTime();
-        const sessionTime = Number(timestamp) + 30 * 60 * 1000; // 30 minutes
+        const sessionTime = Number(timestamp) + 2 * 60 * 1000; // 30 minutes
         if (currentTime < sessionTime) {
             const isTokenValid = await verifyToken();
             if (isTokenValid) {
