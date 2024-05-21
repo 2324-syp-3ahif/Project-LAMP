@@ -255,6 +255,18 @@ form .text h3 a:hover{
     margin-right: 10px;
 }
 
+#start-time-input-div {
+    margin-right: 10px;
+}
+
+#fullday-event-input {
+    border-radius: 10rem;
+}
+
+#description-event-input {
+    height: 8rem;
+
+}
 
 
 

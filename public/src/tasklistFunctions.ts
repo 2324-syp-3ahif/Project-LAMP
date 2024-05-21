@@ -26,6 +26,7 @@ let globalTags: Tag[] = [];
 let globalMail: string = "";
 
 window.onload = async function() {
+    debugger;
     await handlePageLoad(load);
 }
 
