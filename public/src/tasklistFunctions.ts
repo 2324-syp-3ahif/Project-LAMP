@@ -2,6 +2,7 @@ import {send} from './sendUtils';
 import {Tasklist} from './model/Tasklist';
 import {Tag} from './model/Tag';
 import {checkMailFormat} from "./utils";
+import {handlePageLoad} from "./loginFunctions";
 import {checkBoxes, closePLS, createNewTask, loadTasks, setClosePLS} from "./taskFuntions";
 const tasklistUrl: string = 'http://localhost:2000/api/tasklist/';
 const tagUrl: string = 'http://localhost:2000/api/tag/';
@@ -23,6 +24,11 @@ let globalDeleteTasklistID = -1;
 let globalTasklists: Tasklist[] = [];
 let globalTags: Tag[] = [];
 let globalMail: string = "";
+
+window.onload = async function() {
+    debugger;
+    await handlePageLoad(load);
+}
 
 export async function load(mail: string) {
     const listResp = await send(tasklistUrl + "email/" + mail, 'GET');

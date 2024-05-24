@@ -30,11 +30,13 @@ export async function selectEventsByEmail(email: string): Promise<Event[]> {
     return result;
 }
 
-export async function insertEvent(name: string, description: string, startTime: number, endTime: number, fullDay: boolean, userID: number): Promise<number> {
+export async function insertEvent(name: string, description: string, startTime: number, endTime: number, fullDay: boolean, email: string): Promise<number> {
     stringLengthCheck(name, 50, 'name');
     stringLengthCheck(description, 255, 'description');
     dateSmallerNowChecker(startTime);
     dateSmallerNowChecker(endTime);
+    const userID = await getUserID(email);
+
 
     const db = await connectToDatabase();
     const stmt = await db.prepare('INSERT INTO EVENTS (name, startTime, endTime, fullDay, description, userID) values (?1, ?2, ?3, ?4, ?5, ?6)');

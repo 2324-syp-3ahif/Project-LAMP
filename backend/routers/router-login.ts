@@ -6,56 +6,62 @@ import {selectUserByEmail, insertUser} from "../database-functions/user-function
 import dotenv from "dotenv";
 import {generateTokens, verifyToken} from "./tokenUtils";
 import {isAuthenticated} from "../middleware/auth-handlers";
+import { IdAlreadyExistsError } from '../interfaces/errors/IdAlreadyExistsError';
+
 dotenv.config();
 export const loginRouter = express.Router();
 
 loginRouter.post("/login", async (req, res) => {
-    try{
+    try {
         const user = await selectUserByEmail(req.body.email);
-        if(!await bcrypt.compare(req.body.password, user.hashedPassword)){
-            throw new Error("Wrong password!");
+        if (user && !await bcrypt.compare(req.body.password, user.hashedPassword)) {
+            res.status(StatusCodes.UNAUTHORIZED).send("Wrong password!");
+            return;
         }
 
         const { accessToken, refreshToken } = generateTokens(user);
         res.cookie('refreshToken', refreshToken, { httpOnly: true, path: '/api/token/refresh' });
         res.json({ accessToken });
-    } catch (e){
-        res.status(StatusCodes.UNAUTHORIZED).send("Wrong password!");
+    } catch (e) {
+        console.error(e);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("An error occurred during login.");
     }
 });
+
 loginRouter.post("/register", async (req, res) => {
-    try{
+    try {
         await insertUser(req.body.email, req.body.username, req.body.password);
         const user = await selectUserByEmail(req.body.email);
         const { accessToken, refreshToken } = generateTokens(user);
         res.cookie('refreshToken', refreshToken, { httpOnly: true, path: '/api/token/refresh' });
         res.status(StatusCodes.CREATED).json({ accessToken });
-    } catch (e){
-        console.log(e);
-        res.status(StatusCodes.BAD_REQUEST).send("User already exists!");
+    } catch (e) {
+        console.error(e);
+        if (e instanceof IdAlreadyExistsError) {
+            res.status(StatusCodes.BAD_REQUEST).send(e.message);
+        } else {
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("An error occurred during registration.");
+        }
     }
 });
 
 loginRouter.post('/token/refresh', async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
-    console.log(refreshToken + "is the refresh token")
     if (refreshToken) {
         try {
             const user = verifyToken(refreshToken, process.env.REFRESH_TOKEN_SECRET as string) as JwtPayload;
             if (user){
                 const { accessToken } = generateTokens({ username: user.username, email: user.email });
-                console.log(accessToken + "is the new access token")
                 res.json({ accessToken } );
             }
-
         } catch (err) {
-            res.sendStatus(403);
+            console.error(err);
+            res.sendStatus(StatusCodes.FORBIDDEN);
         }
     } else {
-        res.sendStatus(401);
+        res.sendStatus(StatusCodes.UNAUTHORIZED);
     }
 });
-
 loginRouter.get('/token/verify', isAuthenticated, (req, res) => {
-    res.sendStatus(200);
+    res.sendStatus(StatusCodes.OK);
 });
