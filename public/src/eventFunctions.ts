@@ -9,24 +9,36 @@ window.onload = async function onload() {
 
 async function handleEventPageLoad() {
     const addEventBtn = document.getElementById("add-event-btn");
-    const popup = document.getElementById("create-event-container");
+    const addTaskBtn = document.getElementById("add-task-btn");
+    const createEventContainer = document.getElementById("create-event-container");
+    const createTaskContainer = document.getElementById("create-task-container");
     const popupBackdrop = document.getElementById("popupBackdrop");
     const submitEventBtn = document.getElementById("submit-event-btn");
-    if (addEventBtn && popup && popupBackdrop && submitEventBtn) {
+
+    if (addEventBtn && createEventContainer && popupBackdrop && submitEventBtn && addTaskBtn && createTaskContainer) {
         addEventBtn.addEventListener("click", () => {
-            popup.classList.remove("hidden");
+            createEventContainer.classList.remove("hidden");
+            popupBackdrop.classList.remove("hidden");
+        });
+
+        addTaskBtn.addEventListener("click", () => {
+            createTaskContainer.classList.remove("hidden");
             popupBackdrop.classList.remove("hidden");
         });
 
         window.addEventListener("click", (event) => {
             if (event.target === popupBackdrop) {
-                popup.classList.add("hidden");
+                createEventContainer.classList.add("hidden");
+                createTaskContainer.classList.add("hidden");
                 popupBackdrop.classList.add("hidden");
             }
         });
 
-        // Prevent closing when clicking inside the popup
-        popup.addEventListener("click", (event) => {
+        createTaskContainer.addEventListener("click", (event) => {
+            event.stopPropagation();
+        });
+
+        createEventContainer.addEventListener("click", (event) => {
             event.stopPropagation();
         });
 

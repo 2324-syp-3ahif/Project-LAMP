@@ -32,7 +32,7 @@ body {
     z-index: 999;
 }
 
-#create-event-container {
+.create-container {
     width: 40%;
     max-width: 325px;
     padding: 20px;
@@ -49,4 +49,8 @@ body {
     width: 100%;
     text-align: center;
     font-size: 1.5rem;
+}
+
+.add-btn {
+    width: 10%;
 }
