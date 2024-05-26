@@ -1,6 +1,5 @@
 import {Tasklist} from "./model/Tasklist";
 import {send} from "./sendUtils";
-import {dateFormatCheck} from "../../backend/database-functions/insert-data";
 import {Task} from "./model/Task";
 import {extendTasklist} from "./tasklistFunctions";
 
@@ -46,7 +45,7 @@ export async function loadTasks(taskList: Tasklist, taskContainer: HTMLDivElemen
         checkBox.type = 'checkbox';
         checkBox.classList.add('task-checkbox');
         checkBoxes.push(checkBox);
-        checkBox.checked = task.isComplete;
+        checkBox.checked = task.isComplete !== 0;
         styleTaskForIsCompleted(checkBox.checked, taskHeader);
         checkBox.addEventListener('click', async (event) => {
             event.stopPropagation();
@@ -123,7 +122,7 @@ async function processTask(tasklistID: number){
 }
 
 async function prozessCheckBox(checkBox: HTMLInputElement, task: Task){
-    task.isComplete = checkBox.checked;
+    task.isComplete = checkBox.checked ? 1 : 0;
     await send(taskUrl + task.taskID, 'PUT', task)
 }
 function styleTaskForIsCompleted(isCompleted:boolean, taskElement: HTMLDivElement){

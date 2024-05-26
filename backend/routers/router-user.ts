@@ -1,13 +1,9 @@
 import express from "express";
 import {StatusCodes} from "http-status-codes";
 import {checkMailFormat, checkPasswordFormat, checkStringFormat} from "../utils";
-import {db} from "../app";
-import {selectUserByEmail} from "../database-functions/select-data";
+import {selectUserByEmail, deleteUserByEmail, insertUser, updateUser} from "../database-functions/user-functions";
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
-import {deleteUserByEmail} from "../database-functions/delete-data";
-import {insertUser} from "../database-functions/insert-data";
 import {IdAlreadyExistsError} from "../interfaces/errors/IdAlreadyExistsError";
-import {updateUser} from "../database-functions/update-data";
 import {isAuthenticated} from "../middleware/auth-handlers";
 
 export const userRouter = express.Router();
@@ -18,11 +14,11 @@ userRouter.get("/:email", isAuthenticated, async (req, res) => {
          res.status(StatusCodes.BAD_REQUEST).send("email must be a valid email address");
          return;
     }
-    selectUserByEmail(db, email).then(user => {
+    selectUserByEmail(email).then(user => {
         res.status(StatusCodes.OK).send(user);
     }).catch((err: Error) => {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("NO user found");
+            res.status(StatusCodes.BAD_REQUEST).send("No user found");
         }
     });
 });
@@ -46,7 +42,7 @@ userRouter.post("/:email", isAuthenticated, async (req, res) => {
         name: req.body.username,
         password: req.body.password
     }
-    insertUser(db, email, user.name, user.password).then(() => {
+    insertUser(email, user.name, user.password).then(() => {
         res.status(StatusCodes.CREATED).send(user);
     }).catch((err) => {
         if (err instanceof IdNotFoundError) {
@@ -64,14 +60,14 @@ userRouter.put("/:email", isAuthenticated, async (req, res) => {
         res.status(StatusCodes.BAD_REQUEST).send("email must be a valid email address");
         return;
     }
-    selectUserByEmail(db, email).then(user => {
+    selectUserByEmail(email).then(user => {
         if (req.body.username !== undefined && checkStringFormat(req.body.username)) {
             user.username = req.body.username;
         }
         if (req.body.password !== undefined && checkPasswordFormat(req.body.password)) {
             user.hashedPassword = req.body.password;
         }
-        updateUser(db, user.email, user.username, user.hashedPassword).then(() => {
+        updateUser(user.email, user.hashedPassword).then(() => {
             res.status(StatusCodes.OK).send(user);
         }).catch((err) => {
             if (err instanceof IdNotFoundError) {
@@ -91,7 +87,7 @@ userRouter.delete("/:email", isAuthenticated, async (req, res) => {
         res.status(StatusCodes.BAD_REQUEST).send("email must be a valid email address");
         return;
     }
-    deleteUserByEmail(db, email).then(() => {
+    deleteUserByEmail(email).then(() => {
         res.status(StatusCodes.OK).send("User deleted");
     }).catch((err) => {
         if (err instanceof IdNotFoundError) {

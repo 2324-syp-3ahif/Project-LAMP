@@ -19,7 +19,7 @@
             crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
-    <script type="module" src="./src/loginFunctions.js"></script>
+    <script type="module" src="./src/tasklistFunctions.js"></script>
     <script>
         $(function () {
             $("#header").load("./header.html");
@@ -87,9 +87,9 @@
                 </select>
                 <select class="form-select" aria-label="Select sorting order" id="sorting-order-input">
                     <option selected>Select Sorting Order</option>
-                    <option value="priority">Priority</option>
-                    <option value="date">Date</option>
-                    <option value="view">Last View</option>
+                    <option value="0">Priority</option>
+                    <option value="1">Date</option>
+                    <option value="2">Last View</option>
                 </select>
                 <button type="button" class="btn btn-primary" id="submit-tasklist-btn">Submit</button>
             </form>
@@ -115,10 +115,10 @@
             <form action="#">
 
                 <div class="input-box">
-                    <input id="login-email" type="text" placeholder="Enter your email" required>
+                    <label for="login-email"></label><input id="login-email" type="text" placeholder="Enter your email" required>
                 </div>
                 <div class="input-box">
-                    <input id="login-password" type="password" placeholder="Enter your password" required>
+                    <label for="login-password"></label><input id="login-password" type="password" placeholder="Enter your password" required>
                 </div>
 
                 <div class="input-box button">
@@ -134,13 +134,13 @@
             <h2>Sign Up</h2>
             <form action="#">
                 <div class="input-box">
-                    <input id="signup-username" type="text" placeholder="Enter a username" required>
+                    <label for="signup-username"></label><input id="signup-username" type="text" placeholder="Enter a username" required>
                 </div>
                 <div class="input-box">
-                    <input id="signup-email" type="text" placeholder="Enter your email" required>
+                    <label for="signup-email"></label><input id="signup-email" type="text" placeholder="Enter your email" required>
                 </div>
                 <div class="input-box">
-                    <input id="signup-password" type="password" placeholder="Create password" required>
+                    <label for="signup-password"></label><input id="signup-password" type="password" placeholder="Create password" required>
                 </div>
 
                 <div class="input-box button">

@@ -1,146 +1,118 @@
-import sqlite3 from "sqlite3";
 import {connectToDatabase} from "./connect";
 
-export function createTasksTable() : boolean {
-    const db : sqlite3.Database = connectToDatabase();
-    const query = `
+export async function createTables() {
+    await createTasksTable();
+    await createTasklistsTable();
+    await createTagsTable();
+    await createTagTasklistsTable();
+    await createUserTasklistTable();
+    await createUsersTable();
+    await createEventsTable();
+}
+
+async function createTasksTable() {
+    const db = await connectToDatabase();
+    await db.run(`
         CREATE TABLE IF NOT EXISTS TASKS(
           taskID INTEGER primary key AUTOINCREMENT,
-          title varchar(255),
-          description varchar(255),
-          dueDate Date,
-          priority number,
-          isComplete boolean,
-          tasklistID int NOT NULL,
-          userID int NOT NULL
-          );
-        `;
-    db.run(query, (err) => {
-        if (err) {
-            console.log("Failed creation!" + err.message);
-            return false;
-        }
-        console.log("Successfully created TASKS");
-    });
-    return true;
+          title TEXT,
+          description TEXT,
+          dueDate INTEGER,
+          priority INTEGER,
+          isComplete INTEGER,
+          tasklistID INTEGER NOT NULL,
+          userID INTEGER NOT NULL,
+          FOREIGN KEY(userID) REFERENCES USERS(userID),
+          FOREIGN KEY(tasklistID) REFERENCES TASKLISTS(tasklistID)
+          ) strict;`);
+    console.log('Successfully created TASKS ');
+    await db.close();
 }
 
-export function createTasklistsTable() : boolean {
-    const db : sqlite3.Database = connectToDatabase();
-    const query = `
+async function createTasklistsTable() {
+    const db = await connectToDatabase();
+    await db.run(`
         CREATE TABLE IF NOT EXISTS TASKLISTS(
           tasklistID INTEGER primary key AUTOINCREMENT,
-          title varchar(255),
-          description varchar(255),
-          sortingOrder BIT(4),
-          priority BIT(4),
-          isLocked boolean,
-          owner int NOT NULL
-          );
-        `;
-    db.run(query, (err) => {
-        if (err) {
-            console.log("Failed creation!" + err.message);
-            return false;
-        }
-        console.log("Successfully created TASKLISTS");
-    });
-    return true;
+          title TEXT,
+          description TEXT,
+          sortingOrder INTEGER,
+          priority INTEGER,
+          isLocked INTEGER,
+          userID INTEGER NOT NULL, 
+          lastViewed INTEGER,
+          creationDate INTEGER,
+          FOREIGN KEY(userID) REFERENCES USERS(userID)
+          ) strict;`);
+    console.log('Successfully created TASKLISTS ');
+    await db.close();
 }
 
-export function createTagsTable() : boolean {
-    const db : sqlite3.Database = connectToDatabase();
-    const query = `
+async function createTagsTable() {
+    const db = await connectToDatabase();
+    await db.run(`
         CREATE TABLE IF NOT EXISTS TAGS(
           tagID INTEGER primary key AUTOINCREMENT,
-           name varchar(50)
-          );
-        `;
-    db.run(query, (err) => {
-        if (err) {
-            console.log("Failed creation!" + err.message);
-            return false;
-        }
-        console.log("Successfully created TAGS");
-    });
-    return true;
+          name TEXT,
+          userID INTEGER,
+          FOREIGN KEY(userID) REFERENCES USERS(userID)
+        ) strict;`);
+    console.log('Successfully created TAGS ');
+    await db.close();
 }
 
-export function createTagTasklistsTable() : boolean {
-    const db : sqlite3.Database = connectToDatabase();
-    const query = `
+async function createTagTasklistsTable() {
+    const db = await connectToDatabase();
+    await db.run(`
         CREATE TABLE IF NOT EXISTS TAGTASKLISTS(
-          tasklistID int NOT NULL,
-          tagID int NOT NULL
-          );
-        `;
-    db.run(query, (err) => {
-        if (err) {
-            console.log("Failed creation!" + err.message);
-            return false;
-        }
-        console.log("Successfully created TAGTASKLISTS");
-    });
-    return true;
+          tasklistID INTEGER NOT NULL,
+          tagID INTEGER NOT NULL,
+          FOREIGN KEY(tasklistID) REFERENCES TASKLISTS(tasklistID),
+          FOREIGN KEY(tagID) REFERENCES TAGS(tagID)
+          ) strict;`);
+    console.log('Successfully created TAGTASKLISTS ');
+    await db.close();
 }
 
-export function createUserTasklistTable() : boolean {
-    const db : sqlite3.Database = connectToDatabase();
-    const query = `
+async function createUserTasklistTable() {
+    const db = await connectToDatabase();
+    await db.run(` 
         CREATE TABLE IF NOT EXISTS USERTASKLISTS(
-            tasklistID int NOT NULL,
-            userID int NOT NULL
-          );
-        `;
-    db.run(query, (err) => {
-        if (err) {
-            console.log("Failed creation!" + err.message);
-            return false;
-        }
-        console.log("Successfully created USERTASKLISTS");
-    });
-    return true;
+            tasklistID INTEGER NOT NULL,
+            userID INTEGER NOT NULL,
+            FOREIGN KEY(tasklistID) REFERENCES TASKLISTS(tasklistID),
+            FOREIGN KEY(userID) REFERENCES USERS(userID)
+          ) strict;`);
+    console.log('Successfully created USERTASKLISTS ');
+    await db.close();
 }
 
-export function createUsersTable() : boolean {
-    const db : sqlite3.Database = connectToDatabase();
-    const query = `
+async function createUsersTable() {
+    const db = await connectToDatabase();
+    await db.run(`
         CREATE TABLE IF NOT EXISTS USERS(
             userID INTEGER primary key AUTOINCREMENT,
-            username varchar(50),
-            hashedPassword varchar(50),
-            email varchar(50)
-          );
-        `;
-    db.run(query, (err) => {
-        if (err) {
-            console.log("Failed creation!" + err.message);
-            return false;
-        }
-        console.log("Successfully created USERS");
-    });
-    return true;
+            username TEXT,
+            hashedPassword TEXT,
+            email TEXT UNIQUE
+          ) strict;`);
+    console.log('Successfully created USERS ');
+    await db.close();
 }
 
-export function createEventsTable() : boolean {
-    const db : sqlite3.Database = connectToDatabase();
-    const query = `
+async function createEventsTable() {
+    const db = await connectToDatabase();
+    await db.run(`
         CREATE TABLE IF NOT EXISTS EVENTS(
             eventID INTEGER primary key AUTOINCREMENT,
-            name varchar(50),
-            startTime Date,
-            endTime Date,
-            fullDay boolean,
-            description varchar(255),
-            userID int NOT NULL
-          );
-        `;
-    db.run(query, (err) => {
-        if (err) {
-            console.log("Failed creation!" + err.message);
-            return false;
-        }
-        console.log("Successfully created EVENTS");
-    });
-    return true;
+            name TEXT,
+            startTime INTEGER,
+            endTime INTEGER,
+            fullDay INTEGER,
+            description TEXT,
+            userID INTEGER NOT NULL,  
+	    FOREIGN KEY(userID) REFERENCES USERS(userID)
+          ) strict;`);
+    console.log('Successfully created EVENTS ');
+    await db.close();
 }

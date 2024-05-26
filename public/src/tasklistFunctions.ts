@@ -2,10 +2,10 @@ import {send} from './sendUtils';
 import {Tasklist} from './model/Tasklist';
 import {Tag} from './model/Tag';
 import {checkMailFormat} from "./utils";
+import {handlePageLoad} from "./loginFunctions";
 import {checkBoxes, closePLS, createNewTask, loadTasks, setClosePLS} from "./taskFuntions";
 const tasklistUrl: string = 'http://localhost:2000/api/tasklist/';
 const tagUrl: string = 'http://localhost:2000/api/tag/';
-
 
 const taskLists = document.getElementById('tasklists') as HTMLElement;
 const createTasklistButton = document.getElementById('create-tasklist-btn') as HTMLButtonElement;
@@ -24,6 +24,11 @@ let globalDeleteTasklistID = -1;
 let globalTasklists: Tasklist[] = [];
 let globalTags: Tag[] = [];
 let globalMail: string = "";
+
+window.onload = async function() {
+    debugger;
+    await handlePageLoad(load);
+}
 
 export async function load(mail: string) {
     const listResp = await send(tasklistUrl + "email/" + mail, 'GET');
@@ -79,15 +84,63 @@ async function showAllTasklists() {
 }
 
 async function showTasklist(list: Tasklist): Promise<HTMLElement> {
-#}
+    const listElement: HTMLElement = document.createElement('div');
+    listElement.classList.add('tasklist');
+    listElement.classList.add('card-body');
+    listElement.classList.add('card');
+    const titleButtonElement = document.createElement('div');
+    titleButtonElement.classList.add('d-flex')
+    titleButtonElement.classList.add('flex-row')
+    titleButtonElement.classList.add('title-newTaskButton-Div')
+
+    const title = document.createElement('h2');
+    title.innerHTML = list.title;
+    title.addEventListener('input', async () => {
+        list.title = title.innerHTML;
+        await send(tasklistUrl + list.tasklistID, 'PUT', list);
+        await showTasklist(list);
+    });
+    title.classList.add("card-title");
+
+    const newTaskButton = document.createElement('button');
+    newTaskButton.classList.add('round-Button')
+    newTaskButton.addEventListener('click', async () => {
+        await createNewTask(list.tasklistID);
+    });
+    const tags = document.createElement('div');
+    tags.classList.add('tags');
+
+    const description = document.createElement('p');
+    description.innerHTML = list.description;
+    description.classList.add("card-text");
+    titleButtonElement.appendChild(title);
+    titleButtonElement.appendChild(newTaskButton);
+
+    listElement.appendChild(titleButtonElement);
+    listElement.appendChild(description);
+    listElement.appendChild(tags);
+
+    listElement.addEventListener('click', (e) => {
+        if (listElement.classList.contains("extended") || e.target === deleteTasklistBtn){
+            return;
+        }
+        checkBoxes.forEach(checkbox => {
+            if(e.target === checkbox) {
+                return;
+            }
+        });
+        extendTasklist(listElement, list);
+    });
+    return listElement;
+}
 
 export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
     if (list.isLocked) {
-        list.isLocked = false; // just for testing purposes
+        list.isLocked = 0; // just for testing purposes
         await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
         alert('This tasklist is locked');
     } else {
-        list.isLocked = true;
+        list.isLocked = 1;
         await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
         listEl.classList.add("extended");
 
@@ -102,8 +155,6 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
         }); */
 
         const tasksEl = document.createElement('div');
-
-        // TODO: add task element like in GUI mockups
         await loadTasks(list, tasksEl);
 
         const deleteButton = document.createElement('button');
@@ -155,7 +206,7 @@ async function closeTasklist(list: Tasklist, listEl: HTMLElement, tagsEl: HTMLEl
         listEl.removeChild(deleteButton);
         listEl.classList.remove("extended");
 
-        list.isLocked = false;
+        list.isLocked = 0;
         globalTasklists[globalTasklists.findIndex((tasklist: Tasklist) => tasklist.tasklistID === list.tasklistID)] = list;
         await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
 }
@@ -196,18 +247,18 @@ async function createTasklist() {
         return;
     }
 
-    const tasklist: Tasklist = {
+    console.log("sorting order: " + sortingOrder);
+
+    const data = {
         title: title,
         description: description,
         priority: parseInt(priority),
-        isLocked: false,
+        isLocked: 0,
         sortingOrder: parseInt(sortingOrder),
-        email: globalMail,
-        //lastView: new Date(),
-        tasklistID: await (await send(tasklistUrl + "nextID", "GET")).json(), // let server handle this
+        email: globalMail
     };
 
-    await send(tasklistUrl + globalMail, 'POST', tasklist);
+    const tasklist: Tasklist = await (await send(tasklistUrl + globalMail, 'POST', data)).json();
     globalTasklists.push(tasklist);
     createForm.style.display = 'none';
     await showAllTasklists();

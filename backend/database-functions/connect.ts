@@ -1,23 +1,11 @@
-import sqlite3 from "sqlite3";
+import * as sqlite3 from "sqlite3";
+import {open, Database} from "sqlite";
 
-export function connectToDatabase() : sqlite3.Database {
-    const path = 'backend/database/database.db';
-    return new sqlite3.Database(path, (err) => {
-        if (err) {
-            console.error('Error connecting to SQLite database:', err.message);
-        } else {
-            console.log('Connected to SQLite database:', path);
-        }
-    });
-}
+const config = {
+    filename: `./backend/database/database.db`,
+    driver: sqlite3.Database
+};
 
-export function disconnectFromDatabase(db: sqlite3.Database) : boolean {
-    db.close((err) => {
-        if (err) {
-            console.error('Error closing SQLite database:', err.message);
-            return false;
-        }
-        console.log('SQLite database connection closed');
-    });
-    return true;
+export async function connectToDatabase() : Promise<Database> {
+    return await open(config);
 }
