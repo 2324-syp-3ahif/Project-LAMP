@@ -1,6 +1,8 @@
 import * as nodemailer from 'nodemailer';
 import * as utils from '../utils';
 
+const footer: string = `\n\nBest regards,\nYour Project LAMP Team\n\nThis is an automated message. Please do not reply to this email.\n\n\n@2024 Luca Haas, Andreas Huber, Melanie Dohr, Philip Raab. All rights reserved.`;
+
 export function sendMailToUser(receiver: string, message: string, subj: string): void {
     console.log(`Mail sent to ${receiver} with message: ${message}`)
     const transporter = nodemailer.createTransport({
@@ -19,11 +21,7 @@ export function sendMailToUser(receiver: string, message: string, subj: string):
     });
 }
 
-export function sendInviteMail(receiver: string, listID: number): void {
-    const hashedID: string = utils.hashString(listID.toString());
-    const link: string = `http://localhost:3000/signup?listID=${hashedID}`;
-    const message: string = `Hello my dear friend!\nYou have been invited to join a tasklist on our platform.\n Please click on the link to sign up.` + link;
+export function sendInviteMail(receiver: string, link: string): void {
+    const message: string = `Hello my dear friend!\nYou have been invited to join a tasklist on our platform.\n Please click on the link to sign up or login.` + link + footer;
     sendMailToUser(receiver, message, 'Tasklist Invitation');
-    // save link in local storage for use after signup -> maybe in env variable
-    //localStorage.setItem('listID', listID.toString());
 }
