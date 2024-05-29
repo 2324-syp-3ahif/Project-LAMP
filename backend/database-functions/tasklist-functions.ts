@@ -11,7 +11,7 @@ export async function selectTasklistByTasklistID(tasklistID: number): Promise<Ta
     await stmt.bind(tasklistID);
     const result = await stmt.get<Tasklist>();
     if (result === undefined) {
-        throw new IdNotFoundError('TASKLISTS', 'tasklistID');
+        throw new IdNotFoundError('tasklistID');
     }
     await stmt.finalize();
     await db.close();
@@ -31,8 +31,8 @@ export async function selectTasklistsByEmail(email: string): Promise<Tasklist[]>
 }
 
 export async function insertTasklist(title: string, description: string, priority: number, sortingOrder: number, email: string): Promise<number> {
-    numberChecker(priority, 0, 10, 'priority', `Priority must be between 0 and 10`);
-    numberChecker(sortingOrder, 0, 8, 'priority', `Priority must be between 0 and 8`);
+    numberChecker(priority, 0, 10, `Priority must be between 0 and 10`);
+    numberChecker(sortingOrder, 0, 8, `Priority must be between 0 and 8`);
     stringLengthCheck(title, 50, 'title');
     stringLengthCheck(description, 255, 'description');
     await selectUserByEmail(email);
@@ -59,9 +59,9 @@ export async function updateTasklist(tasklistID: number, title?: string, descrip
     } if (description !== undefined) {
         stringLengthCheck(description, 255, 'description');
     } if (sortingOrder !== undefined) {
-        numberChecker(sortingOrder, 0, 8, 'sortingOrder', '');
+        numberChecker(sortingOrder, 0, 8, 'sortingOrder');
     } if (priority !== undefined) {
-        numberChecker(priority, 0, 10, "sortingOrder", '');
+        numberChecker(priority, 0, 10, "sortingOrder");
     }
     const array = [title, description, sortingOrder, priority, isLocked];
     const names = ["title", "description", "sortingOrder", "priority", "isLocked"];

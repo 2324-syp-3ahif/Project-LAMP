@@ -16,7 +16,7 @@ export async function selectUserByEmail(email: string): Promise<User> {
     await stmt.bind(await getUserID(email));
     const result = await stmt.get<User>();
     if (result === undefined) {
-        throw new IdNotFoundError('USERS', 'userID');
+        throw new IdNotFoundError('userID');
     }
     await stmt.finalize();
     await db.close();
@@ -29,7 +29,7 @@ export async function getUserID(email: string): Promise<number> {
     await stmt.bind(email);
     const result = await stmt.get<{userID: number}>();
     if (result === undefined) {
-        throw new IdNotFoundError('USERS', 'email');
+        throw new IdNotFoundError('email');
     }
     await stmt.finalize();
     await db.close();

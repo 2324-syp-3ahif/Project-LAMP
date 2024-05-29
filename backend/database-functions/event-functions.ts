@@ -11,7 +11,7 @@ export async function selectEventByEventID(eventID: number): Promise<Event> {
     await stmt.bind(eventID);
     const result = await stmt.get<Event>();
     if (result === undefined) {
-        throw new IdNotFoundError('EVENTS', 'eventID');
+        throw new IdNotFoundError('eventID');
     }
     await stmt.finalize();
     await db.close();
