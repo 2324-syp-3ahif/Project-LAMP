@@ -3,7 +3,6 @@ import {Tasklist} from "../interfaces/model/Tasklist";
 import {addCollaboratorToTasklist} from "./usertaklist-functions";
 import {connectToDatabase} from "./connect";
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
-import {ConnectionToDatabaseLostError} from "../interfaces/errors/ConnectionToDatabaseLostError";
 import {getUserID, selectUserByEmail} from "./user-functions";
 
 export async function selectTasklistByTasklistID(tasklistID: number): Promise<Tasklist> {
@@ -49,8 +48,6 @@ export async function insertTasklist(title: string, description: string, priorit
         }
         await addCollaboratorToTasklist(operationResult.lastID , email);
         return operationResult.lastID!;
-    } catch (error: any) {
-        throw new ConnectionToDatabaseLostError();
     } finally {
         await db.close();
     }

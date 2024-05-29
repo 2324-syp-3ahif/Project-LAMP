@@ -11,7 +11,7 @@ export const userRouter = express.Router();
 userRouter.get("/:email", isAuthenticated, async (req, res) => {
    const email = req.params.email;
     if (!checkMailFormat(email)) {
-         res.status(StatusCodes.BAD_REQUEST).send("email must be a valid email address");
+         res.status(StatusCodes.BAD_REQUEST).send("The email must be valid.");
          return;
     }
     selectUserByEmail(email).then(user => {
@@ -26,15 +26,15 @@ userRouter.get("/:email", isAuthenticated, async (req, res) => {
 userRouter.post("/:email", isAuthenticated, async (req, res) => {
     const email = req.params.email;
     if (!checkMailFormat(email)) {
-        res.status(StatusCodes.BAD_REQUEST).send("email must be a valid email address");
+        res.status(StatusCodes.BAD_REQUEST).send("The email must be valid.");
         return;
     }
     if (req.body.username === undefined || !checkStringFormat(req.body.username)) {
-        res.status(StatusCodes.BAD_REQUEST).send("username must be a string and between 1 and 50 characters long");
+        res.status(StatusCodes.BAD_REQUEST).send("The username must be a string and between 1 and 50 characters long.");
         return;
     }
     if (req.body.password === undefined || !checkPasswordFormat(req.body.password)) {
-        res.status(StatusCodes.BAD_REQUEST).send("password wrong format");
+        res.status(StatusCodes.BAD_REQUEST).send("The password is in a wrong format.");
         return;
     }
     const user = {
@@ -46,10 +46,10 @@ userRouter.post("/:email", isAuthenticated, async (req, res) => {
         res.status(StatusCodes.CREATED).send(user);
     }).catch((err) => {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("NO user found");
+            res.status(StatusCodes.BAD_REQUEST).send("No user found.");
         }
         if (err instanceof IdAlreadyExistsError) {
-            res.status(StatusCodes.BAD_REQUEST).send("there is already a User with this email");
+            res.status(StatusCodes.BAD_REQUEST).send("There already is a user with this email.");
         }
     });
 });
@@ -57,7 +57,7 @@ userRouter.post("/:email", isAuthenticated, async (req, res) => {
 userRouter.put("/:email", isAuthenticated, async (req, res) => {
     const email = req.params.email;
     if (!checkMailFormat(email)) {
-        res.status(StatusCodes.BAD_REQUEST).send("email must be a valid email address");
+        res.status(StatusCodes.BAD_REQUEST).send("The email must be a valid email address");
         return;
     }
     selectUserByEmail(email).then(user => {
@@ -71,12 +71,12 @@ userRouter.put("/:email", isAuthenticated, async (req, res) => {
             res.status(StatusCodes.OK).send(user);
         }).catch((err) => {
             if (err instanceof IdNotFoundError) {
-                res.status(StatusCodes.BAD_REQUEST).send("NO user found");
+                res.status(StatusCodes.BAD_REQUEST).send("No user found.");
             }
         });
     }).catch((err) => {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("NO user found");
+            res.status(StatusCodes.BAD_REQUEST).send("No user found.");
         }
     });
 });
@@ -91,7 +91,7 @@ userRouter.delete("/:email", isAuthenticated, async (req, res) => {
         res.status(StatusCodes.OK).send("User deleted");
     }).catch((err) => {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("NO user found");
+            res.status(StatusCodes.BAD_REQUEST).send("No user found");
         }
     });
 });

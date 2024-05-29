@@ -50,6 +50,7 @@ export async function insertUser(email: string, username: string, password: stri
     const db = await connectToDatabase();
     const stmt = await db.prepare('INSERT INTO USERS (email, username, hashedPassword) values (?, ?, ?);');
     await stmt.bind(email, username, await bcrypt.hash(password, 10));
+
     try {
         const operationResult = await stmt.run();
         await stmt.finalize();

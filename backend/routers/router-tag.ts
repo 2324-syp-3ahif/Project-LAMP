@@ -17,7 +17,7 @@ tagRouter.get("/:param", isAuthenticated,  async (req, res) => {
             res.status(StatusCodes.OK).send(tags);
         } catch (err: any) {
             if (err instanceof IdNotFoundError) {
-                res.status(StatusCodes.BAD_REQUEST).send("No user found");
+                res.status(StatusCodes.BAD_REQUEST).send("No user found.");
             }
         }
     }
@@ -27,14 +27,14 @@ tagRouter.get("/:param", isAuthenticated,  async (req, res) => {
             res.status(StatusCodes.OK).send(tags);
         } catch(err: any) {
             if (err instanceof IdNotFoundError) {
-                res.status(StatusCodes.BAD_REQUEST).send("No user found");
+                res.status(StatusCodes.BAD_REQUEST).send("No user found.");
             }
         }
     } else if (isNaN(parseInt(req.params.param))) {
-        res.status(StatusCodes.BAD_REQUEST).send("param must be a valid email address");
+        res.status(StatusCodes.BAD_REQUEST).send("Param must be a valid email address.");
     }
     else {
-        res.status(StatusCodes.BAD_REQUEST).send("param must be a valid tasklistID");
+        res.status(StatusCodes.BAD_REQUEST).send("Param must be a valid tasklistID.");
     }
 });
 
@@ -42,11 +42,11 @@ tagRouter.post("/:email/:name", isAuthenticated, async (req, res) => {
     const email = req.params.email;
     const name = req.params.name;
     if (!checkMailFormat(req.params.email)) {
-        res.status(StatusCodes.BAD_REQUEST).send("email must be a valid email address");
+        res.status(StatusCodes.BAD_REQUEST).send("The email must be valid.");
         return;
     }
     if (!isPlainText(name) || name.length > 50 || name.length < 1) {
-        res.status(StatusCodes.BAD_REQUEST).send("name must be plain text and between 1 and 50 characters long");
+        res.status(StatusCodes.BAD_REQUEST).send("The ame must be plain text and between 1 and 50 characters long.");
         return;
     }
     try {
@@ -54,7 +54,7 @@ tagRouter.post("/:email/:name", isAuthenticated, async (req, res) => {
         res.status(StatusCodes.CREATED).send({tagID: id, name: name});
     } catch(err: any) {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("No user found");
+            res.status(StatusCodes.BAD_REQUEST).send("No user found.");
         }
     }
 });
@@ -63,11 +63,11 @@ tagRouter.put("/:tagID/:name", isAuthenticated, async (req, res) => {
     const tagID = parseInt(req.params.tagID);
     const name = req.params.name;
     if (isNaN(tagID) || tagID < 1) {
-        res.status(StatusCodes.BAD_REQUEST).send("tagID must be a number");
+        res.status(StatusCodes.BAD_REQUEST).send("The tagID must be a number.");
         return;
     }
     if (!checkStringFormat(name) || name.length > 50 || name.length < 1) {
-        res.status(StatusCodes.BAD_REQUEST).send("name must be plain text and between 1 and 50 characters long");
+        res.status(StatusCodes.BAD_REQUEST).send("The name must be plain text and between 1 and 50 characters long.");
         return;
     }
     try {
@@ -75,10 +75,10 @@ tagRouter.put("/:tagID/:name", isAuthenticated, async (req, res) => {
         res.status(StatusCodes.OK).send({tagID: tagID, name: name});
     } catch(err: any) {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("No user found");
+            res.status(StatusCodes.BAD_REQUEST).send("No user found.");
         }
         if (err instanceof StringWrongFormatError) {
-            res.status(StatusCodes.BAD_REQUEST).send("name must be plain text and between 1 and 50 characters long");
+            res.status(StatusCodes.BAD_REQUEST).send("The name must be plain text and between 1 and 50 characters long.");
         }
     }
 });
@@ -86,7 +86,7 @@ tagRouter.put("/:tagID/:name", isAuthenticated, async (req, res) => {
 tagRouter.delete("/:tagID", isAuthenticated, async (req, res) => {
     const tagID = parseInt(req.params.tagID);
     if (isNaN(tagID) || tagID < 1) {
-        res.status(StatusCodes.BAD_REQUEST).send("tagID must be a number");
+        res.status(StatusCodes.BAD_REQUEST).send("The tagID must be a number.");
         return;
     }
     try {
@@ -94,7 +94,7 @@ tagRouter.delete("/:tagID", isAuthenticated, async (req, res) => {
         res.status(StatusCodes.OK).send("tag deleted");
     } catch(err: any) {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("No user found");
+            res.status(StatusCodes.BAD_REQUEST).send("No user found.");
         }
     }
 });

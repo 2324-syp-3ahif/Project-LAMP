@@ -2,7 +2,6 @@ import express from "express";
 import * as utils from "./routerUtils";
 import {Tasklist} from "../interfaces/model/Tasklist";
 import {StatusCodes} from "http-status-codes";
-import {ConnectionToDatabaseLostError} from "../interfaces/errors/ConnectionToDatabaseLostError";
 import {DateFormatError} from "../interfaces/errors/DateFormatError";
 import {
     insertTasklist,
@@ -17,8 +16,6 @@ import {StringToLongError} from "../interfaces/errors/StringToLongError";
 import {checkMailFormat} from "../utils";
 import {NotAValidNumberError} from "../interfaces/errors/NotAValidNumberError";
 import {isAuthenticated} from "../middleware/auth-handlers";
-import {getUserID} from "../database-functions/user-functions";
-
 
 export const tasklistRouter = express.Router();
 
@@ -94,15 +91,15 @@ tasklistRouter.put("/:email/:tasklistID", isAuthenticated, async (req, res) => {
             tasklist.isLocked = req.body.isLocked;
         }
         if (!utils.checkTitle(tasklist.title)) {
-            res.status(StatusCodes.BAD_REQUEST).send("title must be at least 1 character long");
+            res.status(StatusCodes.BAD_REQUEST).send("The title must be at least 1 character long");
             return;
         }
         if (!utils.checkSortingOrder(tasklist.sortingOrder)) {
-            res.status(StatusCodes.BAD_REQUEST).send("sortingOrder must be a positive number");
+            res.status(StatusCodes.BAD_REQUEST).send("The sortingOrder must be a positive number");
             return;
         }
         if (!utils.checkPriority(tasklist.priority)) {
-            res.status(StatusCodes.BAD_REQUEST).send("priority must be a positive number");
+            res.status(StatusCodes.BAD_REQUEST).send("The priority must be a positive number");
             return;
         }
 
@@ -110,7 +107,7 @@ tasklistRouter.put("/:email/:tasklistID", isAuthenticated, async (req, res) => {
             res.status(StatusCodes.OK).send(tasklist);
         }).catch((err: Error) => {
             if (err instanceof DateExpiredError) {
-                res.status(StatusCodes.BAD_REQUEST).send("Date already was!");
+                res.status(StatusCodes.BAD_REQUEST).send("Date is in the past!");
             } else if (err instanceof IdNotFoundError) {
                 res.status(StatusCodes.BAD_REQUEST).send("wrongID: " + err.message);
             } else if (err instanceof DateFormatError) {
@@ -129,16 +126,16 @@ tasklistRouter.put("/:email/:tasklistID", isAuthenticated, async (req, res) => {
 tasklistRouter.delete("/:tasklistID", isAuthenticated, async (req, res) => {
     const tasklistID = parseInt(req.params.tasklistID);
     if (tasklistID === undefined || isNaN(tasklistID) || tasklistID < 1) {
-        res.status(StatusCodes.BAD_REQUEST).send("tasklistID must be a positive number");
+        res.status(StatusCodes.BAD_REQUEST).send("The tasklistID must be a positive number.");
         return;
     }
 
     await deleteTasklistByTasklistID(tasklistID).then(() => {
-        res.status(StatusCodes.OK).send("Tasklist deleted");
+        res.status(StatusCodes.OK).send("Tasklist deleted.");
         return;
     }).catch((err: Error) => {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("No tasklist found");
+            res.status(StatusCodes.BAD_REQUEST).send("No tasklist found.");
         }
     });
 });
