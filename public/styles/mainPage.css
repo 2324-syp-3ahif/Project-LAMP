@@ -94,7 +94,7 @@ body {
 /* Invite Modal */
 #invite-user-btn {
     margin-top: 10px;
-    background-color: #00C2DD !important;
+    background-color: #3aafa9 !important;
     color: #EEEEEE !important;
     border: none;
     border-radius: 5px;
@@ -103,7 +103,7 @@ body {
 
 #invite-user-btn:hover {
     background-color: #EEEEEE !important;
-    color: #00C2DD !important;
+    color: #3aafa9 !important;
 }
 .wrapper {
     z-index: 100;
@@ -127,6 +127,8 @@ body {
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 99;
 }
+
+/* Task */
 .TaskOverlay{
     position: fixed;
     top: 0;
@@ -135,106 +137,6 @@ body {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 99;
-}
-
-#login-wrapper{
-    display: none;
-}
-#signup-wrapper{
-    display: none;
-}
-.wrapper h2{
-    position: relative;
-    font-size: 22px;
-    font-weight: 600;
-    color: #333;
-}
-.wrapper h2::before{
-    margin-top: 10px;
-    margin-left: 10px;
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 3px;
-    width: 28px;
-    border-radius: 15px;
-    background: #00C2DD;
-}
-.wrapper form{
-    margin-top: 30px;
-}
-.wrapper form .input-box{
-    height: 52px;
-    margin: 18px 0;
-}
-form .input-box input{
-    height: 100%;
-    width: 100%;
-    outline: none;
-    padding: 0 15px;
-    font-size: 17px;
-    font-weight: 400;
-    color: #333;
-    border: 1.5px solid #C7BEBE;
-    border-bottom-width: 2.5px;
-    border-radius: 15px;
-    transition: all 0.3s ease;
-}
-.input-box input:focus,
-.input-box input:valid{
-    border-color: #4070f4;
-}
-form .policy{
-    display: flex;
-    align-items: center;
-}
-form h3{
-    color: #707070;
-    font-size: 12px;
-    font-weight: 500;
-    margin-left: 10px;
-}
-.input-box.button input{
-    color: #fff;
-    letter-spacing: 1px;
-    border: none;
-    background: #00C2DD;
-    cursor: pointer;
-}
-.input-box.button input:hover{
-    background: #00C2DD;
-}
-form .text h3{
-    color: #333;
-    width: 100%;
-    text-align: center;
-}
-form .text h3 a{
-    color: #4070f4;
-    text-decoration: none;
-}
-form .text h3 a:hover{
-    text-decoration: underline;
-}
-.switch-mode{
-    color: #00C2DD;
-}
-#switch-to-login{
-    text-decoration: underline;
-    color: blue;
-    cursor: pointer;
-    margin-left: 10px;
-}
-#switch-to-signup{
-    text-decoration: underline;
-    color: blue;
-    cursor: pointer;
-    margin-left: 10px;
-}
-.switch-mode-paragraph{
-    justify-content: center;
-    display: flex;
 }
 
 #create-task-form {
@@ -251,19 +153,4 @@ form .text h3 a:hover{
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
 }
 
-#date-task-input-div {
-    margin-right: 10px;
-}
 
-#start-time-input-div {
-    margin-right: 10px;
-}
-
-#fullday-event-input {
-    border-radius: 10rem;
-}
-
-#description-event-input {
-    height: 8rem;
-
-}

@@ -15,7 +15,7 @@ export const taskRouter = express.Router();
 taskRouter.get("/tasklistID/:tasklistID", isAuthenticated, async (req, res) => {
     const tasklistID = parseInt(req.params.tasklistID);
     if (tasklistID === undefined || isNaN(tasklistID) || tasklistID < 1) {
-        res.status(StatusCodes.BAD_REQUEST).send("tasklistID must be a positive number");
+        res.status(StatusCodes.BAD_REQUEST).send("TasklistID must be a positive number.");
         return;
     }
     try {
@@ -23,7 +23,7 @@ taskRouter.get("/tasklistID/:tasklistID", isAuthenticated, async (req, res) => {
         res.status(StatusCodes.OK).send(tasks);
     } catch(err) {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("No user found");
+            res.status(StatusCodes.BAD_REQUEST).send("No user found.");
         }
     }
 });
@@ -31,12 +31,12 @@ taskRouter.get("/tasklistID/:tasklistID", isAuthenticated, async (req, res) => {
 taskRouter.post("/:tasklistID", /*isAuthenticated,*/ async (req, res) => {
     const tasklistID = parseInt(req.params.tasklistID);
     if (tasklistID === undefined || isNaN(tasklistID) || tasklistID < 1) {
-        res.status(StatusCodes.BAD_REQUEST).send("userID must be a positiv Number");
+        res.status(StatusCodes.BAD_REQUEST).send("UserID must be a positive number.");
         return;
     }
 
     if (!utils.checkTitle(req.body.title)) {
-        res.status(StatusCodes.BAD_REQUEST).send("title must be at least 1 character long");
+        res.status(StatusCodes.BAD_REQUEST).send("Title must be at least 1 character long.");
         return;
     }
     const dueDate = req.body.dueDate;
@@ -49,11 +49,11 @@ taskRouter.post("/:tasklistID", /*isAuthenticated,*/ async (req, res) => {
     const sortingOrder = req.body.sortingOrder ?? 1;
     const priority = req.body.priority ?? 1;
     if (!utils.checkSortingOrder(sortingOrder)) {
-        res.status(StatusCodes.BAD_REQUEST).send("sortingOrder must be a positive number");
+        res.status(StatusCodes.BAD_REQUEST).send("SortingOrder must be a positive number.");
         return;
     }
     if (!utils.checkPriority(priority)) {
-        res.status(StatusCodes.BAD_REQUEST).send("priority must be a positive number");
+        res.status(StatusCodes.BAD_REQUEST).send("Priority must be a positive number.");
         return;
     }
     const result: Task = {
@@ -72,7 +72,7 @@ taskRouter.post("/:tasklistID", /*isAuthenticated,*/ async (req, res) => {
         if (err instanceof DateExpiredError) {
             res.status(StatusCodes.BAD_REQUEST).send("Date already was!");
         } else if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("wrongID: " + err.message);
+            res.status(StatusCodes.BAD_REQUEST).send("WrongID: " + err.message);
         } else if (err instanceof DateFormatError) {
             res.status(StatusCodes.BAD_REQUEST).send("Date is wrong format!")
         } else if (err instanceof StringToLongError) {
@@ -86,7 +86,7 @@ taskRouter.post("/:tasklistID", /*isAuthenticated,*/ async (req, res) => {
 taskRouter.put("/:taskID", isAuthenticated, async (req, res) => {
     const taskID = parseInt(req.params.taskID);
     if (taskID === undefined || isNaN(taskID) || taskID < 1) {
-        res.status(StatusCodes.BAD_REQUEST).send("taskID must be a positiv Number");
+        res.status(StatusCodes.BAD_REQUEST).send("TaskID must be a positive number");
         return;
     }
     try {
@@ -96,7 +96,7 @@ taskRouter.put("/:taskID", isAuthenticated, async (req, res) => {
         if (err instanceof DateExpiredError) {
             res.status(StatusCodes.BAD_REQUEST).send("Date already was!");
         } else if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("NO task found");
+            res.status(StatusCodes.BAD_REQUEST).send("No task found");
         } else if (err instanceof DateFormatError) {
             res.status(StatusCodes.BAD_REQUEST).send("Date is wrong format!")
         } else if (err instanceof StringToLongError) {
@@ -118,7 +118,7 @@ taskRouter.delete("/:taskID", isAuthenticated, async (req, res) => {
         res.status(StatusCodes.OK).send("Task deleted");
     } catch(err) {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("NO task found");
+            res.status(StatusCodes.BAD_REQUEST).send("No task found");
         }
     }
 });

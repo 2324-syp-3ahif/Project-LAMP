@@ -188,8 +188,8 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
                    return
                }
             });
-            listElements.forEach(listelm => {
-                if(e.target === listelm) {
+            listElements.forEach(listEl => {
+                if(e.target === listEl) {
                     return
                 }
             });
