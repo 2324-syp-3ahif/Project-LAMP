@@ -226,6 +226,12 @@ async function deleteTaskList() {
 async function invite() {
     const email = document.getElementById('email-input') as HTMLInputElement;
     const emailText = email.value;
+
+    if (emailText === globalMail) {
+        alert('You cannot invite yourself');
+        return;
+    }
+
     const user: User = await (await send("http://localhost:2000/api/user/" + emailText, 'GET')).json();
     console.log(user);
     globalUsersToInvite.push(user);
@@ -273,6 +279,7 @@ async function createTasklist() {
     for(const user of globalUsersToInvite) {
         await send("http://localhost:2000/api/mail/invite/" + user.email + "/" + tasklist.tasklistID, 'POST');
     }
+    globalUsersToInvite.length = 0;
 
     createForm.style.display = 'none';
     await showAllTasklists();

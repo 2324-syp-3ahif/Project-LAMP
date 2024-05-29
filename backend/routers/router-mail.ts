@@ -1,6 +1,7 @@
 import express from "express";
 import { sendInviteMail } from "../repositories/mail-repo";
 import {isAuthenticated} from "../middleware/auth-handlers";
+import {addCollaboratorToTasklist} from "../database-functions/usertaklist-functions";
 import jwt from 'jsonwebtoken';
 
 export const mailRouter = express.Router();
@@ -10,7 +11,6 @@ mailRouter.post("/invite/:receiver/:listID", isAuthenticated, (req, res) => {
     const secretKey = process.env.SECRET_KEY as string;
 
     const token: string = jwt.sign({ receiver, tasklistID }, secretKey, { expiresIn: '24h' });
-
     const confirmationLink: string = `http://localhost:${process.env.port}/api/mail/confirm?token=${token}`; // TODO change Link to real server
 
     console.log(`Send this link to ${receiver}: ${confirmationLink}`);
@@ -20,7 +20,7 @@ mailRouter.post("/invite/:receiver/:listID", isAuthenticated, (req, res) => {
 
 });
 
-mailRouter.get('/confirm', (req, res) => {
+mailRouter.get('/confirm', async (req, res) => {
     const token = req.query.token as string;
     const secretKey = process.env.SECRET_KEY as string;
     try {
@@ -28,9 +28,9 @@ mailRouter.get('/confirm', (req, res) => {
         const { email, tasklistID } = decoded;
         console.log(`Token decoded: ${email} ${tasklistID}`);
 
+        await addCollaboratorToTasklist(parseInt(tasklistID), email);
+
         res.redirect(`http://localhost:${process.env.port}/success`);
-        // TODO: redirect to frontend success page
-        // TODO: redirect to frontend login page
     } catch (error) {
         res.status(400).send('Invalid or expired token');
     }
