@@ -4,6 +4,7 @@ import {Tag} from './model/Tag';
 import {checkMailFormat} from "./utils";
 import {handlePageLoad} from "./loginFunctions";
 import {checkBoxes, closePLS, createNewTask, loadTasks, setClosePLS} from "./taskFuntions";
+import {User} from "./model/User";
 const tasklistUrl: string = 'http://localhost:2000/api/tasklist/';
 const tagUrl: string = 'http://localhost:2000/api/tag/';
 
@@ -24,6 +25,7 @@ let globalDeleteTasklistID = -1;
 let globalTasklists: Tasklist[] = [];
 let globalTags: Tag[] = [];
 let globalMail: string = "";
+const globalUsersToInvite: User[] = [];
 
 window.onload = async function() {
     debugger;
@@ -224,13 +226,26 @@ async function deleteTaskList() {
 async function invite() {
     const email = document.getElementById('email-input') as HTMLInputElement;
     const emailText = email.value;
-    email.value = "";
-    if (checkMailFormat(emailText)) {
-        const nextId = await send(tasklistUrl + "nextID", 'GET');
-        await send("http://localhost:2000/api/mail/invite/" + emailText + "/" + nextId, 'POST', {email: email});
-    } else {
-        alert('Invalid email address');
+
+    if (emailText === globalMail) {
+        alert('You cannot invite yourself');
+        return;
     }
+
+    const user: User = await (await send("http://localhost:2000/api/user/" + emailText, 'GET')).json();
+    console.log(user);
+    globalUsersToInvite.push(user);
+
+    email.placeholder = "add another user";
+    email.value = "";
+
+    // add to array of users to invite, invite them when submit button is pushed
+    /*
+    const nextId = await send(tasklistUrl + "nextID", 'GET');
+    await send("http://localhost:2000/api/mail/invite/" + emailText + "/" + nextId, 'POST', {email: email});
+
+     */
+
 }
 
 async function createTasklist() {
@@ -260,6 +275,12 @@ async function createTasklist() {
 
     const tasklist: Tasklist = await (await send(tasklistUrl + globalMail, 'POST', data)).json();
     globalTasklists.push(tasklist);
+
+    for(const user of globalUsersToInvite) {
+        await send("http://localhost:2000/api/mail/invite/" + user.email + "/" + tasklist.tasklistID, 'POST');
+    }
+    globalUsersToInvite.length = 0;
+
     createForm.style.display = 'none';
     await showAllTasklists();
 }
