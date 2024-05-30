@@ -21,7 +21,7 @@ const port = process.env.PORT || 2000;
 async function startUp() {
     await createTables();
 }
-startUp();
+startUp().then(() => console.log("Tables created"));
 
 dotenv.config();
 app.use(cors());

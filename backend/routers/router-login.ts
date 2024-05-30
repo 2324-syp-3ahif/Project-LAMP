@@ -62,6 +62,6 @@ loginRouter.post('/token/refresh', async (req, res) => {
         res.sendStatus(StatusCodes.UNAUTHORIZED);
     }
 });
-loginRouter.get('/token/verify', isAuthenticated, (req, res) => {
+loginRouter.get('/token/verify', isAuthenticated, (_, res) => {
     res.sendStatus(StatusCodes.OK);
 });

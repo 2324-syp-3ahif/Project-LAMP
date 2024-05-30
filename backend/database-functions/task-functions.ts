@@ -37,7 +37,7 @@ export async function selectTaskByTaskID(taskID: number): Promise<Task> {
 }
 
 export async function insertTask(title: string, description: string, dueDate: number, priority: number, tasklistID: number, email: string): Promise<number> {
-    numberChecker(priority, 0, 10, 'priority', `Priority must be between 0 and 10`);
+    numberChecker(priority, 0, 10,  `Priority must be between 0 and 10`);
     dateSmallerNowChecker(dueDate);
     stringLengthCheck(title, 50, 'title');
     stringLengthCheck(description, 255, 'description');
@@ -75,7 +75,7 @@ export async function updateTask(taskID: number, tasklistID?: number, title?: st
     } if (dueDate !== undefined) {
         dateSmallerNowChecker(dueDate);
     } if (priority !== undefined) {
-        numberChecker(priority, 0, 10, "sortingOrder", '');
+        numberChecker(priority, 0, 10, "sortingOrder");
     }
     const array = [title, description, dueDate, priority, isComplete ? 1 : 0, tasklistID];
     const names = ["title", "description", "dueDate", "priority", "isComplete", "tasklistID"];

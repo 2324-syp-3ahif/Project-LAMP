@@ -11,7 +11,7 @@ export async function selectEventByEventID(eventID: number): Promise<Event> {
     await stmt.bind(eventID);
     const result = await stmt.get<Event>();
     if (result === undefined) {
-        throw new IdNotFoundError('EVENTS', 'eventID');
+        throw new IdNotFoundError('eventID');
     }
     await stmt.finalize();
     await db.close();
@@ -37,7 +37,6 @@ export async function insertEvent(name: string, description: string, startTime: 
     dateSmallerNowChecker(endTime);
     const userID = await getUserID(email);
 
-
     const db = await connectToDatabase();
     const stmt = await db.prepare('INSERT INTO EVENTS (name, startTime, endTime, fullDay, description, userID) values (?1, ?2, ?3, ?4, ?5, ?6)');
     await stmt.bind({1: name, 2: startTime, 3: endTime, 4: fullDay ? 1 : 0, 5: description, 6: userID});
@@ -46,6 +45,7 @@ export async function insertEvent(name: string, description: string, startTime: 
         console.log(operationResult);
         throw new Error('Could not insert event');
     }
+
     await stmt.finalize();
     await db.close();
     return operationResult.lastID;

@@ -21,13 +21,13 @@ export function dateSmallerNowChecker(dueDate: number) {
 
 export function stringLengthCheck(field: string, length: number, causer: string) {
     if (field.length > length) {
-        throw new StringToLongError(causer, `${causer} cannot have more characters than ${length}`);
+        throw new StringToLongError(`${causer} cannot have more characters than ${length}`);
     }
 }
 
-export function numberChecker(num: number, min: number, max: number, causer: string, message: string) {
+export function numberChecker(num: number, min: number, max: number, message: string) {
     if (num < min || num > max) {
-        throw new NotAValidNumberError(causer, message);
+        throw new NotAValidNumberError(message);
     }
 }
 
