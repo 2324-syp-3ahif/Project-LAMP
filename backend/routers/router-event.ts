@@ -5,7 +5,7 @@ import {
     deleteEventByID,
     insertEvent,
     selectEventByEventID,
-    selectEventsByEmail
+    selectEventsByEmail, updateEvent
 } from "../database-functions/event-functions";
 
 export const eventRouter = express.Router();
@@ -30,6 +30,15 @@ eventRouter.delete("/:eventID", isAuthenticated, async (req, res) => {
    } catch (e) {
          res.status(400).send((e as Error).message);
    }
+});
+
+eventRouter.put("/:email", isAuthenticated, async (req, res) => {
+    try {
+        await updateEvent(req.body);
+        res.send(await selectEventByEventID(req.body.eventID));
+    } catch (e) {
+        res.status(400).send((e as Error).message);
+    }
 });
 
 eventRouter.post("/:email", isAuthenticated, async (req, res) => {

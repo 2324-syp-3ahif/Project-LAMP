@@ -3,10 +3,88 @@ import {Event} from "./model/Event";
 import { handlePageLoad } from "./loginFunctions";
 
 const events: Event[] = [];
+const mappedEvents: Map<HTMLElement, Event> = new Map();
+let selectedEvent: Event | undefined;
+const ELEMENTS = {
+    eventContainer: document.getElementById("event-container") as HTMLElement,
+    eventHeader: document.getElementById("event-header") as HTMLElement,
+    eventNameInput: document.getElementById("name-input-event") as HTMLInputElement,
+    eventDescriptionInput: document.getElementById("description-input-event") as HTMLInputElement,
+    eventDateInput: document.getElementById("date-input-event") as HTMLInputElement,
+    eventFullDayInput: document.getElementById("fullday-input-event") as HTMLInputElement,
+    eventStartTimeInput: document.getElementById("start-time-input-event") as HTMLInputElement,
+    eventEndTimeInput: document.getElementById("end-time-input-event") as HTMLInputElement,
+    eventSubmitButton: document.getElementById("submit-event-btn") as HTMLButtonElement,
+    addEventBtn: document.getElementById("add-event-btn") as HTMLButtonElement,
+    addTaskBtn: document.getElementById("add-task-btn") as HTMLButtonElement,
+    backDrop: document.getElementById("popupBackdrop") as HTMLDivElement,
+}
 
-console.log(Date.now() + 2 * 24 * 60* 60*1000);
+ELEMENTS.addEventBtn.addEventListener("click", () => {
+    clearEventInput();
+    ELEMENTS.eventHeader.innerText = "Create Event";
+    ELEMENTS.eventSubmitButton.innerText = "Create Event";
+    ELEMENTS.eventContainer.classList.remove("hidden");
+    ELEMENTS.backDrop.classList.remove("hidden");
+});
+ 
+ELEMENTS.backDrop.addEventListener("click", () => {
+   ELEMENTS.eventContainer.classList.add("hidden");
+   ELEMENTS.backDrop.classList.add("hidden");
+});
 
-//TODO: Remove the offset at startdate
+ELEMENTS.eventSubmitButton.addEventListener("click", async () => {
+   if (ELEMENTS.eventHeader.innerText === "Create Event") {
+       let event: Event = {
+           eventID: 0,
+           name: ELEMENTS.eventNameInput.value,
+           description: ELEMENTS.eventDescriptionInput.value,
+           startTime: stringToDateAsNumber(ELEMENTS.eventStartTimeInput.value, ELEMENTS.eventDateInput.value)!,
+           endTime: stringToDateAsNumber(ELEMENTS.eventEndTimeInput.value, ELEMENTS.eventDateInput.value)!,
+           fullDay: ELEMENTS.eventFullDayInput.checked,
+           userID: 0,
+       };
+       const res = await send("http://localhost:2000/api/event/" + localStorage.getItem('mail'), "POST", event);
+       event = await res.json() as Event;
+       addEvent(event);
+       window.location.reload();
+   } else {
+       let event: Event = {
+           eventID: selectedEvent?.eventID as number,
+           name: ELEMENTS.eventNameInput.value !== "" ? ELEMENTS.eventNameInput.value : undefined!,
+           description: ELEMENTS.eventDescriptionInput.value !== "" ? ELEMENTS.eventDescriptionInput.value : undefined!,
+           startTime: stringToDateAsNumber(ELEMENTS.eventStartTimeInput.value, ELEMENTS.eventDateInput.value)!,
+           endTime: stringToDateAsNumber(ELEMENTS.eventEndTimeInput.value, ELEMENTS.eventDateInput.value)!,
+           fullDay: ELEMENTS.eventFullDayInput.checked,
+           userID: undefined!,
+       };
+       const res = await send("http://localhost:2000/api/event/" + localStorage.getItem('mail'), "PUT", event);
+       event = await res.json() as Event;
+       console.log(event);
+       updateEvent(event);
+       window.location.reload();
+   }
+});
+
+function clearEventInput() {
+    console.log("Hallo");
+    ELEMENTS.eventNameInput.value = "";
+    ELEMENTS.eventDescriptionInput.value = "";
+    ELEMENTS.eventDateInput.value = "";
+    ELEMENTS.eventFullDayInput.checked = false;
+    ELEMENTS.eventStartTimeInput.value = "";
+    ELEMENTS.eventEndTimeInput.value = "";
+}
+
+ELEMENTS.addTaskBtn.addEventListener("click", () => {
+    events.forEach(event => {
+        if (event.name === "Luca Haas") {
+            event.name = "Hallo123";
+            updateEvent(event);
+        }
+    })
+});
+
 function getWeekstart() {
     let caldate = new Date(Date.now() + 2 * 24 * 60* 60*1000);
     let offset = caldate.getDay();
@@ -22,147 +100,91 @@ window.onload = async function onload() {
     await handlePageLoad(handleEventPageLoad);
 }
 
-const addEventBtn = document.getElementById("add-event-btn") as HTMLButtonElement
-const addTaskBtn = document.getElementById("add-task-btn") as HTMLButtonElement;
-const createEventContainer = document.getElementById("create-event-container") as HTMLDivElement;
-const createTaskContainer = document.getElementById("create-task-container") as HTMLDivElement;
-const popupBackdrop = document.getElementById("popupBackdrop") as HTMLDivElement;
-const submitEventBtn = document.getElementById("submit-event-btn") as HTMLButtonElement;
-const date = document.getElementById("date-event-input") as HTMLInputElement;
-const createStartTime = document.getElementById("event-start-time-input") as HTMLInputElement;
-const createEndTime = document.getElementById("event-end-time-input") as HTMLInputElement;
-
-
 async function handleEventPageLoad() {
-    if (addEventBtn && createEventContainer && popupBackdrop && submitEventBtn && addTaskBtn && createTaskContainer) {
-        addEventBtn.addEventListener("click", () => {
-            (document.getElementById("add-event-header") as HTMLParagraphElement).innerText = "Create Event";
-            submitEventBtn.innerText = "Create Event";
-            createEventContainer.classList.remove("hidden");
-            popupBackdrop.classList.remove("hidden");
-        });
-
-        addTaskBtn.addEventListener("click", () => {
-            createTaskContainer.classList.remove("hidden");
-            popupBackdrop.classList.remove("hidden");
-        });
-
-        window.addEventListener("click", (event) => {
-            if (event.target === popupBackdrop) {
-                createEventContainer.classList.add("hidden");
-                createTaskContainer.classList.add("hidden");
-                popupBackdrop.classList.add("hidden");
-            }
-        });
-
-        createTaskContainer.addEventListener("click", (event) => {
-            event.stopPropagation();
-        });
-
-        createEventContainer.addEventListener("click", (event) => {
-            event.stopPropagation();
-        });
-
-        submitEventBtn.addEventListener("click", async () => {
-            let method = (document.getElementById("add-event-header") as HTMLParagraphElement).innerText == "Create Event" ? "POST" : "PUT";
-            const event: Event = {
-                eventID: 0,
-                name: (document.getElementById("name-event-input") as HTMLInputElement).value,
-                description: (document.getElementById("description-event-input") as HTMLInputElement).value,
-                startTime: stringToDateAsNumber(createStartTime.value, date.value),
-                endTime: stringToDateAsNumber(createEndTime.value, date.value),
-                fullDay: (document.getElementById("fullday-event-input") as HTMLInputElement).checked,
-                userID: 0,
-            } as Event
-            await send("http://localhost:2000/api/event/" + localStorage.getItem('mail') as string, "POST", event);
-            addEvent(event);
-        });
-
-        await loadEvents(localStorage.getItem('mail') as string);
-    }
-}
-
-async function loadEvents(mail: string) {
-    const resp = await send("http://localhost:2000/api/event/" + mail, "GET");
-    if (!resp.ok) {
-        alert("Error loading events");
-        return;
-    }
-    const events: Event[] = await resp.json();
-    events.forEach((event) => {
-        addEvent(event);
-    });
-
-}
-
-async function removeEvent(eventID: number) {
-    const resp = await send("http://localhost:2000/api/event/" + eventID, "DELETE");
-    if (resp.ok) {
-        const event = document.getElementById("calendar-entity-" + eventID);
-        if (event) {
-            event.remove();
-        }
-        const index = events.findIndex((event) => event.eventID === eventID);
-        if (index >= 0) {
-            events.splice(index, 1);
-        }
+    const res = await send("http://localhost:2000/api/event/" + localStorage.getItem('mail'), "GET");
+    if (res.ok) {
+        const data = await res.json();
+        await loadEvents(data);
     } else {
-        throw new Error("Error deleting event");
+        alert("Error loading events");
     }
 }
 
 function addEvent(event: Event) {
-    if (event.startTime < caldate.valueOf() || event.endTime > caldate.valueOf() + 6 * 24 * 60 * 60 * 1000) {
-        console.log(`Event not in current week: ${event.eventID}`);
-        return;
-    }
-
-    const calendarEntity = document.createElement("div");
-    calendarEntity.className = "calendar-entity event-container";
-    calendarEntity.id = "calendar-entity-" + event.eventID;
-
-    const name = document.createElement("p");
-    name.className = "calendar-entity-data";
-    name.innerText = event.name;
-
-    const partingLine = document.createElement("hr");
-    partingLine.className = "parting-line";
-
-    const time = document.createElement("p");
-    time.className = "calendar-entity-data";
-    const startTime = new Date(event.startTime);
-    console.log(startTime.getDay());
-    const endTime = new Date(event.endTime);
-    time.innerText = `Start: ${startTime.getHours()}:${startTime.getMinutes()} End: ${endTime.getHours()}:${endTime.getMinutes()}`;
-
-    calendarEntity.appendChild(name);
-    calendarEntity.appendChild(partingLine);
-    calendarEntity.appendChild(time);
-
-    const calendar = document.getElementById("calendar-entities-" + startTime.getDay());
-    if (calendar) {
-        calendar.appendChild(calendarEntity);
-    }
-    console.log(`Event loaded: ${event.eventID}`);
     events.push(event);
-    calendarEntity.addEventListener("click", async () => {
-        (document.getElementById("add-event-header") as HTMLParagraphElement).innerText = "Edit Event";
-        submitEventBtn.innerText = "Edit Event";
-        createEventContainer.classList.remove("hidden");
-        popupBackdrop.classList.remove("hidden");
+    if (event.startTime > caldate.getTime() && event.startTime < caldate.getTime() + 6 * 24 * 60 * 60 * 1000) {
+        const startDate = new Date(event.startTime);
+        const endDate = new Date(event.endTime);
+        const divToAddTo = document.getElementById(`calendar-entities-${startDate.getDay()}`) as HTMLDivElement;
+        const eventDiv = document.createElement("div");
+        eventDiv.className = "calendar-entity event-container";
+        eventDiv.innerHTML += `
+                <p class="calendar-entity-data">${event.name}</p>
+                <hr class="parting-line">
+                <p class="calendar-entity-data">Start: ${startDate.getHours()}:${startDate.getMinutes()}<br>End: ${endDate.getHours()}:${endDate.getMinutes()}</p>           
+            `;
+        mappedEvents.set(eventDiv, event);
+        divToAddTo.appendChild(eventDiv);
+        divToAddTo.addEventListener("click", (sender) => {
+            sender.stopPropagation();
+            let target = sender.target as HTMLElement;
+            if (target === undefined) return;
+            while(!((target) as HTMLElement).classList.contains("event-container")) {
+                if (target) {
+                    target = target.parentElement!;
+                }
+            }
+            const event = mappedEvents.get(target);
+            selectedEvent = event;
+            ELEMENTS.eventHeader.innerText = "Edit Event";
+            ELEMENTS.eventSubmitButton.innerText = "Edit Event";
+
+            ELEMENTS.eventNameInput.value = selectedEvent?.name as string;
+            ELEMENTS.eventDescriptionInput.value = selectedEvent?.description as string;
+            const startTime = new Date(selectedEvent?.startTime as number);
+            ELEMENTS.eventStartTimeInput.value = `${startTime.getHours()}:${startTime.getMinutes()}`;
+            const endTime = new Date(selectedEvent?.endTime as number);
+            ELEMENTS.eventEndTimeInput.value = `${endTime.getHours()}:${endTime.getMinutes()}`;
+            ELEMENTS.eventFullDayInput.checked = !!selectedEvent?.fullDay;
+            ELEMENTS.eventDateInput.value = `${startTime.getDate()}.${startTime.getMonth() + 1}.${startTime.getFullYear()}`;
+            ELEMENTS.backDrop.classList.remove("hidden");
+            ELEMENTS.eventContainer.classList.remove("hidden");
+
+        });
+    }
+}
+
+function updateEvent(event: Event) {
+    deleteEvent(event);
+    addEvent(event);
+}
+
+function deleteEvent(event: Event) {
+    for (let [key, val] of mappedEvents.entries()) {
+        if (val.eventID === event.eventID) {
+            key.remove();
+            mappedEvents.delete(key);
+            events.splice(events.indexOf(event), 1);
+        }
+    }
+}
+
+async function loadEvents(eventsLocal: Event[]) {
+    eventsLocal.forEach(event => {
+        addEvent(event);
     });
-    //window.location.reload();
 }
 
 function stringToDateAsNumber(timeString: string, dateString: string) {
-    const time = timeString.split(":").map((x) => parseInt(x)).reduce((x, y) => (x * 60 + y) * 60000);
-    const dateArray = dateString.split(".").map((x) => parseInt(x));
-    if (dateArray.length !== 3) {
-        throw new Error("Invalid date format");
+    try {
+        const time = timeString.split(":").map((x) => parseInt(x)).reduce((x, y) => (x * 60 + y) * 60000);
+        const dateArray = dateString.split(".").map((x) => parseInt(x));
+        if (dateArray.length !== 3) {
+            throw new Error("Invalid date format");
+        }
+        const date = new Date(dateArray[2], dateArray[1] - 1, dateArray[0]);
+        return time + date.valueOf();
+    } catch (e) {
+        alert("Invalid time format");
     }
-    console.log(dateArray[2], dateArray[1], dateArray[0]);
-    const date = new Date(dateArray[2], dateArray[1] - 1, dateArray[0]);
-    console.log(time);
-    console.log(time + date.valueOf());
-    return time + date.valueOf();
 }

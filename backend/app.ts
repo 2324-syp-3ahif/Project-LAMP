@@ -13,6 +13,7 @@ import {loginRouter} from "./routers/router-login";
 import { join } from "path";
 import cookieParser from "cookie-parser";
 import {createTables} from "./database-functions/create-tables";
+import {updateEvent} from "./database-functions/event-functions";
 
 const app = express();
 const port = process.env.PORT || 2000;
@@ -40,6 +41,6 @@ const path = join(__dirname, "../public");
 const options = { extensions: ["html", "js"] }; // , "css"
 app.use(express.static(path, options));
 
-app.listen(2000, () => {
+app.listen(2000, async () => {
     console.log(`Listening on http://localhost:` + port);
 });

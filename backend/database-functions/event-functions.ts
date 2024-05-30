@@ -52,19 +52,25 @@ export async function insertEvent(name: string, description: string, startTime: 
 }
 
 export async function updateEvent(event: object): Promise<void> {
-    let query = 'UPDATE EVENTS SET';
+    let query = 'UPDATE EVENTS SET ';
     let eventID: any = undefined;
     let bool = false;
     const values = [];
     for (const [name, value] of Object.entries(event)) {
         if (name !== 'eventID' && value !== undefined) {
-            query = query + `${bool ? "," : bool = true} ${name} = ?`;
+            if (bool) {
+                query = query + ', ';
+            } else {
+                bool = true;
+            }
+            query += `${name} = ?`;
             values.push(value);
         } else if (name === 'eventID') {
             eventID = value;
         }
     }
     query = query + ` WHERE eventID = ?;`;
+    console.log(query);
     if (values.length === 0) {
         throw new MissingParametersError();
     }
