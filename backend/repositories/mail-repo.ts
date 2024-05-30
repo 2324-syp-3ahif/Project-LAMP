@@ -22,6 +22,6 @@ export function sendMailToUser(receiver: string, message: string, subj: string):
 }
 
 export function sendInviteMail(receiver: string, link: string): void {
-    const message: string = `Hello my dear friend!\n\nYou have been invited to join a tasklist on our platform.\n Please click on the link to sign up or login.\n\n` + link + footer;
+    const message: string = `Hello my dear friend!\n\nYou have been invited to join a tasklist on our platform.\nPlease click on the link to sign up or login.\n\n` + link + footer;
     sendMailToUser(receiver, message, 'Tasklist Invitation');
 }
