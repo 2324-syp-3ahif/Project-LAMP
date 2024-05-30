@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="styles/footer.css">
     <link rel="stylesheet" href="styles/header.css">
     <link href="styles/mainPage.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/login.css">
     <link href="styles/calendar.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
@@ -31,8 +32,21 @@
 
 </div>
 
-<button id="add-event-btn" class="btn btn-info add-btn">New Event</button>
-<button id="add-task-btn" class="btn btn-info add-btn">New Task</button>
+<div id="calendar-header">
+    <div id="change-viewed-week">
+        <button class="change-viewed-week-btn" id="change-viewed-week-before">
+            <img id="arrow-left"  class="arrow" src="img/arrow.png">
+        </button>
+        <p id="week-viewed">Current-Week</p>
+        <button class="change-viewed-week-btn" id="change-viewed-week-after">
+            <img class="arrow" src="img/arrow.png">
+        </button>
+    </div>
+    <div>
+        <button id="add-event-btn" class="btn btn-info add-btn">New Event</button>
+        <button id="add-task-btn" class="btn btn-info add-btn">New Task</button>
+    </div>
+</div>
 
 <div class="popup hidden create-container" id="event-container">
     <p id="event-header">Create Event</p>
@@ -44,7 +58,7 @@
         <div class="d-flex flex-row">
             <div class="mb-2" id="date-input-event-div">
                 <label for="date-input-event" class="form-label">Date</label>
-                <input type="text" class="form-control" id="date-input-event">
+                <input type="date" class="form-control" id="date-input-event">
             </div>
             <div class="mb-2 form-check" id="fullday-input-event-div">
                 <label for="fullday-input-event" class="form-check-label">Full Day</label>
@@ -56,11 +70,11 @@
         <div class="d-flex flex-row" id="time-input-div">
             <div id="start-time-input-event-div" class="mb-2">
                 <label for="start-time-input-event" class="form-label">Start Time</label>
-                <input type="text" class="form-control" id="start-time-input-event">
+                <input type="time" class="form-control" id="start-time-input-event">
             </div>
             <div id="end-time-input-event-div" class="mb-2">
                 <label for="end-time-input-event" class="form-label">End Time</label>
-                <input type="text" class="form-control" id="end-time-input-event">
+                <input type="time" class="form-control" id="end-time-input-event">
             </div>
         </div>
         <div class="mb-2">

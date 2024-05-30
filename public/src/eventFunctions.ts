@@ -2,9 +2,23 @@ import {send} from "./sendUtils";
 import {Event} from "./model/Event";
 import { handlePageLoad } from "./loginFunctions";
 
-const events: Event[] = [];
+let events: Event[] = [];
+let helperEvents: Event[] = [];
 const mappedEvents: Map<HTMLElement, Event> = new Map();
 let selectedEvent: Event | undefined;
+
+function getWeekstart() {
+    let caldate = new Date(Date.now() + 2 * 24 * 60* 60*1000);
+    let offset = caldate.getDay();
+    if (offset === 0) {
+        offset = 7;
+    }
+
+    return new Date(caldate.valueOf() - (offset - 1) * 24 * 60 * 60 * 1000);
+}
+let caldate = getWeekstart();
+
+
 const ELEMENTS = {
     eventContainer: document.getElementById("event-container") as HTMLElement,
     eventHeader: document.getElementById("event-header") as HTMLElement,
@@ -18,7 +32,35 @@ const ELEMENTS = {
     addEventBtn: document.getElementById("add-event-btn") as HTMLButtonElement,
     addTaskBtn: document.getElementById("add-task-btn") as HTMLButtonElement,
     backDrop: document.getElementById("popupBackdrop") as HTMLDivElement,
+    changeWeekBeforeBtn: document.getElementById("change-viewed-week-before") as HTMLButtonElement,
+    changeWeekAfterBtn: document.getElementById("change-viewed-week-after") as HTMLButtonElement,
+    weekViewed: document.getElementById("week-viewed") as HTMLElement,
 }
+
+ELEMENTS.changeWeekAfterBtn.addEventListener("click", async () => {
+   caldate = new Date(caldate.valueOf() + 7 * 24 * 60 * 60 * 1000);
+    ELEMENTS.weekViewed.innerText = `${caldate.getDate()}.${caldate.getMonth() + 1}.${caldate.getFullYear()} - ${caldate.getDate() + 6}.${caldate.getMonth() + 1}.${caldate.getFullYear()}`
+    await handleWeekChange();
+});
+
+ELEMENTS.changeWeekBeforeBtn.addEventListener("click", async () => {
+    console.log("Hallo");
+    caldate = new Date(caldate.valueOf() - 7 * 24 * 60 * 60 * 1000);
+    await handleWeekChange();
+});
+
+async function handleWeekChange() {
+    ELEMENTS.weekViewed.innerText = `${caldate.getDate()}.${caldate.getMonth() + 1}.${caldate.getFullYear()} - ${caldate.getDate() + 6}.${caldate.getMonth() + 1}.${caldate.getFullYear()}`
+    const eve = mappedEvents.keys();
+    for (const value of eve) {
+        value.remove();
+        mappedEvents.delete(value);
+    }
+    helperEvents = Array.from(events);
+    await loadEvents(helperEvents);
+    events = Array.from(helperEvents);
+}
+
 
 ELEMENTS.addEventBtn.addEventListener("click", () => {
     clearEventInput();
@@ -27,7 +69,7 @@ ELEMENTS.addEventBtn.addEventListener("click", () => {
     ELEMENTS.eventContainer.classList.remove("hidden");
     ELEMENTS.backDrop.classList.remove("hidden");
 });
- 
+
 ELEMENTS.backDrop.addEventListener("click", () => {
    ELEMENTS.eventContainer.classList.add("hidden");
    ELEMENTS.backDrop.classList.add("hidden");
@@ -35,12 +77,16 @@ ELEMENTS.backDrop.addEventListener("click", () => {
 
 ELEMENTS.eventSubmitButton.addEventListener("click", async () => {
    if (ELEMENTS.eventHeader.innerText === "Create Event") {
+       let [hours, minutes, seconds] = ELEMENTS.eventStartTimeInput.value.split(':').map(Number);
+       const startDate = new Date(ELEMENTS.eventDateInput.value).setHours(hours, minutes, seconds);
+       [hours, minutes, seconds] = ELEMENTS.eventEndTimeInput.value.split(':').map(Number);
+       const endDate = new Date(ELEMENTS.eventDateInput.value).setHours(hours, minutes, seconds);
        let event: Event = {
            eventID: 0,
            name: ELEMENTS.eventNameInput.value,
            description: ELEMENTS.eventDescriptionInput.value,
-           startTime: stringToDateAsNumber(ELEMENTS.eventStartTimeInput.value, ELEMENTS.eventDateInput.value)!,
-           endTime: stringToDateAsNumber(ELEMENTS.eventEndTimeInput.value, ELEMENTS.eventDateInput.value)!,
+           startTime: startDate,
+           endTime: endDate,
            fullDay: ELEMENTS.eventFullDayInput.checked,
            userID: 0,
        };
@@ -85,17 +131,6 @@ ELEMENTS.addTaskBtn.addEventListener("click", () => {
     })
 });
 
-function getWeekstart() {
-    let caldate = new Date(Date.now() + 2 * 24 * 60* 60*1000);
-    let offset = caldate.getDay();
-    if (offset === 0) {
-        offset = 7;
-    }
-
-    return new Date(caldate.valueOf() - (offset - 1) * 24 * 60 * 60 * 1000);
-}
-let caldate = getWeekstart();
-
 window.onload = async function onload() {
     await handlePageLoad(handleEventPageLoad);
 }
@@ -108,6 +143,7 @@ async function handleEventPageLoad() {
     } else {
         alert("Error loading events");
     }
+    ELEMENTS.weekViewed.innerText = `${caldate.getDate()}.${caldate.getMonth() + 1}.${caldate.getFullYear()} - ${caldate.getDate() + 6}.${caldate.getMonth() + 1}.${caldate.getFullYear()}`
 }
 
 function addEvent(event: Event) {
