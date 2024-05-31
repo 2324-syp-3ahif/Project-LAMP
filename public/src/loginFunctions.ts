@@ -132,6 +132,7 @@ function logout(){
     localStorage.removeItem("jwt");
     localStorage.removeItem("mail");
     localStorage.removeItem("timestamp");
+    localStorage.removeItem("username");
     window.location.href = "/";
 }
 
