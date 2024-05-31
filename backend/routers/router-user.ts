@@ -80,6 +80,11 @@ userRouter.put("/:email", isAuthenticated, async (req, res) => {
         }
     });
 });
+userRouter.patch("/resetPassword", async (req, res) => {
+   const {email, password} = req.body;
+   await updateUser(email, password);
+   res.status(StatusCodes.OK).send("Password updated");
+});
 
 userRouter.delete("/:email", isAuthenticated, async (req, res) => {
     const email = req.params.email;

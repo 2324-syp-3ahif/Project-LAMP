@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import {generateTokens, verifyToken} from "./tokenUtils";
 import {isAuthenticated} from "../middleware/auth-handlers";
 import { IdAlreadyExistsError } from '../interfaces/errors/IdAlreadyExistsError';
+import {generateRandomVerificationCode, sendVerificationMail} from "../repositories/mail-repo";
 
 dotenv.config();
 export const loginRouter = express.Router();
@@ -42,6 +43,18 @@ loginRouter.post("/register", async (req, res) => {
         } else {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("An error occurred during registration.");
         }
+    }
+});
+
+loginRouter.post("/resetPassword/mail", async (req, res) => {
+   const email = req.body.email;
+    const user = await selectUserByEmail(email);
+    if (user) {
+        const code = generateRandomVerificationCode();
+        sendVerificationMail(email, code);
+        res.status(StatusCodes.OK).json({ code });
+    } else {
+        res.sendStatus(StatusCodes.NOT_FOUND);
     }
 });
 

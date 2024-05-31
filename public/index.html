@@ -123,7 +123,11 @@
                 <div class="input-box">
                     <label for="login-password"></label><input id="login-password" type="password" placeholder="Enter your password" required>
                 </div>
-
+                <p class="switch-mode-reset-password">
+                    Forgot your
+                    <a id="switch-to-reset-password">password</a>
+                    ?
+                </p>
                 <div class="input-box button">
                     <input id="login-button" type="button" value="Login">
                 </div>
@@ -145,7 +149,6 @@
                 <div class="input-box">
                     <label for="signup-password"></label><input id="signup-password" type="password" placeholder="Create password" required>
                 </div>
-
                 <div class="input-box button">
                     <input id="sign-up-button" type="button" value="Register">
                 </div>
@@ -153,6 +156,39 @@
                     Already have an account?
                     <a id="switch-to-login">Login</a>
                 </p>
+            </form>
+        </div>
+        <div class="wrapper" id="reset-password-wrapper">
+            <h2>Reset Password</h2>
+            <form action="#">
+                <div class="input-box">
+                    <label for="reset-password-email"></label><input id="reset-password-email" type="text" placeholder="Enter your email" required>
+                </div>
+                <div class="input-box button">
+                    <input id="reset-password-button" type="button" value="Reset Password">
+                </div>
+            </form>
+        </div>
+        <div class="wrapper" id="verification-code-wrapper">
+            <h2>Verification Code</h2>
+            <form action="#">
+                <div class="input-box">
+                    <label for="verification-code"></label><input id="verification-code" type="text" placeholder="Verification Code" maxlength="6" minlength="6" required>
+                </div>
+                <div class="input-box button">
+                    <input id="verification-code-button" type="button" value="Reset Password">
+                </div>
+            </form>
+        </div>
+        <div class="wrapper" id="new-password-wrapper">
+            <h2>New Password</h2>
+            <form action="#">
+                <div class="input-box">
+                    <label for="new-password"></label><input id="new-password" type="password" placeholder="Create password" required>
+                </div>
+                <div class="input-box button">
+                    <input id="new-password-button" type="button" value="Reset Password">
+                </div>
             </form>
         </div>
         <div class="wrapper" id="create-task-form">

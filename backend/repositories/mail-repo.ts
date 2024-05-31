@@ -25,3 +25,12 @@ export function sendInviteMail(receiver: string, link: string): void {
     const message: string = `Hello my dear friend!\n\nYou have been invited to join a tasklist on our platform.\nPlease click on the link to sign up or login.\n\n` + link + footer;
     sendMailToUser(receiver, message, 'Tasklist Invitation');
 }
+
+export function generateRandomVerificationCode(): string {
+    return Math.random().toString(36).substring(2, 8); // Random 6 digit code
+}
+
+export function sendVerificationMail(receiver: string, code: string): void {
+    const message: string = `Hello!\n\nYou have requested a password reset. Please enter the following code to reset your password:\n\n` + code + footer;
+    sendMailToUser(receiver, message, 'Password Reset');
+}

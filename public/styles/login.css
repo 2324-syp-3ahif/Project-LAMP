@@ -4,6 +4,15 @@
 #signup-wrapper{
     display: none;
 }
+#reset-password-wrapper{
+    display: none;
+}
+#new-password-wrapper{
+    display: none;
+}
+#verification-code-wrapper{
+    display: none;
+}
 .wrapper h2{
     position: relative;
     font-size: 22px;
@@ -88,6 +97,12 @@ form .text h3 a:hover{
     margin-left: 10px;
 }
 #switch-to-signup{
+    text-decoration: underline;
+    color: blue;
+    cursor: pointer;
+    margin-left: 10px;
+}
+#switch-to-reset-password{
     text-decoration: underline;
     color: blue;
     cursor: pointer;

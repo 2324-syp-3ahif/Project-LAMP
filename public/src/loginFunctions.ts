@@ -1,8 +1,10 @@
 import {generateWarningPopUp, send} from "./sendUtils";
+import {StatusCodes} from "http-status-codes";
 
 const ELEMENTS = {
     switchModeToLogin: document.getElementById("switch-to-login") as HTMLElement,
     switchModeToSignUp: document.getElementById("switch-to-signup") as HTMLElement,
+    switchModeToResetPassword: document.getElementById("switch-to-reset-password") as HTMLElement,
     loginWrapper: document.getElementById("login-wrapper") as HTMLElement,
     signupWrapper: document.getElementById("signup-wrapper") as HTMLElement,
     loginEmailInput: document.getElementById("login-email") as HTMLInputElement,
@@ -12,18 +14,29 @@ const ELEMENTS = {
     signUpEmailInput: document.getElementById("signup-email") as HTMLInputElement,
     signUpPasswordInput: document.getElementById("signup-password") as HTMLInputElement,
     signUpUsernameInput: document.getElementById("signup-username") as HTMLInputElement,
-    logoutButton: document.getElementById("logout-button") as HTMLElement
+    logoutButton: document.getElementById("logout-button") as HTMLElement,
+    resetPasswordWrapper: document.getElementById("reset-password-wrapper") as HTMLElement,
+    resetPasswordButton: document.getElementById("reset-password-button") as HTMLInputElement,
+    verificationCodeWrapper: document.getElementById("verification-code-wrapper") as HTMLElement,
+    verificationCodeInput: document.getElementById("verification-code") as HTMLInputElement,
+    verificationCodeButton: document.getElementById("verification-code-button") as HTMLInputElement,
+    newPasswordWrapper: document.getElementById("new-password-wrapper") as HTMLElement,
+    newPasswordInput: document.getElementById("new-password") as HTMLInputElement,
+    newPasswordButton: document.getElementById("new-password-button") as HTMLInputElement
 };
 const overlay = document.createElement("div");
 overlay.className = "overlay";
 
 ELEMENTS.switchModeToLogin.addEventListener("click", switchToLogin);
 ELEMENTS.switchModeToSignUp.addEventListener("click", switchToSignUp);
+ELEMENTS.switchModeToResetPassword.addEventListener("click", switchToResetPassword);
 ELEMENTS.signUpButton.addEventListener("click", handleSignUp);
 ELEMENTS.loginButton.addEventListener("click", handleLogin);
 ELEMENTS.loginWrapper.addEventListener("keydown", event => event.key === "Enter" && handleLogin());
 ELEMENTS.signupWrapper.addEventListener("keydown", event => event.key === "Enter" && handleSignUp());
-
+ELEMENTS.resetPasswordButton.addEventListener("click", handleResetPassword);
+ELEMENTS.verificationCodeButton.addEventListener("click", handleVerificationCode);
+ELEMENTS.newPasswordButton.addEventListener("click", handleNewPassword);
 let load = async function (mail: string): Promise<void> {
 
 }
@@ -70,6 +83,11 @@ function switchToLogin() {
 function switchToSignUp() {
     ELEMENTS.loginWrapper.style.display = "none";
     ELEMENTS.signupWrapper.style.display = "block";
+}
+function switchToResetPassword() {
+    ELEMENTS.loginWrapper.style.display = "none";
+    ELEMENTS.signupWrapper.style.display = "none";
+    ELEMENTS.resetPasswordWrapper.style.display = "block";
 }
 
 async function handleLogin(){
@@ -128,6 +146,43 @@ async function setLogoutDetails(email: string, username: string) {
     }
 }
 
+async function handleResetPassword(){
+    const email = (document.getElementById("reset-password-email") as HTMLInputElement).value;
+    const res = await send("http://localhost:2000/api/resetPassword/mail", "POST", {email});
+    if (res.ok) {
+        const { code } = await res.json();
+        localStorage.setItem('resetCode', code);
+        localStorage.setItem('resetMail', email);
+        ELEMENTS.resetPasswordWrapper.style.display = "none";
+        ELEMENTS.verificationCodeWrapper.style.display = "block";
+    } else {
+        generateWarningPopUp("User not found", res.status)
+    }
+}
+function handleVerificationCode(){
+    const code = ELEMENTS.verificationCodeInput.value;
+    const resetCode = localStorage.getItem('resetCode');
+    if (code === resetCode) {
+        ELEMENTS.verificationCodeWrapper.style.display = "none";
+        ELEMENTS.newPasswordWrapper.style.display = "block";
+    }
+    else {
+        generateWarningPopUp("Invalid code", 401);
+    }
+}
+function handleNewPassword(){
+    const newPassword = ELEMENTS.newPasswordInput.value;
+    const email = localStorage.getItem('resetMail');
+    send("http://localhost:2000/api/user/resetPassword", "PATCH", {email: email, password: newPassword}).then(res => {
+        if (res.ok) {
+            ELEMENTS.newPasswordWrapper.style.display = "none";
+            ELEMENTS.loginWrapper.style.display = "block";
+        } else {
+            generateWarningPopUp("Password reset failed", res.status)
+        }
+    });
+}
+
 function logout(){
     localStorage.removeItem("jwt");
     localStorage.removeItem("mail");
@@ -135,4 +190,3 @@ function logout(){
     localStorage.removeItem("username");
     window.location.href = "/";
 }
-
