@@ -1,10 +1,11 @@
 import {send} from "./sendUtils";
 import {Event} from "./model/Event";
 import { handlePageLoad } from "./loginFunctions";
+import {Task} from "./model/Task";
 
 let events: Event[] = [];
 let helperEvents: Event[] = [];
-const mappedEvents: Map<HTMLElement, Event> = new Map();
+const mappedEntities: Map<HTMLElement, Event> = new Map();
 let selectedEvent: Event | undefined;
 
 function getWeekstart() {
@@ -51,10 +52,10 @@ ELEMENTS.changeWeekBeforeBtn.addEventListener("click", async () => {
 
 async function handleWeekChange() {
     ELEMENTS.weekViewed.innerText = `${caldate.getDate()}.${caldate.getMonth() + 1}.${caldate.getFullYear()} - ${caldate.getDate() + 6}.${caldate.getMonth() + 1}.${caldate.getFullYear()}`
-    const eve = mappedEvents.keys();
+    const eve = mappedEntities.keys();
     for (const value of eve) {
         value.remove();
-        mappedEvents.delete(value);
+        mappedEntities.delete(value);
     }
     helperEvents = Array.from(events);
     await loadEvents(helperEvents);
@@ -76,11 +77,13 @@ ELEMENTS.backDrop.addEventListener("click", () => {
 });
 
 ELEMENTS.eventSubmitButton.addEventListener("click", async () => {
+    let [hours, minutes] = ELEMENTS.eventStartTimeInput.value.split(':').map(x => parseInt(x));
+    const startDate = new Date(ELEMENTS.eventDateInput.value).setHours(hours, minutes);
+
+    [hours, minutes] = ELEMENTS.eventEndTimeInput.value.split(':').map(x => parseInt(x));
+    const endDate = new Date(ELEMENTS.eventDateInput.value).setHours(hours, minutes);
    if (ELEMENTS.eventHeader.innerText === "Create Event") {
-       let [hours, minutes, seconds] = ELEMENTS.eventStartTimeInput.value.split(':').map(Number);
-       const startDate = new Date(ELEMENTS.eventDateInput.value).setHours(hours, minutes, seconds);
-       [hours, minutes, seconds] = ELEMENTS.eventEndTimeInput.value.split(':').map(Number);
-       const endDate = new Date(ELEMENTS.eventDateInput.value).setHours(hours, minutes, seconds);
+
        let event: Event = {
            eventID: 0,
            name: ELEMENTS.eventNameInput.value,
@@ -99,14 +102,13 @@ ELEMENTS.eventSubmitButton.addEventListener("click", async () => {
            eventID: selectedEvent?.eventID as number,
            name: ELEMENTS.eventNameInput.value !== "" ? ELEMENTS.eventNameInput.value : undefined!,
            description: ELEMENTS.eventDescriptionInput.value !== "" ? ELEMENTS.eventDescriptionInput.value : undefined!,
-           startTime: stringToDateAsNumber(ELEMENTS.eventStartTimeInput.value, ELEMENTS.eventDateInput.value)!,
-           endTime: stringToDateAsNumber(ELEMENTS.eventEndTimeInput.value, ELEMENTS.eventDateInput.value)!,
+           startTime: startDate,
+           endTime: endDate,
            fullDay: ELEMENTS.eventFullDayInput.checked,
            userID: undefined!,
        };
        const res = await send("http://localhost:2000/api/event/" + localStorage.getItem('mail'), "PUT", event);
        event = await res.json() as Event;
-       console.log(event);
        updateEvent(event);
        window.location.reload();
    }
@@ -123,12 +125,7 @@ function clearEventInput() {
 }
 
 ELEMENTS.addTaskBtn.addEventListener("click", () => {
-    events.forEach(event => {
-        if (event.name === "Luca Haas") {
-            event.name = "Hallo123";
-            updateEvent(event);
-        }
-    })
+
 });
 
 window.onload = async function onload() {
@@ -136,6 +133,11 @@ window.onload = async function onload() {
 }
 
 async function handleEventPageLoad() {
+    await getEvents();
+    ELEMENTS.weekViewed.innerText = `${caldate.getDate()}.${caldate.getMonth() + 1}.${caldate.getFullYear()} - ${caldate.getDate() + 6}.${caldate.getMonth() + 1}.${caldate.getFullYear()}`
+}
+
+async function getEvents() {
     const res = await send("http://localhost:2000/api/event/" + localStorage.getItem('mail'), "GET");
     if (res.ok) {
         const data = await res.json();
@@ -143,11 +145,40 @@ async function handleEventPageLoad() {
     } else {
         alert("Error loading events");
     }
-    ELEMENTS.weekViewed.innerText = `${caldate.getDate()}.${caldate.getMonth() + 1}.${caldate.getFullYear()} - ${caldate.getDate() + 6}.${caldate.getMonth() + 1}.${caldate.getFullYear()}`
+}
+
+async function getTasks() {
+    const res = await send("http://localhost:2000/api/task/" + localStorage.getItem('mail'), "GET");
+    if (res.ok) {
+        const data = await res.json();
+        await loadTasks(data);
+    } else {
+        alert("Error loading tasks");
+    }
+}
+function addTask(task: Task) {
+    const divToAddTo = document.getElementById("task-container") as HTMLDivElement;
+    const taskDiv = document.createElement("div");
+    taskDiv.className = "task-container";
+    const dueDate = new Date(task.dueDate);
+    taskDiv.innerHTML += `
+            <p class="task-data">${task.title}</p>
+            <hr class="parting-line">
+            <p class="task-data">${dueDate.getHours()}:${dueDate.getMinutes()}</p>
+        `;
+    divToAddTo.appendChild(taskDiv);
+
+}
+
+async function loadTasks(tasks: Task[]) {
+    tasks.forEach(task => {
+        addTask(task);
+    });
 }
 
 function addEvent(event: Event) {
     events.push(event);
+    events.sort((a, b) => a.startTime - b.startTime);
     if (event.startTime > caldate.getTime() && event.startTime < caldate.getTime() + 6 * 24 * 60 * 60 * 1000) {
         const startDate = new Date(event.startTime);
         const endDate = new Date(event.endTime);
@@ -157,9 +188,9 @@ function addEvent(event: Event) {
         eventDiv.innerHTML += `
                 <p class="calendar-entity-data">${event.name}</p>
                 <hr class="parting-line">
-                <p class="calendar-entity-data">Start: ${startDate.getHours()}:${startDate.getMinutes()}<br>End: ${endDate.getHours()}:${endDate.getMinutes()}</p>           
+                <p class="calendar-entity-data">Start: ${startDate.getHours().toString().padStart(2, '0')}:${startDate.getMinutes().toString().padStart(2, '0')}<br>End: ${endDate.getHours().toString().padStart(2, '0')}:${endDate.getMinutes().toString().padStart(2, '0')}</p>           
             `;
-        mappedEvents.set(eventDiv, event);
+        mappedEntities.set(eventDiv, event);
         divToAddTo.appendChild(eventDiv);
         divToAddTo.addEventListener("click", (sender) => {
             sender.stopPropagation();
@@ -170,19 +201,19 @@ function addEvent(event: Event) {
                     target = target.parentElement!;
                 }
             }
-            const event = mappedEvents.get(target);
-            selectedEvent = event;
+            selectedEvent = mappedEntities.get(target);
             ELEMENTS.eventHeader.innerText = "Edit Event";
             ELEMENTS.eventSubmitButton.innerText = "Edit Event";
 
             ELEMENTS.eventNameInput.value = selectedEvent?.name as string;
             ELEMENTS.eventDescriptionInput.value = selectedEvent?.description as string;
             const startTime = new Date(selectedEvent?.startTime as number);
-            ELEMENTS.eventStartTimeInput.value = `${startTime.getHours()}:${startTime.getMinutes()}`;
+            ELEMENTS.eventStartTimeInput.value = `${startTime.getHours().toString().padStart(2, '0')}:${startTime.getMinutes().toString().padStart(2, '0')}`;
             const endTime = new Date(selectedEvent?.endTime as number);
-            ELEMENTS.eventEndTimeInput.value = `${endTime.getHours()}:${endTime.getMinutes()}`;
+            ELEMENTS.eventEndTimeInput.value = `${endTime.getHours().toString().padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}`;
             ELEMENTS.eventFullDayInput.checked = !!selectedEvent?.fullDay;
-            ELEMENTS.eventDateInput.value = `${startTime.getDate()}.${startTime.getMonth() + 1}.${startTime.getFullYear()}`;
+            console.log(`${startTime.getDate().toString().padStart(2, '0')}.${(startTime.getMonth() + 1).toString().padStart(2, '0')}.${startTime.getFullYear()}`);
+            ELEMENTS.eventDateInput.value = `${startTime.getFullYear()}-${(startTime.getMonth() + 1).toString().padStart(2, '0')}-${startTime.getDate().toString().padStart(2, '0')}`;
             ELEMENTS.backDrop.classList.remove("hidden");
             ELEMENTS.eventContainer.classList.remove("hidden");
 
@@ -196,10 +227,10 @@ function updateEvent(event: Event) {
 }
 
 function deleteEvent(event: Event) {
-    for (let [key, val] of mappedEvents.entries()) {
+    for (let [key, val] of mappedEntities.entries()) {
         if (val.eventID === event.eventID) {
             key.remove();
-            mappedEvents.delete(key);
+            mappedEntities.delete(key);
             events.splice(events.indexOf(event), 1);
         }
     }
@@ -209,18 +240,4 @@ async function loadEvents(eventsLocal: Event[]) {
     eventsLocal.forEach(event => {
         addEvent(event);
     });
-}
-
-function stringToDateAsNumber(timeString: string, dateString: string) {
-    try {
-        const time = timeString.split(":").map((x) => parseInt(x)).reduce((x, y) => (x * 60 + y) * 60000);
-        const dateArray = dateString.split(".").map((x) => parseInt(x));
-        if (dateArray.length !== 3) {
-            throw new Error("Invalid date format");
-        }
-        const date = new Date(dateArray[2], dateArray[1] - 1, dateArray[0]);
-        return time + date.valueOf();
-    } catch (e) {
-        alert("Invalid time format");
-    }
 }

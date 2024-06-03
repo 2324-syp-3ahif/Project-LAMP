@@ -104,6 +104,9 @@ body {
 .calendar-entity-data {
     font-size: 0.8rem;
     margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .parting-line {
@@ -138,6 +141,7 @@ body {
 }
 
 #change-viewed-week p {
+
 }
 
 #calendar-header {

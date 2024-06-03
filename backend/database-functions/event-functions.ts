@@ -52,6 +52,11 @@ export async function insertEvent(name: string, description: string, startTime: 
 }
 
 export async function updateEvent(event: object): Promise<void> {
+    if (event !== undefined && event.hasOwnProperty('startTime')) {
+        dateSmallerNowChecker((event as Event).startTime);
+    } if (event !== undefined && event.hasOwnProperty('endTime')) {
+        dateSmallerNowChecker((event as Event).endTime);
+    }
     let query = 'UPDATE EVENTS SET ';
     let eventID: any = undefined;
     let bool = false;
@@ -79,7 +84,7 @@ export async function updateEvent(event: object): Promise<void> {
     const db = await connectToDatabase();
     const stmt = await db.prepare(query);
     await stmt.bind(...values);
-    const operationResult = await stmt.run();
+    await stmt.run();
     await stmt.finalize();
     await db.close();
 }
