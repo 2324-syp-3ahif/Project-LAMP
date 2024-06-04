@@ -1,6 +1,5 @@
 export const baseURL: string = "http://localhost:2000"
 
-
 export function generateWarningPopUp(message: string, errorCode: number): void{
     alert("Error " + errorCode + ": " + message);
 }

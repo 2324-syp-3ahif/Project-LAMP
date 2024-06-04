@@ -1,9 +1,9 @@
 import {Tasklist} from "./model/Tasklist";
-import {send} from "./sendUtils";
+import {baseURL, send} from "./sendUtils";
 import {Task} from "./model/Task";
 import {extendTasklist} from "./tasklistFunctions";
 
-const taskUrl: string = 'http://localhost:2000/api/task/';
+const taskUrl: string = baseURL + '/api/task/';
 const createForm = document.getElementById('create-task-form') as HTMLFormElement;
 const createTaskBtn = document.getElementById('submit-task-btn')
 const popupBackdrop = document.getElementById("popupBackdrop") as HTMLDivElement;
@@ -20,7 +20,7 @@ export function setClosePLS(bool: boolean){
 
 
 export async function loadTasks(taskList: Tasklist, taskContainer: HTMLDivElement){
-    const data= await send('http://localhost:2000/api/task/tasklistID/' + taskList.tasklistID, 'GET');
+    const data= await send(baseURL + '/api/task/tasklistID/' + taskList.tasklistID, 'GET');
     if(!data.ok){
         return;
     }

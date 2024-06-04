@@ -5,8 +5,8 @@ import {checkMailFormat} from "./utils";
 import {handlePageLoad} from "./loginFunctions";
 import {checkBoxes, closePLS, createNewTask, loadTasks, setClosePLS} from "./taskFuntions";
 import {User} from "./model/User";
-const tasklistUrl: string = 'http://localhost:2000/api/tasklist/';
-const tagUrl: string = 'http://localhost:2000/api/tag/';
+const tasklistUrl: string = baseURL + '/api/tasklist/';
+const tagUrl: string = baseURL + '/api/tag/';
 
 const taskLists = document.getElementById('tasklists') as HTMLElement;
 const createTasklistButton = document.getElementById('create-tasklist-btn') as HTMLButtonElement;
