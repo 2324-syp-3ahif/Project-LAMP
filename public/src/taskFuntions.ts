@@ -89,10 +89,15 @@ export async function loadTasks(taskList: Tasklist, taskContainer: HTMLDivElemen
         taskHeader.appendChild(checkBox_title_div);
         taskHeader.appendChild(date_div);
 
+        const taskDescriptionLabel = document.createElement('label');
+        taskDescriptionLabel.setAttribute('for', 'task-description');
+        taskDescriptionLabel.textContent = 'Description:';
 
-        const taskDescription = document.createElement('p');
-        taskDescription.classList.add('task-description');
+        const taskDescription = document.createElement('textarea');
+        taskDescription.setAttribute('id', 'task-description');
         taskDescription.textContent = task.description;
+
+
 
         const dropdownDiv = document.createElement('div');
         dropdownDiv.className = 'dropdown';

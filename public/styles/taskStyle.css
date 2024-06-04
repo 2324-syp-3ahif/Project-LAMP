@@ -17,10 +17,11 @@
     border-bottom-right-radius: 9px;
     border-top: 2px solid #202020;
     justify-content: space-between;
-    height: 100px;
+    height: auto;
+    min-height: 30px;
 }
 
-.task-description {
+#task-description {
     border: 1px solid #202020;
     border-radius: 9px;
     margin: 4px 10px 10px 10px;
@@ -37,7 +38,7 @@
     align-self: center;
 }
 .checked {
-    background-color: #838093;
+    background-color: #838093 !important;
     text-decoration: line-through;
 }
 .task-title {

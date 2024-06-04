@@ -14,8 +14,10 @@ import { join } from "path";
 import cookieParser from "cookie-parser";
 import {createTables} from "./database-functions/create-tables";
 
+
 const app = express();
-const port = process.env.PORT || 2000;
+export const port = process.env.PORT || 2000;
+
 
 async function startUp() {
     await createTables();
@@ -40,6 +42,6 @@ const path = join(__dirname, "../public");
 const options = { extensions: ["html", "js"] }; // , "css"
 app.use(express.static(path, options));
 
-app.listen(2000, () => {
+app.listen(port, () => {
     console.log(`Listening on http://localhost:` + port);
 });

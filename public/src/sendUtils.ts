@@ -1,7 +1,10 @@
+const baseURL: string = "http://localhost:2000"
+
 export function generateWarningPopUp(message: string, errorCode: number): void{
     alert("Error " + errorCode + ": " + message);
 }
-export const LOGIN_ROUTE = "http://localhost:2000/api/login";
+
+export const LOGIN_ROUTE = baseURL + "/api/login";
 export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", data?: object): Promise<any> {
     let options: RequestInit = {method};
     options.headers = {"Content-Type": "application/json"};
@@ -14,7 +17,7 @@ export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATC
     }
     const res = await fetch(route, options);
     if (res.status === 401 && route !== LOGIN_ROUTE) {
-        const refreshTokenRes = await fetch("http://localhost:2000/api/token/refresh", {
+        const refreshTokenRes = await fetch( baseURL + "/api/token/refresh", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             credentials: 'include' // Include cookies in the request
