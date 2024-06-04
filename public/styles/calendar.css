@@ -52,7 +52,7 @@ body {
 }
 
 .add-btn {
-    width: 10%;
+    width: 100%;
 }
 
 #calendar-container {
@@ -102,8 +102,11 @@ body {
 }
 
 .calendar-entity-data {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .parting-line {
@@ -126,4 +129,41 @@ body {
 
 #description-event-input {
     height: 8rem;
+}
+
+#change-viewed-week {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0.5rem;
+    background-color: #00c2dd;
+    border-radius: 20px;
+}
+
+#change-viewed-week p {
+
+}
+
+#calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0.5rem;
+
+}
+
+.change-viewed-week-btn {
+    height: 1.5rem;
+    border: none;
+    margin: 0 1rem;
+    background-color: #00c2dd;
+}
+
+.change-viewed-week-btn > img {
+    height: 100%;
+}
+
+
+#arrow-left {
+    transform: scaleX(-1);
 }
