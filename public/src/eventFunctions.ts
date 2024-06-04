@@ -1,4 +1,4 @@
-import {send} from "./sendUtils";
+import {baseURL, send} from "./sendUtils";
 import {Event} from "./model/Event";
 import { handlePageLoad } from "./loginFunctions";
 
@@ -74,7 +74,7 @@ async function handleEventPageLoad() {
                 fullDay: (document.getElementById("fullday-event-input") as HTMLInputElement).checked,
                 userID: 0,
             } as Event
-            await send("http://localhost:2000/api/event/" + localStorage.getItem('mail') as string, "POST", event);
+            await send(baseURL + "/api/event/" + localStorage.getItem('mail') as string, "POST", event);
             addEvent(event);
         });
 
@@ -83,7 +83,7 @@ async function handleEventPageLoad() {
 }
 
 async function loadEvents(mail: string) {
-    const resp = await send("http://localhost:2000/api/event/" + mail, "GET");
+    const resp = await send(baseURL + "/api/event/" + mail, "GET");
     if (!resp.ok) {
         alert("Error loading events");
         return;
@@ -96,7 +96,7 @@ async function loadEvents(mail: string) {
 }
 
 async function removeEvent(eventID: number) {
-    const resp = await send("http://localhost:2000/api/event/" + eventID, "DELETE");
+    const resp = await send(baseURL + "/api/event/" + eventID, "DELETE");
     if (resp.ok) {
         const event = document.getElementById("calendar-entity-" + eventID);
         if (event) {

@@ -1,4 +1,4 @@
-import {send} from './sendUtils';
+import {baseURL, send} from './sendUtils';
 import {Tasklist} from './model/Tasklist';
 import {Tag} from './model/Tag';
 import {checkMailFormat} from "./utils";
@@ -232,7 +232,7 @@ async function invite() {
         return;
     }
 
-    const user: User = await (await send("http://localhost:2000/api/user/" + emailText, 'GET')).json();
+    const user: User = await (await send(baseURL + "/api/user/" + emailText, 'GET')).json();
     console.log(user);
     globalUsersToInvite.push(user);
 
@@ -242,7 +242,7 @@ async function invite() {
     // add to array of users to invite, invite them when submit button is pushed
     /*
     const nextId = await send(tasklistUrl + "nextID", 'GET');
-    await send("http://localhost:2000/api/mail/invite/" + emailText + "/" + nextId, 'POST', {email: email});
+    await send(baseURL + "/api/mail/invite/" + emailText + "/" + nextId, 'POST', {email: email});
 
      */
 
@@ -277,7 +277,7 @@ async function createTasklist() {
     globalTasklists.push(tasklist);
 
     for(const user of globalUsersToInvite) {
-        await send("http://localhost:2000/api/mail/invite/" + user.email + "/" + tasklist.tasklistID, 'POST');
+        await send(baseURL + "/api/mail/invite/" + user.email + "/" + tasklist.tasklistID, 'POST');
     }
     globalUsersToInvite.length = 0;
 

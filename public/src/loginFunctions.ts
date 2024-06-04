@@ -1,4 +1,4 @@
-import {generateWarningPopUp, send} from "./sendUtils";
+import {baseURL, generateWarningPopUp, send} from "./sendUtils";
 
 const ELEMENTS = {
     switchModeToLogin: document.getElementById("switch-to-login") as HTMLElement,
@@ -53,7 +53,7 @@ export async function handlePageLoad(func: (mail: string) => Promise<void>) {
 }
 
 async function verifyToken(): Promise<boolean> {
-    const res = await send("http://localhost:2000/api/token/verify", "GET");
+    const res = await send(baseURL + "/api/token/verify", "GET");
     return res.ok;
 }
 
@@ -73,7 +73,7 @@ function switchToSignUp() {
 }
 
 async function handleLogin(){
-    const response = await send("http://localhost:2000/api/login", "POST", {
+    const response = await send(baseURL + "/api/login", "POST", {
         email: ELEMENTS.loginEmailInput.value,
         password: ELEMENTS.loginPasswordInput.value
     });
@@ -82,7 +82,7 @@ async function handleLogin(){
         if (accessToken) {
             localStorage.setItem('jwt', accessToken);
             localStorage.setItem('mail', ELEMENTS.loginEmailInput.value);
-            localStorage.setItem('username', await send("http://localhost:2000/api/user/" + ELEMENTS.loginEmailInput.value, "GET").then(res => res.json()).then(data => data.username) as string);
+            localStorage.setItem('username', await send(baseURL + "/api/user/" + ELEMENTS.loginEmailInput.value, "GET").then(res => res.json()).then(data => data.username) as string);
             localStorage.setItem('timestamp', new Date().getTime().toString());
             ELEMENTS.loginWrapper.style.display = "none";
             overlay.style.display = "none";
@@ -96,7 +96,7 @@ async function handleLogin(){
 }
 
 async function handleSignUp(){
-    const response = await send("http://localhost:2000/api/register", "POST", {
+    const response = await send(baseURL + "/api/register", "POST", {
         username: ELEMENTS.signUpUsernameInput.value,
         email: ELEMENTS.signUpEmailInput.value,
         password: ELEMENTS.signUpPasswordInput.value
