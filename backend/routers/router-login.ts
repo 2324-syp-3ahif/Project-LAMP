@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import {generateTokens, verifyToken} from "./tokenUtils";
 import {isAuthenticated} from "../middleware/auth-handlers";
 import { IdAlreadyExistsError } from '../interfaces/errors/IdAlreadyExistsError';
+import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
 
 dotenv.config();
 export const loginRouter = express.Router();
@@ -24,7 +25,11 @@ loginRouter.post("/login", async (req, res) => {
         res.json({ accessToken });
     } catch (e) {
         console.error(e);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("An error occurred during login.");
+        if (e instanceof IdNotFoundError) {
+            res.status(StatusCodes.NOT_FOUND).send(e.message + " was not found");
+        } else {
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("An error occurred during login.");
+        }
     }
 });
 

@@ -90,9 +90,6 @@ async function handleLogin(){
             await load(localStorage.getItem('mail') as string);
         }
     }
-    else {
-        generateWarningPopUp("Login failed", response.status)
-    }
 }
 
 async function handleSignUp(){
@@ -110,8 +107,6 @@ async function handleSignUp(){
             ELEMENTS.signupWrapper.style.display = "none";
             ELEMENTS.loginWrapper.style.display = "block";
         }
-    } else {
-        generateWarningPopUp("Sign up failed", response.status)
     }
 }
 
