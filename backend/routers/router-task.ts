@@ -72,11 +72,11 @@ taskRouter.post("/:tasklistID", /*isAuthenticated,*/ async (req, res) => {
         if (err instanceof DateExpiredError) {
             res.status(StatusCodes.BAD_REQUEST).send("Date already was!");
         } else if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("WrongID: " + err.message);
+            res.status(StatusCodes.BAD_REQUEST).send("Wrong ID");
         } else if (err instanceof DateFormatError) {
             res.status(StatusCodes.BAD_REQUEST).send("Date is wrong format!")
         } else if (err instanceof StringToLongError) {
-            res.status(StatusCodes.BAD_REQUEST).send(err.message);
+            res.status(StatusCodes.BAD_REQUEST).send("String was too long!");
         } else if (err instanceof NotAValidNumberError) {
             res.status(StatusCodes.BAD_REQUEST).send("Number was not in a valid range!");
         }
@@ -100,7 +100,7 @@ taskRouter.put("/:taskID", isAuthenticated, async (req, res) => {
         } else if (err instanceof DateFormatError) {
             res.status(StatusCodes.BAD_REQUEST).send("Date is wrong format!")
         } else if (err instanceof StringToLongError) {
-            res.status(StatusCodes.BAD_REQUEST).send(err.message);
+            res.status(StatusCodes.BAD_REQUEST).send("String was too long!");
         } else if (err instanceof NotAValidNumberError) {
             res.status(StatusCodes.BAD_REQUEST).send("Number was not in a valid range!");
         }

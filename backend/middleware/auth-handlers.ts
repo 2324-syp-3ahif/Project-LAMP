@@ -1,5 +1,6 @@
 import {NextFunction, Response, Request} from "express";
 import jwt, {JwtPayload} from "jsonwebtoken";
+
 export const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.headers['authorization']?.replace('Bearer ', '')
@@ -11,7 +12,7 @@ export const isAuthenticated = (req: Request, res: Response, next: NextFunction)
         (req as AuthRequest).payload = decoded as JwtPayload;
         next();
     } catch (err) {
-        res.status(401).send(`Please authenticate! ${err}`);
+        res.status(401).send(`Please authenticate!`);
     }
 };
 export interface AuthRequest extends Request {

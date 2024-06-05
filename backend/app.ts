@@ -13,11 +13,17 @@ import {loginRouter} from "./routers/router-login";
 import { join } from "path";
 import cookieParser from "cookie-parser";
 import {createTables} from "./database-functions/create-tables";
-
+import RateLimit from 'express-rate-limit';
+import csrf from 'lusca';
 
 const app = express();
 export const port = process.env.PORT || 2000;
 
+
+const limiter = RateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 100 // limit each IP to 100 requests per windowMs
+});
 
 async function startUp() {
     await createTables();
@@ -27,8 +33,9 @@ startUp().then(() => console.log("Tables created"));
 dotenv.config();
 app.use(cors());
 app.use(express.json());
-app.use(cookieParser());
 app.use(express.static('public'));
+app.use(limiter);
+app.use(csrf(), cookieParser());
 
 app.use("/api", loginRouter);
 app.use("/api/task", taskRouter);
