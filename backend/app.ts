@@ -33,10 +33,9 @@ startUp().then(() => console.log("Tables created"));
 dotenv.config();
 app.use(cors());
 app.use(express.json());
-app.use(cookieParser());
 app.use(express.static('public'));
 app.use(limiter);
-app.use(csrf());
+app.use(csrf(), cookieParser());
 
 app.use("/api", loginRouter);
 app.use("/api/task", taskRouter);
