@@ -18,6 +18,14 @@ import {createTables} from "./database-functions/create-tables";
 const app = express();
 export const port = process.env.PORT || 2000;
 
+import RateLimit from 'express-rate-limit';
+
+const limiter = RateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 100 // limit each IP to 100 requests per windowMs
+});
+
+app.use(limiter);
 
 async function startUp() {
     await createTables();
