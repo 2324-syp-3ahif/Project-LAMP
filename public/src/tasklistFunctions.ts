@@ -28,7 +28,6 @@ let globalMail: string = "";
 const globalUsersToInvite: User[] = [];
 
 window.onload = async function() {
-    debugger;
     await handlePageLoad(load);
 }
 

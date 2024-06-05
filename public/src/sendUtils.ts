@@ -1,7 +1,7 @@
-export const baseURL: string = "http://localhost:2000"
+export const baseURL = process.env.port == undefined ? "http://project-lamp.duckdns.org" : "http://localhost:" + process.env.port;
 
-export function generateWarningPopUp(message: string, errorCode: number): void{
-    alert("Error " + errorCode + ": " + message);
+export function generateWarningPopUp(errorCode: number, errorName: string, errorMessage: string): void {
+    alert("Error " + errorCode + ": " + errorName + "\n" + errorMessage);
 }
 
 export const LOGIN_ROUTE = baseURL + "/api/login";
@@ -28,16 +28,15 @@ export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATC
             return send(route, method, data);
         } else {
             console.error('Error:', await refreshTokenRes.text());
-            generateWarningPopUp(await refreshTokenRes.text(), refreshTokenRes.status);
+            generateWarningPopUp(refreshTokenRes.status, refreshTokenRes.statusText, await refreshTokenRes.text());
+
             // Redirect the user to the login page
             window.location.href = "/";
             return refreshTokenRes;
         }
     } else if (!res.ok) {
-        const error = await res.text();
-        console.log(res.body);
-        console.error("Error: " + error);
-        generateWarningPopUp(error, res.status);
+        console.log(res.statusText);
+        generateWarningPopUp(res.status, res.statusText, await res.text());
     }
     return res;
 }
