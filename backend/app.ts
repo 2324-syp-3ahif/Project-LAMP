@@ -13,19 +13,17 @@ import {loginRouter} from "./routers/router-login";
 import { join } from "path";
 import cookieParser from "cookie-parser";
 import {createTables} from "./database-functions/create-tables";
-
+import RateLimit from 'express-rate-limit';
+import csrf from 'lusca';
 
 const app = express();
 export const port = process.env.PORT || 2000;
 
-import RateLimit from 'express-rate-limit';
 
 const limiter = RateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     limit: 100 // limit each IP to 100 requests per windowMs
 });
-
-app.use(limiter);
 
 async function startUp() {
     await createTables();
@@ -37,6 +35,8 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static('public'));
+app.use(limiter);
+app.use(csrf());
 
 app.use("/api", loginRouter);
 app.use("/api/task", taskRouter);

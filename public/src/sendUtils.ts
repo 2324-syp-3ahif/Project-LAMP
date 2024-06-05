@@ -1,4 +1,4 @@
-export const baseURL = process.env.port == undefined ? "http://project-lamp.duckdns.org" : "http://localhost:" + process.env.port;
+export const baseURL = "http://localhost:2000";
 
 export function generateWarningPopUp(errorCode: number, errorName: string, errorMessage: string): void {
     alert("Error " + errorCode + ": " + errorName + "\n" + errorMessage);

@@ -3,9 +3,12 @@ import { sendInviteMail } from "../repositories/mail-repo";
 import {isAuthenticated} from "../middleware/auth-handlers";
 import {addCollaboratorToTasklist} from "../database-functions/usertaklist-functions";
 import jwt from 'jsonwebtoken';
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const mailRouter = express.Router();
-export const baseURL = process.env.port == undefined ? "http://project-lamp.duckdns.org" : "http://localhost:" + process.env.port;
+export const baseURL = process.env.PORT == undefined ? "http://project-lamp.duckdns.org" : "http://localhost:" + process.env.PORT;
 
 mailRouter.post("/invite/:receiver/:listID", isAuthenticated, (req, res) => {
     const receiver: string = req.params.receiver;
