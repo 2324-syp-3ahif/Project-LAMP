@@ -7,6 +7,7 @@ import {
     selectEventByEventID,
     selectEventsByEmail, updateEvent
 } from "../database-functions/event-functions";
+import escapeHtml from "escape-html";
 
 export const eventRouter = express.Router();
 
@@ -54,6 +55,6 @@ eventRouter.post("/:email", isAuthenticated, async (req, res) => {
         const eventID = await insertEvent(req.body.name, req.body.description, req.body.startTime, req.body.endTime, req.body.fullDay, req.params.email);
         res.send(await selectEventByEventID(eventID));
     } catch (e) {
-        res.status(400).send((e as Error).message);
+        res.status(400).send(escapeHtml((e as Error).message));
     }
 });

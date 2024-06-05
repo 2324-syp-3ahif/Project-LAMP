@@ -8,6 +8,7 @@ import {generateTokens, verifyToken} from "./tokenUtils";
 import {isAuthenticated} from "../middleware/auth-handlers";
 import { IdAlreadyExistsError } from '../interfaces/errors/IdAlreadyExistsError';
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
+import escapeHtml from "escape-html";
 
 dotenv.config();
 export const loginRouter = express.Router();
@@ -26,7 +27,7 @@ loginRouter.post("/login", async (req, res) => {
     } catch (e) {
         console.error(e);
         if (e instanceof IdNotFoundError) {
-            res.status(StatusCodes.NOT_FOUND).send(e.message + " was not found");
+            res.status(StatusCodes.NOT_FOUND).send(escapeHtml(e.message) + " was not found");
         } else {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("An error occurred during login.");
         }
@@ -43,7 +44,7 @@ loginRouter.post("/register", async (req, res) => {
     } catch (e) {
         console.error(e);
         if (e instanceof IdAlreadyExistsError) {
-            res.status(StatusCodes.BAD_REQUEST).send(e.message);
+            res.status(StatusCodes.BAD_REQUEST).send(escapeHtml(e.message));
         } else {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("An error occurred during registration.");
         }
