@@ -7,7 +7,6 @@ import {
     selectEventByEventID,
     selectEventsByEmail, updateEvent
 } from "../database-functions/event-functions";
-import escapeHtml from "escape-html";
 
 export const eventRouter = express.Router();
 
@@ -20,7 +19,7 @@ eventRouter.get("/:email", isAuthenticated, async (_, res) => {
         const events: Event[] = await selectEventsByEmail(_.params.email);
         res.send(events);
     } catch(e: any) {
-        res.status(400).send(escapeHtml((e as Error).message));
+        res.status(400).send("Error while selecting events.");
     }
 });
 
@@ -29,7 +28,7 @@ eventRouter.delete("/:eventID", isAuthenticated, async (req, res) => {
        await deleteEventByID(Number.parseInt(req.params.eventID));
        res.send(200);
    } catch (e) {
-         res.status(400).send(escapeHtml((e as Error).message));
+         res.status(400).send("Error while deleting event.");
    }
 });
 
@@ -38,7 +37,7 @@ eventRouter.put("/:email", isAuthenticated, async (req, res) => {
         await updateEvent(req.body);
         res.send(await selectEventByEventID(req.body.eventID));
     } catch (e) {
-        res.status(400).send(escapeHtml((e as Error).message));
+        res.status(400).send("ID not found while updating event.");
     }
 });
 
@@ -55,6 +54,6 @@ eventRouter.post("/:email", isAuthenticated, async (req, res) => {
         const eventID = await insertEvent(req.body.name, req.body.description, req.body.startTime, req.body.endTime, req.body.fullDay, req.params.email);
         res.send(await selectEventByEventID(eventID));
     } catch (e) {
-        res.status(400).send(escapeHtml((e as Error).message));
+        res.status(400).send("Could not insert event.");
     }
 });
