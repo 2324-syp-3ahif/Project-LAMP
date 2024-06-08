@@ -2,6 +2,7 @@ import {Tasklist} from "./model/Tasklist";
 import {baseURL, send} from "./sendUtils";
 import {Task} from "./model/Task";
 import {extendTasklist} from "./tasklistFunctions";
+import {taskListSocket} from "./tasklistFunctions";
 
 const taskUrl: string = baseURL + '/api/task/';
 const createForm = document.getElementById('create-task-form') as HTMLFormElement;
@@ -17,7 +18,29 @@ export function setClosePLS(bool: boolean){
 // taskOverlay.style.display = "none";
 // document.appendChild(taskOverlay);
 
+taskListSocket.on('onNewTask', async (taskListID: number, task: object) => {
+    // TODO: Implement when task creating works
+});
+taskListSocket.on('onUpdateTask', async (updatedTask: Task) => {
+    // Find the task element
+    const taskElement = document.getElementById(`task-${updatedTask.taskID}`) as HTMLElement;
 
+    // Update the task title
+    const taskTitle = taskElement.querySelector('.task-title') as HTMLHeadingElement;
+    taskTitle.textContent = updatedTask.title;
+
+    // Update the task description
+    const taskDescription = taskElement.querySelector('#task-description') as HTMLTextAreaElement;
+    taskDescription.textContent = updatedTask.description;
+
+    // Update the task priority
+    const taskPriority = taskElement.querySelector('#priority-btn') as HTMLButtonElement;
+    taskPriority.textContent = 'Priority: ' + updatedTask.priority;
+
+    // Update the task completion status
+    const taskCheckbox = taskElement.querySelector('.task-checkbox') as HTMLInputElement;
+    taskCheckbox.checked = updatedTask.isComplete !== 0;
+});
 
 export async function loadTasks(taskList: Tasklist, taskContainer: HTMLDivElement){
     const data= await send(baseURL + '/api/task/tasklistID/' + taskList.tasklistID, 'GET');
@@ -28,7 +51,7 @@ export async function loadTasks(taskList: Tasklist, taskContainer: HTMLDivElemen
 
     tasks.forEach((task: Task) => {
         const taskElement = document.createElement('div');
-
+        taskElement.id = 'task-' + task.taskID;
         //Task Header
         const taskHeader = document.createElement('div');
         taskHeader.classList.add('d-flex');
@@ -72,7 +95,7 @@ export async function loadTasks(taskList: Tasklist, taskContainer: HTMLDivElemen
                 taskHeader.classList.remove('checked')
                 taskBody.classList.remove('checked')
             }
-            await prozessCheckBox(checkBox, task);
+            await processCheckBox(checkBox, task);
         });
         const taskTitle = document.createElement('h5');
         taskTitle.classList.add('task-title');
@@ -96,6 +119,8 @@ export async function loadTasks(taskList: Tasklist, taskContainer: HTMLDivElemen
         const taskDescription = document.createElement('textarea');
         taskDescription.setAttribute('id', 'task-description');
         taskDescription.textContent = task.description;
+
+
 
 
 
@@ -132,21 +157,21 @@ export async function loadTasks(taskList: Tasklist, taskContainer: HTMLDivElemen
 
         priority1.addEventListener('click', async (event) => {
             event.stopPropagation();
-            processPriority(1, task);
+            await processPriority(1, task);
             button.textContent = 'Priority: ' + 1;
             button.click();
         });
 
         priority2.addEventListener('click', async (event) => {
             event.stopPropagation();
-            processPriority(2, task);
+            await processPriority(2, task);
             button.textContent = 'Priority: ' + 2;
             button.click();
         });
 
         priority3.addEventListener('click', async (event) => {
             event.stopPropagation();
-            processPriority(3, task);
+            await processPriority(3, task);
             button.textContent = 'Priority: ' + 3;
             button.click();
         });
@@ -172,6 +197,13 @@ export async function loadTasks(taskList: Tasklist, taskContainer: HTMLDivElemen
         taskElement.appendChild(taskBody);
         taskContainer.appendChild(taskElement);
 
+        taskDescription.addEventListener('blur', (event) => {
+            // Handle the change
+            const target = event.target as HTMLTextAreaElement;
+            task.description = target.value;
+            processDescription(task);
+        });
+
         window.addEventListener("click", (event) => {
             if (event.target !== taskBody) {
                 taskBody.classList.add('hidden');
@@ -184,6 +216,7 @@ export async function loadTasks(taskList: Tasklist, taskContainer: HTMLDivElemen
 }
 
 export async function createNewTask(tasklistID: number){
+    taskListSocket.emit('join-taskList-room', tasklistID);
     popupBackdrop.classList.remove("hidden");
     createForm.style.display = 'block';
 
@@ -222,18 +255,28 @@ async function processTask(tasklistID: number){
         priority: priority
     }
     await send(taskUrl + tasklistID, 'POST', task);
+    taskListSocket.emit('new-task', tasklistID, task);
     return;
 }
 
-function processPriority(priority: number, task: Task) {
+async function processPriority(priority: number, task: Task) {
     task.priority = priority;
-    send(taskUrl + task.taskID, 'PUT', task);
+    await send(taskUrl + task.taskID, 'PUT', task);
+    taskListSocket.emit('update-task', task);
 }
 
-async function prozessCheckBox(checkBox: HTMLInputElement, task: Task){
+async function processCheckBox(checkBox: HTMLInputElement, task: Task){
     task.isComplete = checkBox.checked ? 1 : 0;
     await send(taskUrl + task.taskID, 'PUT', task)
+    console.log(task.tasklistID);
+    taskListSocket.emit('update-task', task);
 }
+
+async function processDescription(task: Task){
+    await send(taskUrl + task.taskID, 'PUT', task);
+    taskListSocket.emit('update-task', task);
+}
+
 function formatDate(date: Date): string {
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
