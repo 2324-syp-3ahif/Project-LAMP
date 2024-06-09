@@ -1,108 +1,102 @@
 import express from "express";
 import {checkMailFormat, checkStringFormat} from "../utils";
 import {StatusCodes} from "http-status-codes";
-import {getMaxId, selectTagsByEmail, selectTagsByTasklistID} from "../database-functions/select-data";
-import {db} from "../app";
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
 import {isPlainText} from "nodemailer/lib/mime-funcs";
-import {insertTag} from "../database-functions/insert-data";
 import {Tag} from "../interfaces/model/Tag";
-import {updateTag} from "../database-functions/update-data";
 import {StringWrongFormatError} from "../interfaces/errors/StringWrongFormatError";
-import {deleteTagByID} from "../database-functions/delete-data";
+import {deleteTag, updateTag, insertTag, selectTagsByEmail, selectTagsByTasklistID} from "../database-functions/tag-functions";
 import {isAuthenticated} from "../middleware/auth-handlers";
 
 export const tagRouter = express.Router();
 
-tagRouter.get("/:param", isAuthenticated,  (req, res) => {
+tagRouter.get("/:param", isAuthenticated,  async (req, res) => {
     if (checkMailFormat(req.params.param)) {
-        selectTagsByEmail(db, req.params.param).then(tags => {
+        try {
+            const tags: Tag[] = await selectTagsByEmail(req.params.param);
             res.status(StatusCodes.OK).send(tags);
-        }).catch((err) => {
+        } catch (err: any) {
             if (err instanceof IdNotFoundError) {
-                res.status(StatusCodes.BAD_REQUEST).send("NO user found");
+                res.status(StatusCodes.BAD_REQUEST).send("No user found.");
             }
-        })
-    } else if (!isNaN(parseInt(req.params.param))){
-        selectTagsByTasklistID(db, parseInt(req.params.param)).then(tags => {
+        }
+    }
+    else if (!isNaN(parseInt(req.params.param))){
+        try {
+            const tags: Tag[] = await selectTagsByTasklistID(parseInt(req.params.param));
             res.status(StatusCodes.OK).send(tags);
-        }).catch((err) => {
+        } catch(err: any) {
             if (err instanceof IdNotFoundError) {
-                res.status(StatusCodes.BAD_REQUEST).send("NO user found");
+                res.status(StatusCodes.BAD_REQUEST).send("No user found.");
             }
-        });
+        }
     } else if (isNaN(parseInt(req.params.param))) {
-        res.status(StatusCodes.BAD_REQUEST).send("param must be a valid email address");
+        res.status(StatusCodes.BAD_REQUEST).send("Param must be a valid email address.");
     }
     else {
-        res.status(StatusCodes.BAD_REQUEST).send("param must be a valid tasklistID");
+        res.status(StatusCodes.BAD_REQUEST).send("Param must be a valid tasklistID.");
     }
 });
 
 tagRouter.post("/:email/:name", isAuthenticated, async (req, res) => {
     const email = req.params.email;
-    if (!checkMailFormat(req.params.email)) {
-        res.status(StatusCodes.BAD_REQUEST).send("email must be a valid email address");
-        return;
-    }
     const name = req.params.name;
-    if (!isPlainText(name) || name.length > 50 || name.length < 1) {
-        res.status(StatusCodes.BAD_REQUEST).send("name must be plain text and between 1 and 50 characters long");
+    if (!checkMailFormat(req.params.email)) {
+        res.status(StatusCodes.BAD_REQUEST).send("The email must be valid.");
         return;
     }
-    const tag: Tag = {
-        tagID: await getMaxId(db, 'TAGS', 'tagID') + 1,
-        name: name
+    if (!isPlainText(name) || name.length > 50 || name.length < 1) {
+        res.status(StatusCodes.BAD_REQUEST).send("The ame must be plain text and between 1 and 50 characters long.");
+        return;
     }
-    insertTag(db, name, email).then(() => {
-            res.status(StatusCodes.CREATED).send(tag);
-        }).catch((err) => {
-            if (err instanceof IdNotFoundError) {
-                res.status(StatusCodes.BAD_REQUEST).send("NO user found");
-            }
-        });
+    try {
+        const id = await insertTag(name, email);
+        res.status(StatusCodes.CREATED).send({tagID: id, name: name});
+    } catch(err: any) {
+        if (err instanceof IdNotFoundError) {
+            res.status(StatusCodes.BAD_REQUEST).send("No user found.");
+        }
+    }
 });
 
 tagRouter.put("/:tagID/:name", isAuthenticated, async (req, res) => {
     const tagID = parseInt(req.params.tagID);
-    if (isNaN(tagID) || tagID < 1) {
-        res.status(StatusCodes.BAD_REQUEST).send("tagID must be a number");
-        return;
-    }
     const name = req.params.name;
-    if (!checkStringFormat(name) || name.length > 50 || name.length < 1) {
-        res.status(StatusCodes.BAD_REQUEST).send("name must be plain text and between 1 and 50 characters long");
+    if (isNaN(tagID) || tagID < 1) {
+        res.status(StatusCodes.BAD_REQUEST).send("The tagID must be a number.");
         return;
     }
-    updateTag(db, tagID, name).then(() => {
-        const tag: Tag = {
-            tagID: tagID,
-            name: name
-        }
-        res.status(StatusCodes.OK).send(tag);
-    }).catch((err) => {
+    if (!checkStringFormat(name) || name.length > 50 || name.length < 1) {
+        res.status(StatusCodes.BAD_REQUEST).send("The name must be plain text and between 1 and 50 characters long.");
+        return;
+    }
+    try {
+        await updateTag(tagID, name);
+        res.status(StatusCodes.OK).send({tagID: tagID, name: name});
+    } catch(err: any) {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("NO user found");
+            res.status(StatusCodes.BAD_REQUEST).send("No user found.");
         }
         if (err instanceof StringWrongFormatError) {
-            res.status(StatusCodes.BAD_REQUEST).send("name must be plain text and between 1 and 50 characters long");
+            res.status(StatusCodes.BAD_REQUEST).send("The name must be plain text and between 1 and 50 characters long.");
         }
-    });
+    }
 });
 
 tagRouter.delete("/:tagID", isAuthenticated, async (req, res) => {
     const tagID = parseInt(req.params.tagID);
     if (isNaN(tagID) || tagID < 1) {
-        res.status(StatusCodes.BAD_REQUEST).send("tagID must be a number");
+        res.status(StatusCodes.BAD_REQUEST).send("The tagID must be a number.");
         return;
     }
-    deleteTagByID(db, tagID).then(() => {
+    try {
+        await deleteTag(tagID);
         res.status(StatusCodes.OK).send("tag deleted");
-    }).catch((err) => {
+    } catch(err: any) {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("NO user found");
+            res.status(StatusCodes.BAD_REQUEST).send("No user found.");
         }
-    });
+    }
 });
 
 

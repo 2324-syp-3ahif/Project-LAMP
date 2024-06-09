@@ -1,10 +1,10 @@
-import {deleteFromTable, stringLenghtCheck, updateSingleColumn} from "./util-functions";
+import {deleteFromTable, stringLengthCheck, updateSingleColumn} from "./util-functions";
 import {Tag} from "../interfaces/model/Tag";
 import {checkStringFormat} from "../utils";
 import {StringWrongFormatError} from "../interfaces/errors/StringWrongFormatError";
 import {connectToDatabase} from "./connect";
 import {selectTasklistByTasklistID} from "./tasklist-functions";
-import {selectUserByUserID} from "./user-functions";
+import {getUserID, selectUserByEmail} from "./user-functions";
 import {ConnectionToDatabaseLostError} from "../interfaces/errors/ConnectionToDatabaseLostError";
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
 
@@ -32,23 +32,23 @@ export async function selectTagByTagID(tagID: number): Promise<Tag> {
     return result;
 }
 
-export async function selectTagsByUserID(userID: number): Promise<Tag[]> {
-    await selectUserByUserID(userID);
+export async function selectTagsByEmail(email: string): Promise<Tag[]> {
+    await selectUserByEmail(email);
     const db = await connectToDatabase();
     const stmt = await db.prepare('SELECT * FROM TAGS WHERE userID = ?;');
-    await stmt.bind(userID);
+    await stmt.bind(await getUserID(email));
     const result = await stmt.all<Tag[]>();
     await stmt.finalize();
     await db.close();
     return result;
 }
 
-export async function insertTag(name: string, userID: number): Promise<number> {
-    stringLenghtCheck(name, 50, 'tagname');
-    await selectUserByUserID(userID);
+export async function insertTag(name: string, email: string): Promise<number> {
+    stringLengthCheck(name, 50, 'tagname');
+    await selectUserByEmail(email);
     const db = await connectToDatabase();
     const stmt = await db.prepare('INSERT INTO TAGS (name, userID) VALUES (?,?);');
-    await stmt.bind(name, userID);
+    await stmt.bind(name, await getUserID(email));
     try {
         const operationResult = await stmt.run();
         await stmt.finalize();

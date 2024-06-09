@@ -13,20 +13,21 @@ export async function deleteFromTable(query: string, ...params: any[]): Promise<
 }
 
 export function dateSmallerNowChecker(dueDate: number) {
-    if (dueDate <= new Date(Date.now()).valueOf()) {
-        throw new DateExpiredError("Date already happend");
+    console.log(dueDate - Date.now());
+    if (dueDate <= Date.now()) {
+        throw new DateExpiredError("Date already happened");
     }
 }
 
-export function stringLenghtCheck(field: string, length: number, causer: string) {
+export function stringLengthCheck(field: string, length: number, causer: string) {
     if (field.length > length) {
-        throw new StringToLongError(causer, `${causer} cannot have more characters than ${length}`);
+        throw new StringToLongError(`${causer} cannot have more characters than ${length}`);
     }
 }
 
-export function numberChecker(num: number, min: number, max: number, causer: string, message: string) {
-    if (num <= min || num > max) {
-        throw new NotAValidNumberError(causer, message);
+export function numberChecker(num: number, min: number, max: number, message: string) {
+    if (num < min || num > max) {
+        throw new NotAValidNumberError(message);
     }
 }
 

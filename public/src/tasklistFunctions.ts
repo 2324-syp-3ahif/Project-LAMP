@@ -1,11 +1,12 @@
-import {send} from './sendUtils';
+import {baseURL, send} from './sendUtils';
 import {Tasklist} from './model/Tasklist';
 import {Tag} from './model/Tag';
 import {checkMailFormat} from "./utils";
+import {handlePageLoad} from "./loginFunctions";
 import {checkBoxes, closePLS, createNewTask, loadTasks, setClosePLS} from "./taskFuntions";
-const tasklistUrl: string = 'http://localhost:2000/api/tasklist/';
-const tagUrl: string = 'http://localhost:2000/api/tag/';
-
+import {User} from "./model/User";
+const tasklistUrl: string = baseURL + '/api/tasklist/';
+const tagUrl: string = baseURL + '/api/tag/';
 
 const taskLists = document.getElementById('tasklists') as HTMLElement;
 const createTasklistButton = document.getElementById('create-tasklist-btn') as HTMLButtonElement;
@@ -28,6 +29,11 @@ let globalDeleteTasklistID = -1;
 let globalTasklists: Tasklist[] = [];
 let globalTags: Tag[] = [];
 let globalMail: string = "";
+const globalUsersToInvite: User[] = [];
+
+window.onload = async function() {
+    await handlePageLoad(load);
+}
 
 export async function load(mail: string) {
     const listResp = await send(tasklistUrl + "email/" + mail, 'GET');
@@ -116,10 +122,10 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
     listElement.classList.add('tasklist');
     listElement.classList.add('card-body');
     listElement.classList.add('card');
-    const titleButtonELement = document.createElement('div');
-    titleButtonELement.classList.add('d-flex')
-    titleButtonELement.classList.add('flex-row')
-    titleButtonELement.classList.add('title-newTaskButton-Div')
+    const titleButtonElement = document.createElement('div');
+    titleButtonElement.classList.add('d-flex')
+    titleButtonElement.classList.add('flex-row')
+    titleButtonElement.classList.add('title-newTaskButton-Div')
 
     const title = document.createElement('h2');
     title.innerHTML = list.title;
@@ -141,10 +147,10 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
     const description = document.createElement('p');
     description.innerHTML = list.description;
     description.classList.add("card-text");
-    titleButtonELement.appendChild(title);
-    titleButtonELement.appendChild(newTaskButton);
+    titleButtonElement.appendChild(title);
+    titleButtonElement.appendChild(newTaskButton);
 
-    listElement.appendChild(titleButtonELement);
+    listElement.appendChild(titleButtonElement);
     listElement.appendChild(description);
     listElement.appendChild(tags);
     console.log("added everything");
@@ -165,11 +171,11 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
 
 export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
     if (list.isLocked) {
-        list.isLocked = false; // just for testing purposes
+        list.isLocked = 0; // just for testing purposes
         await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
         alert('This tasklist is locked');
     } else {
-        list.isLocked = true;
+        list.isLocked = 1;
         await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
         listEl.classList.add("extended");
 
@@ -184,8 +190,6 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
         }); */
 
         const tasksEl = document.createElement('div');
-
-        // TODO: add task element like in GUI mockups
         await loadTasks(list, tasksEl);
 
         const deleteButton = document.createElement('button');
@@ -235,8 +239,8 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
                    return
                }
             });
-            listElements.forEach(listelm => {
-                if(e.target === listelm) {
+            listElements.forEach(listEl => {
+                if(e.target === listEl) {
                     return
                 }
             });
@@ -273,7 +277,7 @@ async function closeTasklist(list: Tasklist, listEl: HTMLElement, tagsEl: HTMLEl
         listEl.removeChild(deleteButton);
         listEl.classList.remove("extended");
 
-        list.isLocked = false;
+        list.isLocked = 0;
         globalTasklists[globalTasklists.findIndex((tasklist: Tasklist) => tasklist.tasklistID === list.tasklistID)] = list;
         await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
 }
@@ -291,13 +295,26 @@ async function deleteTaskList() {
 async function invite() {
     const email = document.getElementById('email-input') as HTMLInputElement;
     const emailText = email.value;
-    email.value = "";
-    if (checkMailFormat(emailText)) {
-        const nextId = await send(tasklistUrl + "nextID", 'GET');
-        await send("http://localhost:2000/api/mail/invite/" + emailText + "/" + nextId, 'POST', {email: email});
-    } else {
-        alert('Invalid email address');
+
+    if (emailText === globalMail) {
+        alert('You cannot invite yourself');
+        return;
     }
+
+    const user: User = await (await send(baseURL + "/api/user/" + emailText, 'GET')).json();
+    console.log(user);
+    globalUsersToInvite.push(user);
+
+    email.placeholder = "add another user";
+    email.value = "";
+
+    // add to array of users to invite, invite them when submit button is pushed
+    /*
+    const nextId = await send(tasklistUrl + "nextID", 'GET');
+    await send(baseURL + "/api/mail/invite/" + emailText + "/" + nextId, 'POST', {email: email});
+
+     */
+
 }
 
 async function createTasklist() {
@@ -314,19 +331,25 @@ async function createTasklist() {
         return;
     }
 
-    const tasklist: Tasklist = {
+    console.log("sorting order: " + sortingOrder);
+
+    const data = {
         title: title,
         description: description,
         priority: parseInt(priority),
-        isLocked: false,
+        isLocked: 0,
         sortingOrder: parseInt(sortingOrder),
-        email: globalMail,
-        //lastView: new Date(),
-        tasklistID: await (await send(tasklistUrl + "nextID", "GET")).json(), // let server handle this
+        email: globalMail
     };
 
-    await send(tasklistUrl + globalMail, 'POST', tasklist);
+    const tasklist: Tasklist = await (await send(tasklistUrl + globalMail, 'POST', data)).json();
     globalTasklists.push(tasklist);
+
+    for(const user of globalUsersToInvite) {
+        await send(baseURL + "/api/mail/invite/" + user.email + "/" + tasklist.tasklistID, 'POST');
+    }
+    globalUsersToInvite.length = 0;
+
     createForm.style.display = 'none';
     await showAllTasklists();
 }

@@ -1,9 +1,9 @@
-import {dateSmallerNowChecker, stringLenghtCheck} from "./util-functions";
+import {dateSmallerNowChecker, stringLengthCheck} from "./util-functions";
 import {Event} from "../interfaces/model/Event";
 import {connectToDatabase} from "./connect";
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
 import {MissingParametersError} from "../interfaces/errors/MissingParametersError";
-import {selectUserByUserID} from "./user-functions";
+import {getUserID, selectUserByEmail} from "./user-functions";
 
 export async function selectEventByEventID(eventID: number): Promise<Event> {
     const db = await connectToDatabase();
@@ -11,7 +11,7 @@ export async function selectEventByEventID(eventID: number): Promise<Event> {
     await stmt.bind(eventID);
     const result = await stmt.get<Event>();
     if (result === undefined) {
-        throw new IdNotFoundError('EVENTS', 'eventID');
+        throw new IdNotFoundError('eventID');
     }
     await stmt.finalize();
     await db.close();
@@ -19,22 +19,23 @@ export async function selectEventByEventID(eventID: number): Promise<Event> {
 }
 
 //TODO: Maybe not throw an error if the user does not exist
-export async function selectEventsByUserID(userID: number): Promise<Event[]> {
-    await selectUserByUserID(userID);
+export async function selectEventsByEmail(email: string): Promise<Event[]> {
+    await selectUserByEmail(email);
     const db = await connectToDatabase();
     const stmt = await db.prepare("SELECT * FROM EVENTS WHERE userID = ?");
-    await stmt.bind(userID);
+    await stmt.bind(await getUserID(email));
     const result = await stmt.all<Event[]>();
     await stmt.finalize();
     await db.close();
     return result;
 }
 
-export async function insertEvent(name: string, description: string, startTime: number, endTime: number, fullDay: boolean, userID: number): Promise<number> {
-    stringLenghtCheck(name, 50, 'name');
-    stringLenghtCheck(description, 255, 'description');
+export async function insertEvent(name: string, description: string, startTime: number, endTime: number, fullDay: boolean, email: string): Promise<number> {
+    stringLengthCheck(name, 50, 'name');
+    stringLengthCheck(description, 255, 'description');
     dateSmallerNowChecker(startTime);
     dateSmallerNowChecker(endTime);
+    const userID = await getUserID(email);
 
     const db = await connectToDatabase();
     const stmt = await db.prepare('INSERT INTO EVENTS (name, startTime, endTime, fullDay, description, userID) values (?1, ?2, ?3, ?4, ?5, ?6)');
@@ -44,25 +45,37 @@ export async function insertEvent(name: string, description: string, startTime: 
         console.log(operationResult);
         throw new Error('Could not insert event');
     }
+
     await stmt.finalize();
     await db.close();
     return operationResult.lastID;
 }
 
 export async function updateEvent(event: object): Promise<void> {
-    let query = 'UPDATE EVENTS SET';
+    if (event !== undefined && event.hasOwnProperty('startTime')) {
+        dateSmallerNowChecker((event as Event).startTime);
+    } if (event !== undefined && event.hasOwnProperty('endTime')) {
+        dateSmallerNowChecker((event as Event).endTime);
+    }
+    let query = 'UPDATE EVENTS SET ';
     let eventID: any = undefined;
     let bool = false;
     const values = [];
     for (const [name, value] of Object.entries(event)) {
         if (name !== 'eventID' && value !== undefined) {
-            query = query + `${bool ? "," : bool = true} ${name} = ?`;
+            if (bool) {
+                query = query + ', ';
+            } else {
+                bool = true;
+            }
+            query += `${name} = ?`;
             values.push(value);
         } else if (name === 'eventID') {
             eventID = value;
         }
     }
     query = query + ` WHERE eventID = ?;`;
+    console.log(query);
     if (values.length === 0) {
         throw new MissingParametersError();
     }
@@ -71,7 +84,7 @@ export async function updateEvent(event: object): Promise<void> {
     const db = await connectToDatabase();
     const stmt = await db.prepare(query);
     await stmt.bind(...values);
-    const operationResult = await stmt.run();
+    await stmt.run();
     await stmt.finalize();
     await db.close();
 }

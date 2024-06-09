@@ -1,6 +1,5 @@
 export class StringWrongFormatError extends Error {
-    constructor(public causer: string,
-                message?: string) {
+    constructor(message?: string) {
         super(message);
     }
 }

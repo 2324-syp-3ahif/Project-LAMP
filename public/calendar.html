@@ -8,19 +8,20 @@
           rel="stylesheet"
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
           crossorigin="anonymous">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="styles/header.css">
     <link href="styles/mainPage.css" rel="stylesheet">
-    <link href="styles/tasklistStyle.css" rel="stylesheet">
-    <link href="styles/footer.css" rel="stylesheet">
-    <link href="styles/header.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/login.css">
     <link href="styles/calendar.css" rel="stylesheet">
-    <script type="module" src="./src/tasklistFunctions.js"></script>
+    <link href="styles/login.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
-    <script type="module" src="./src/loginFunctions.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script type="module" src="./src/eventFunctions.js"></script>
+    <script type="module" src="./src/service-worker.js"></script>
     <script>
         $(function () {
             $("#header").load("./header.html");
@@ -29,48 +30,199 @@
     </script>
 </head>
 <body>
+<div id="header">
 
-<div id="time-line-container">
+</div>
 
-    <p id>17. Dec 2023 - 24. Dec 2023</p>
+<div id="calendar-header">
+    <div id="change-viewed-week">
+        <button class="change-viewed-week-btn" id="change-viewed-week-before">
+            <img id="arrow-left"  class="arrow" src="img/arrow.png">
+        </button>
+        <p id="week-viewed">Current-Week</p>
+        <button class="change-viewed-week-btn" id="change-viewed-week-after">
+            <img class="arrow" src="img/arrow.png">
+        </button>
+    </div>
+    <div>
+        <button id="add-event-btn" class="btn btn-info add-btn">New Event</button>
+        <button id="add-task-btn" class="btn btn-info add-btn">New Task</button>
+    </div>
+</div>
+
+<div class="popup hidden create-container" id="event-container">
+    <p id="event-header">Create Event</p>
+    <form>
+        <div class="mb-2">
+            <label for="name-input-event" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name-input-event">
+        </div>
+        <div class="d-flex flex-row">
+            <div class="mb-2" id="date-input-event-div">
+                <label for="date-input-event" class="form-label">Date</label>
+                <input type="date" class="form-control" id="date-input-event">
+            </div>
+            <div class="mb-2 form-check" id="fullday-input-event-div">
+                <label for="fullday-input-event" class="form-check-label">Full Day</label>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="fullday-input-event"/>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-row" id="time-input-div">
+            <div id="start-time-input-event-div" class="mb-2">
+                <label for="start-time-input-event" class="form-label">Start Time</label>
+                <input type="time" class="form-control" id="start-time-input-event">
+            </div>
+            <div id="end-time-input-event-div" class="mb-2">
+                <label for="end-time-input-event" class="form-label">End Time</label>
+                <input type="time" class="form-control" id="end-time-input-event">
+            </div>
+        </div>
+        <div class="mb-2">
+            <label for="description-input-event" class="form-label">Description</label>
+            <textarea class="form-control" id="description-input-event"></textarea>
+        </div>
+        <button type="button" class="btn btn-primary" id="submit-event-btn">Create Event</button>
+    </form>
+</div>
+
+<div class="popup hidden create-container" id="create-task-container">
+<p id="add-task-header">Create Task</p>
+<form>
+    <div class="mb-2">
+        <label for="name-task-input" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name-task-input">
+    </div>
+    <div class="d-flex flex-row">
+        <div class="mb-2" id="date-task-input-div">
+            <label for="date-task-input" class="form-label">Date</label>
+            <input type="text" class="form-control" id="date-task-input">
+        </div>
+        <div class="mb-2 form-check" id="fullday-task-input-div">
+            <label for="fullday-task-input" class="form-check-label">Full Day</label>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="fullday-task-input"/>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex flex-row" id="task-time-input-div">
+        <div id="task-start-time-input-div" class="mb-2">
+            <label for="task-start-time-input" class="form-label">Full Day</label>
+            <input type="text" class="form-control" id="task-start-time-input">
+        </div>
+        <div id="task-end-time-input-div" class="mb-2">
+            <label for="task-end-time-input" class="form-label">Full Day</label>
+            <input type="text" class="form-control" id="task-end-time-input">
+        </div>
+    </div>
+    <div class="mb-2">
+        <label for="description-task-input" class="form-label">Description</label>
+        <textarea class="form-control" id="description-task-input"></textarea>
+    </div>
+    <button type="button" class="btn btn-primary" id="submit-task-btn">Create Task</button>
+</form>
 </div>
 
 <div id="calendar-container">
-<table class="" id="calendar">
-    <thead>
-    <tr>
-        <th class="col" >Monday</th>
-        <th>Tuesday</th>
-        <th>Wednesday</th>
-        <th>Friday</th>
-        <th class="col" scope="col">Saturday</th>
-        <th class="col" scope="col">Sunday</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr style="background-color: red;">
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-    </tr>
-    <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-    </tr>
-    <tr>
-        <th class="col" scope="row">3</th>
-        <td>Larry</td>
-        <td>the Bird</td>
-        <td>@twitter</td>
-    </tr>
-    </tbody>
-</table>
+    <div id="1-column" class="day-column">
+        <div class="day-name-container">
+            <p class="day-name">Monday</p>
+        </div>
+        <div class="calendar-entities" id="calendar-entities-1">
+
+        </div>
+    </div>
+    <div id="2-column" class="day-column">
+        <div class="day-name-container">
+            <p class="day-name">Tuesday</p>
+        </div>
+        <div class="calendar-entities" id="calendar-entities-2">
+        </div>
+    </div>
+
+    <div id="3-column" class="day-column">
+        <div class="day-name-container">
+            <p class="day-name">Wednesday</p>
+        </div>
+        <div class="calendar-entities" id="calendar-entities-3">
+        </div>
+    </div>
+    <div id="4-column" class="day-column">
+        <div class="day-name-container">
+            <p class="day-name">Thursday</p>
+        </div>
+        <div class="calendar-entities" id="calendar-entities-4">
+        </div>
+    </div>
+    <div id="5-column" class="day-column">
+        <div class="day-name-container">
+            <p class="day-name">Friday</p>
+        </div>
+        <div class="calendar-entities" id="calendar-entities-5">
+        </div>
+    </div>
+    <div id="6-column" class="day-column">
+        <div class="day-name-container">
+            <p class="day-name">Saturday</p>
+        </div>
+        <div class="calendar-entities" id="calendar-entities-6">
+        </div>
+    </div>
+    <div id="0-column" class="day-column">
+        <div class="day-name-container">
+            <p class="day-name">Sunday</p>
+        </div>
+        <div class="calendar-entities" id="calendar-entities-0">
+        </div>
+</div>
 </div>
 
+<div class="wrapper" id="login-wrapper">
+    <h2>Login</h2>
+    <form action="#">
+
+        <div class="input-box">
+            <label for="login-email"></label><input id="login-email" type="text" placeholder="Enter your email" required>
+        </div>
+        <div class="input-box">
+            <label for="login-password"></label><input id="login-password" type="password" placeholder="Enter your password" required>
+        </div>
+
+        <div class="input-box button">
+            <input id="login-button" type="button" value="Login">
+        </div>
+        <p class="switch-mode-paragraph">
+            Don't have an account?
+            <a id="switch-to-signup">Sign Up</a>
+        </p>
+    </form>
+</div>
+<div class="wrapper" id="signup-wrapper">
+    <h2>Sign Up</h2>
+    <form action="#">
+        <div class="input-box">
+            <label for="signup-username"></label><input id="signup-username" type="text" placeholder="Enter a username" required>
+        </div>
+        <div class="input-box">
+            <label for="signup-email"></label><input id="signup-email" type="text" placeholder="Enter your email" required>
+        </div>
+        <div class="input-box">
+            <label for="signup-password"></label><input id="signup-password" type="password" placeholder="Create password" required>
+        </div>
+
+        <div class="input-box button">
+            <input id="sign-up-button" type="button" value="Register">
+        </div>
+        <p class="switch-mode-paragraph">
+            Already have an account?
+            <a id="switch-to-login">Login</a>
+        </p>
+    </form>
+</div>
+
+
+<div id="popupBackdrop" class="hidden"></div>
+<div id="footer"></div>
 </body>
 </html>

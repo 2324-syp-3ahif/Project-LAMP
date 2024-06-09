@@ -1,66 +1,72 @@
 import express from "express";
-import jwt, {JwtPayload} from "jsonwebtoken";
+import {JwtPayload} from "jsonwebtoken";
 import {StatusCodes} from "http-status-codes";
-import {connectToDatabase} from "../database-functions/connect";
 import bcrypt from "bcrypt";
-import {selectUserByEmail} from "../database-functions/select-data";
-import {insertUser, idFound} from "../database-functions/insert-data";
-import {StringWrongFormatError} from "../interfaces/errors/StringWrongFormatError";
+import {selectUserByEmail, insertUser} from "../database-functions/user-functions";
 import dotenv from "dotenv";
 import {generateTokens, verifyToken} from "./tokenUtils";
 import {isAuthenticated} from "../middleware/auth-handlers";
+import { IdAlreadyExistsError } from '../interfaces/errors/IdAlreadyExistsError';
+import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
+
 dotenv.config();
 export const loginRouter = express.Router();
 
 loginRouter.post("/login", async (req, res) => {
-    try{
-        const user = await selectUserByEmail(connectToDatabase(), req.body.email);
-        if(!await bcrypt.compare(req.body.password, user.hashedPassword)){
-            throw new Error("Wrong password!");
+    try {
+        const user = await selectUserByEmail(req.body.email);
+        if (user && !await bcrypt.compare(req.body.password, user.hashedPassword)) {
+            res.status(StatusCodes.UNAUTHORIZED).send("Wrong password!");
+            return;
         }
 
         const { accessToken, refreshToken } = generateTokens(user);
         res.cookie('refreshToken', refreshToken, { httpOnly: true, path: '/api/token/refresh' });
         res.json({ accessToken });
-    } catch (e){
-        res.status(StatusCodes.UNAUTHORIZED).send("Wrong password!");
+    } catch (e) {
+        console.error(e);
+        if (e instanceof IdNotFoundError) {
+            res.status(StatusCodes.NOT_FOUND).send("ID was not found");
+        } else {
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("An error occurred during login.");
+        }
     }
 });
+
 loginRouter.post("/register", async (req, res) => {
-    try{
-        await insertUser(connectToDatabase(), req.body.email, req.body.username, req.body.password);
-        const user = await selectUserByEmail(connectToDatabase(), req.body.email);
+    try {
+        await insertUser(req.body.email, req.body.username, req.body.password);
+        const user = await selectUserByEmail(req.body.email);
         const { accessToken, refreshToken } = generateTokens(user);
         res.cookie('refreshToken', refreshToken, { httpOnly: true, path: '/api/token/refresh' });
         res.status(StatusCodes.CREATED).json({ accessToken });
-    } catch (e){
-        console.log(e);
-        // TODO: also say what requirements are not met (in the frontend maybe, not here in the backend)
-        // TODO: log error in browser (what exactly went wrong e.g. password too short, email already exists, etc.)
-        res.status(StatusCodes.BAD_REQUEST).send("User already exists!");
+    } catch (e) {
+        console.error(e);
+        if (e instanceof IdAlreadyExistsError) {
+            res.status(StatusCodes.BAD_REQUEST).send("ID already exists.");
+        } else {
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("An error occurred during registration.");
+        }
     }
 });
 
 loginRouter.post('/token/refresh', async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
-    console.log(refreshToken + "is the refresh token")
     if (refreshToken) {
         try {
             const user = verifyToken(refreshToken, process.env.REFRESH_TOKEN_SECRET as string) as JwtPayload;
             if (user){
                 const { accessToken } = generateTokens({ username: user.username, email: user.email });
-                console.log(accessToken + "is the new access token")
                 res.json({ accessToken } );
             }
-
         } catch (err) {
-            res.sendStatus(403);
+            console.error(err);
+            res.sendStatus(StatusCodes.FORBIDDEN);
         }
     } else {
-        res.sendStatus(401);
+        res.sendStatus(StatusCodes.UNAUTHORIZED);
     }
 });
-
-loginRouter.get('/token/verify', isAuthenticated, (req, res) => {
-    res.sendStatus(200);
+loginRouter.get('/token/verify', isAuthenticated, (_, res) => {
+    res.sendStatus(StatusCodes.OK);
 });

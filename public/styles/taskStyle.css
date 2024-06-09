@@ -5,6 +5,31 @@
     height: 35px;
     justify-content: space-between;
 }
+.task-header-extended {
+    margin-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.task-body {
+    background: white;
+    border-bottom-left-radius: 9px;
+    border-bottom-right-radius: 9px;
+    border-top: 2px solid #202020;
+    justify-content: space-between;
+    height: auto;
+    min-height: 30px;
+}
+
+#task-description {
+    border: 1px solid #202020;
+    border-radius: 9px;
+    margin: 4px 10px 10px 10px;
+    padding: 2px;
+    height: 90%;
+    width: 50%;
+}
+
 
 .task-checkbox {
     height: 17px;
@@ -13,7 +38,7 @@
     align-self: center;
 }
 .checked {
-    background-color: #838093;
+    background-color: #838093 !important;
     text-decoration: line-through;
 }
 .task-title {
@@ -23,4 +48,18 @@
 .task-date {
     align-self: center;
     margin: 10px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#popupBackdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
 }

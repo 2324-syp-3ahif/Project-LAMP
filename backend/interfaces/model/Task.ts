@@ -4,6 +4,6 @@ export interface Task {
     dueDate: number,
     priority: number,
     description: string,
-    isComplete: boolean,
+    isComplete: number,
     tasklistID: number,
 }

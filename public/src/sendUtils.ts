@@ -1,6 +1,10 @@
-export function generateWarningPopUp(message: string, errorCode: number): void{
-    alert("Error " + errorCode + ": " + message);
+export const baseURL = "http://localhost:2000";
+
+export function generateWarningPopUp(errorCode: number, errorName: string, errorMessage: string): void {
+    alert("Error " + errorCode + ": " + errorName + "\n" + errorMessage);
 }
+
+export const LOGIN_ROUTE = baseURL + "/api/login";
 export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", data?: object): Promise<any> {
     let options: RequestInit = {method};
     options.headers = {"Content-Type": "application/json"};
@@ -12,8 +16,8 @@ export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATC
         options.body = JSON.stringify(data);
     }
     const res = await fetch(route, options);
-    if (res.status === 401) {
-        const refreshTokenRes = await fetch("http://localhost:2000/api/token/refresh", {
+    if (res.status === 401 && route !== LOGIN_ROUTE) {
+        const refreshTokenRes = await fetch( baseURL + "/api/token/refresh", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             credentials: 'include' // Include cookies in the request
@@ -24,16 +28,15 @@ export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATC
             return send(route, method, data);
         } else {
             console.error('Error:', await refreshTokenRes.text());
-            generateWarningPopUp(await refreshTokenRes.text(), refreshTokenRes.status);
+            generateWarningPopUp(refreshTokenRes.status, refreshTokenRes.statusText, await refreshTokenRes.text());
+
             // Redirect the user to the login page
             window.location.href = "/";
             return refreshTokenRes;
         }
     } else if (!res.ok) {
-        console.log(res.body);
-        console.error('Error:', await res.text());
-        generateWarningPopUp(await res.text(), res.status);
-        console.error('Error:', res.text());
+        console.log(res.statusText);
+        generateWarningPopUp(res.status, res.statusText, await res.text());
     }
     return res;
 }
