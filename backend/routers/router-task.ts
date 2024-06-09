@@ -9,8 +9,22 @@ import {NotAValidNumberError} from "../interfaces/errors/NotAValidNumberError";
 import {StatusCodes} from "http-status-codes";
 import {Task} from "../interfaces/model/Task";
 import {isAuthenticated} from "../middleware/auth-handlers";
+import {selectTasklistsByEmail} from "../database-functions/tasklist-functions";
 
 export const taskRouter = express.Router();
+
+taskRouter.get('/:email', isAuthenticated, async (req, res) => {
+    try {
+        const tasks: Task[] = [];
+        const tasklists = await selectTasklistsByEmail(req.params.email);
+        for (const tasklist of tasklists) {
+            tasks.push(...(await selectTasksByTasklistID(tasklist.tasklistID)));
+        }
+        res.send(tasks);
+    } catch(e : any) {
+        res.status(StatusCodes.BAD_REQUEST).send("Errorno  tasks found.");
+    }
+});
 
 taskRouter.get("/tasklistID/:tasklistID", isAuthenticated, async (req, res) => {
     const tasklistID = parseInt(req.params.tasklistID);

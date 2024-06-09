@@ -4,21 +4,13 @@ import { handlePageLoad } from "./loginFunctions";
 import {Task} from "./model/Task";
 
 let events: Event[] = [];
+let tasks: Task[] = [];
 let helperEvents: Event[] = [];
-const mappedEntities: Map<HTMLElement, Event> = new Map();
+let helperTasks: Task[] = [];
+const mappedEvents: Map<HTMLElement, Event> = new Map();
+const mappedTasks: Map<HTMLElement, Task> = new Map();
 let selectedEvent: Event | undefined;
-
-function getWeekstart() {
-    let caldate = new Date(Date.now() + 2 * 24 * 60* 60*1000);
-    let offset = caldate.getDay();
-    if (offset === 0) {
-        offset = 7;
-    }
-
-    return new Date(caldate.valueOf() - (offset - 1) * 24 * 60 * 60 * 1000);
-}
-let caldate = getWeekstart();
-
+let selectedTask: Task | undefined;
 
 const ELEMENTS = {
     eventContainer: document.getElementById("event-container") as HTMLElement,
@@ -38,6 +30,18 @@ const ELEMENTS = {
     weekViewed: document.getElementById("week-viewed") as HTMLElement,
 }
 
+function getWeekstart() {
+    let caldate = new Date(Date.now() + 2 * 24 * 60* 60*1000);
+    let offset = caldate.getDay();
+    if (offset === 0) {
+        offset = 7;
+    }
+
+    return new Date(caldate.valueOf() - (offset - 1) * 24 * 60 * 60 * 1000);
+}
+let caldate = getWeekstart();
+ELEMENTS.weekViewed.innerText = `${caldate.getDate()}.${caldate.getMonth() + 1}.${caldate.getFullYear()} - ${caldate.getDate() + 6}.${caldate.getMonth() + 1}.${caldate.getFullYear()}`
+console.log(caldate.valueOf());
 ELEMENTS.changeWeekAfterBtn.addEventListener("click", async () => {
    caldate = new Date(caldate.valueOf() + 7 * 24 * 60 * 60 * 1000);
     ELEMENTS.weekViewed.innerText = `${caldate.getDate()}.${caldate.getMonth() + 1}.${caldate.getFullYear()} - ${caldate.getDate() + 6}.${caldate.getMonth() + 1}.${caldate.getFullYear()}`
@@ -45,21 +49,27 @@ ELEMENTS.changeWeekAfterBtn.addEventListener("click", async () => {
 });
 
 ELEMENTS.changeWeekBeforeBtn.addEventListener("click", async () => {
-    console.log("Hallo");
     caldate = new Date(caldate.valueOf() - 7 * 24 * 60 * 60 * 1000);
     await handleWeekChange();
 });
 
 async function handleWeekChange() {
     ELEMENTS.weekViewed.innerText = `${caldate.getDate()}.${caldate.getMonth() + 1}.${caldate.getFullYear()} - ${caldate.getDate() + 6}.${caldate.getMonth() + 1}.${caldate.getFullYear()}`
-    const eve = mappedEntities.keys();
+    const eve = mappedEvents.keys();
+    const tas = mappedTasks.keys();
     for (const value of eve) {
         value.remove();
-        mappedEntities.delete(value);
+        mappedEvents.delete(value);
+    } for(const value of tas) {
+        value.remove();
+        mappedTasks.delete(value);
     }
     helperEvents = Array.from(events);
+    helperTasks = Array.from(tasks);
     await loadEvents(helperEvents);
+    await loadTasks(helperTasks);
     events = Array.from(helperEvents);
+    tasks = Array.from(helperTasks);
 }
 
 
@@ -134,6 +144,7 @@ window.onload = async function onload() {
 
 async function handleEventPageLoad() {
     await getEvents();
+    await getTasks();
     ELEMENTS.weekViewed.innerText = `${caldate.getDate()}.${caldate.getMonth() + 1}.${caldate.getFullYear()} - ${caldate.getDate() + 6}.${caldate.getMonth() + 1}.${caldate.getFullYear()}`
 }
 
@@ -153,27 +164,38 @@ async function getTasks() {
         const data = await res.json();
         await loadTasks(data);
     } else {
-        alert("Error loading tasks");
+        console.error("Error loading tasks");
     }
 }
-function addTask(task: Task) {
-    const divToAddTo = document.getElementById("task-container") as HTMLDivElement;
-    const taskDiv = document.createElement("div");
-    taskDiv.className = "task-container";
-    const dueDate = new Date(task.dueDate);
-    taskDiv.innerHTML += `
-            <p class="task-data">${task.title}</p>
-            <hr class="parting-line">
-            <p class="task-data">${dueDate.getHours()}:${dueDate.getMinutes()}</p>
-        `;
-    divToAddTo.appendChild(taskDiv);
 
-}
-
-async function loadTasks(tasks: Task[]) {
-    tasks.forEach(task => {
+async function loadTasks(tasksLocal: Task[]) {
+    tasksLocal.forEach(task => {
         addTask(task);
     });
+}
+
+async function loadEvents(eventsLocal: Event[]) {
+    eventsLocal.forEach(event => {
+        addEvent(event);
+    });
+}
+
+function addTask(task: Task) {
+    if (task.dueDate >= caldate.getTime() && task.dueDate < caldate.getTime() + 6 * 24 * 60 * 60 * 1000) {
+        const time: Date = new Date(task.dueDate);
+        const divToAddTo = document.getElementById(`calendar-entities-${time.getDay()}`) as HTMLDivElement;
+        const taskDiv = document.createElement("div");
+        taskDiv.className = "calendar-entity task-container";
+        const dueDate = new Date(task.dueDate);
+        taskDiv.innerHTML += `
+                <p class="task-data">${task.title}</p>
+                <hr class="parting-line">
+                <p class="task-data">${dueDate.getHours()}:${dueDate.getMinutes()}</p>
+            `;
+        divToAddTo.appendChild(taskDiv);
+        mappedTasks.set(taskDiv, task);
+        tasks.push(task);
+    }
 }
 
 function addEvent(event: Event) {
@@ -190,7 +212,7 @@ function addEvent(event: Event) {
                 <hr class="parting-line">
                 <p class="calendar-entity-data">Start: ${startDate.getHours().toString().padStart(2, '0')}:${startDate.getMinutes().toString().padStart(2, '0')}<br>End: ${endDate.getHours().toString().padStart(2, '0')}:${endDate.getMinutes().toString().padStart(2, '0')}</p>           
             `;
-        mappedEntities.set(eventDiv, event);
+        mappedEvents.set(eventDiv, event);
         divToAddTo.appendChild(eventDiv);
         divToAddTo.addEventListener("click", (sender) => {
             sender.stopPropagation();
@@ -201,7 +223,7 @@ function addEvent(event: Event) {
                     target = target.parentElement!;
                 }
             }
-            selectedEvent = mappedEntities.get(target);
+            selectedEvent = mappedEvents.get(target);
             ELEMENTS.eventHeader.innerText = "Edit Event";
             ELEMENTS.eventSubmitButton.innerText = "Edit Event";
 
@@ -226,18 +248,28 @@ function updateEvent(event: Event) {
     addEvent(event);
 }
 
+function updateTask(task: Task) {
+    deleteTask(task);
+    addTask(task);
+}
+
 function deleteEvent(event: Event) {
-    for (let [key, val] of mappedEntities.entries()) {
+    for (let [key, val] of mappedEvents.entries()) {
         if (val.eventID === event.eventID) {
             key.remove();
-            mappedEntities.delete(key);
+            mappedEvents.delete(key);
             events.splice(events.indexOf(event), 1);
         }
     }
 }
 
-async function loadEvents(eventsLocal: Event[]) {
-    eventsLocal.forEach(event => {
-        addEvent(event);
-    });
+function deleteTask(task: Task) {
+    for (let [key, val] of mappedTasks.entries()) {
+        if (val.taskID === task.taskID) {
+            key.remove();
+            mappedTasks.delete(key);
+            tasks.splice(tasks.indexOf(task), 1);
+        }
+    }
 }
+
