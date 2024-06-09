@@ -163,6 +163,7 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
     }); */
 
     const tasksEl = document.createElement('div');
+    tasksEl.id = "taskListTasks-" + list.tasklistID;
     await loadTasks(list, tasksEl);
 
     const deleteButton = document.createElement('button');
