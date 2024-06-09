@@ -51,9 +51,9 @@ export async function load(mail: string) {
 
     const orderViewButton = document.getElementById('order-view') as HTMLButtonElement;
     orderViewButton.addEventListener('click', async () => {
-        /*lists.sort((a: Tasklist, b: Tasklist) => {
-            //return b.lastView.getTime() - a.lastView.getTime();
-        });*/
+        globalTasklists.sort((a: Tasklist, b: Tasklist) => {
+            return b.lastViewed - a.lastViewed;
+        });
         await showAllTasklists();
     });
 
@@ -154,6 +154,8 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
         alert('This tasklist is locked');
     } else {
         list.isLocked = 1;
+        list.lastViewed = Date.now();
+
         await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
         listEl.classList.add("extended");
 
@@ -357,8 +359,6 @@ async function createTasklist() {
         return;
     }
 
-    console.log("sorting order: " + sortingOrder);
-
     const data = {
         title: title,
         description: description,
@@ -380,6 +380,13 @@ async function createTasklist() {
     await showAllTasklists();
 }
 
+document.addEventListener('mousedown', handleClickOutside);
+
+function handleClickOutside(event: MouseEvent) {
+    if (createForm && !createForm.contains(event.target as Node)) {
+        createForm.style.display = "none";
+    }
+}
 
 async function filterTasklists() {
     const filterTagsList = document.getElementById('filter-tags-list') as HTMLElement;
