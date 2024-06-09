@@ -58,7 +58,7 @@ body {
 
 #filter-btn:hover {
     background-color: #EEEEEE !important;
-    color: #00C2DD !important;
+    color: #3aafa9 !important;
     border: solid 2px #3751AD;
 }
 
@@ -141,6 +141,15 @@ body {
     margin-bottom: 20px;
 }
 
+#filter-tags-modal {
+    display: flex;
+    flex-direction: column;
+    color: #EEEEEE;
+}
+
+#filter-tags-modal .active {
+    background-color: #3aafa9;
+}
 
 /* Task */
 .TaskOverlay{

@@ -379,21 +379,22 @@ async function createTasklist() {
     await showAllTasklists();
 }
 
+const activeFilters: Tag[] = [];
+
 async function filterTasklists() {
     console.log('filter');
     const activeFilters: Tag[] = [];
     for (const tag of globalTags) {
-        const tagElement = document.createElement('button');
-        tagElement.classList.add('tag-btn');
-        tagElement.classList.add('btn');
-        tagElement.innerHTML = tag.name;
-        tagElement.addEventListener('click', async () => {
-            if (tagElement.classList.contains('active')) {
-                tagElement.classList.remove('active');
-                activeFilters.splice(activeFilters.indexOf(tag), 1);
-            } else {
+        const tagElement = document.createElement('div');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.addEventListener('change', async () => {
+            if (checkbox.checked) {
                 tagElement.classList.add('active');
                 activeFilters.push(tag);
+            } else {
+                tagElement.classList.remove('active');
+                activeFilters.splice(activeFilters.indexOf(tag), 1);
             }
             for (const list of globalTasklists) {
                 taskLists.innerHTML = "";
@@ -405,6 +406,8 @@ async function filterTasklists() {
                 }
             }
         });
+        tagElement.appendChild(checkbox);
+        tagElement.appendChild(document.createTextNode(" " + tag.name));
         filterTagsModal.appendChild(tagElement);
     }
 }
