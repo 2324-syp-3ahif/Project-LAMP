@@ -193,13 +193,12 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
 }
 
 async function closeTasklist(list: Tasklist, listEl: HTMLElement, tasksEl: HTMLElement, deleteButton: HTMLElement) {
-        listEl.removeChild(tasksEl);
-        listEl.removeChild(deleteButton);
-        listEl.classList.remove("extended");
-
-        list.isLocked = 0;
-        globalTasklists[globalTasklists.findIndex((tasklist: Tasklist) => tasklist.tasklistID === list.tasklistID)] = list;
-        await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
+    listEl.removeChild(tasksEl);
+    listEl.removeChild(deleteButton);
+    listEl.classList.remove("extended");
+    list.isLocked = 0;
+    globalTasklists[globalTasklists.findIndex((tasklist: Tasklist) => tasklist.tasklistID === list.tasklistID)] = list;
+    await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
 }
 
 async function deleteTaskList() {
@@ -222,19 +221,10 @@ async function invite() {
     }
 
     const user: User = await (await send(baseURL + "/api/user/" + emailText, 'GET')).json();
-    console.log(user);
     globalUsersToInvite.push(user);
 
     email.placeholder = "add another user";
     email.value = "";
-
-    // add to array of users to invite, invite them when submit button is pushed
-    /*
-    const nextId = await send(tasklistUrl + "nextID", 'GET');
-    await send(baseURL + "/api/mail/invite/" + emailText + "/" + nextId, 'POST', {email: email});
-
-     */
-
 }
 
 async function createTasklist() {
@@ -281,7 +271,6 @@ function handleClickOutside(event: MouseEvent) {
 }
 
 async function filterTasklists() {
-    console.log('filter');
     const activeFilters: Tag[] = [];
     for (const tag of globalTags) {
         const tagElement = document.createElement('button');

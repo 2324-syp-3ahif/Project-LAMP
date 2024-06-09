@@ -213,7 +213,6 @@ async function processTask(tasklistID: number){
     //     alert('Time has wrong format')
     //     return;
     // }
-    console.log(`date: ${date}`);
     const task: object = {
         title: title,
         date: date,
@@ -248,10 +247,7 @@ function stringToDateAsNumber(timeString: string, dateString: string) {
     if (dateArray.length !== 3) {
         throw new Error("Invalid date format");
     }
-    console.log(dateArray[2], dateArray[1], dateArray[0]);
     const date = new Date(dateArray[2], dateArray[1] - 1, dateArray[0]);
-    console.log(time);
-    console.log(time + date.valueOf());
     return time + date.valueOf();
 }
 

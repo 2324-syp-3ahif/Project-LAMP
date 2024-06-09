@@ -45,7 +45,6 @@ ELEMENTS.changeWeekAfterBtn.addEventListener("click", async () => {
 });
 
 ELEMENTS.changeWeekBeforeBtn.addEventListener("click", async () => {
-    console.log("Hallo");
     caldate = new Date(caldate.valueOf() - 7 * 24 * 60 * 60 * 1000);
     await handleWeekChange();
 });
@@ -115,7 +114,6 @@ ELEMENTS.eventSubmitButton.addEventListener("click", async () => {
 });
 
 function clearEventInput() {
-    console.log("Hallo");
     ELEMENTS.eventNameInput.value = "";
     ELEMENTS.eventDescriptionInput.value = "";
     ELEMENTS.eventDateInput.value = "";
@@ -212,11 +210,9 @@ function addEvent(event: Event) {
             const endTime = new Date(selectedEvent?.endTime as number);
             ELEMENTS.eventEndTimeInput.value = `${endTime.getHours().toString().padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}`;
             ELEMENTS.eventFullDayInput.checked = !!selectedEvent?.fullDay;
-            console.log(`${startTime.getDate().toString().padStart(2, '0')}.${(startTime.getMonth() + 1).toString().padStart(2, '0')}.${startTime.getFullYear()}`);
             ELEMENTS.eventDateInput.value = `${startTime.getFullYear()}-${(startTime.getMonth() + 1).toString().padStart(2, '0')}-${startTime.getDate().toString().padStart(2, '0')}`;
             ELEMENTS.backDrop.classList.remove("hidden");
             ELEMENTS.eventContainer.classList.remove("hidden");
-
         });
     }
 }

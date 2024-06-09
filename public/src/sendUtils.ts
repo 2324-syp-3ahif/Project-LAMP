@@ -35,7 +35,6 @@ export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATC
             return refreshTokenRes;
         }
     } else if (!res.ok) {
-        console.log(res.statusText);
         generateWarningPopUp(res.status, res.statusText, await res.text());
     }
     return res;

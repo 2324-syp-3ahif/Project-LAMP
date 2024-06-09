@@ -25,7 +25,6 @@ async function createTasksTable() {
           FOREIGN KEY(userID) REFERENCES USERS(userID),
           FOREIGN KEY(tasklistID) REFERENCES TASKLISTS(tasklistID)
           ) strict;`);
-    console.log('Successfully created TASKS ');
     await db.close();
 }
 
@@ -44,7 +43,6 @@ async function createTasklistsTable() {
           creationDate INTEGER,
           FOREIGN KEY(userID) REFERENCES USERS(userID)
           ) strict;`);
-    console.log('Successfully created TASKLISTS ');
     await db.close();
 }
 
@@ -57,7 +55,6 @@ async function createTagsTable() {
           userID INTEGER,
           FOREIGN KEY(userID) REFERENCES USERS(userID)
         ) strict;`);
-    console.log('Successfully created TAGS ');
     await db.close();
 }
 
@@ -70,7 +67,6 @@ async function createTagTasklistsTable() {
           FOREIGN KEY(tasklistID) REFERENCES TASKLISTS(tasklistID),
           FOREIGN KEY(tagID) REFERENCES TAGS(tagID)
           ) strict;`);
-    console.log('Successfully created TAGTASKLISTS ');
     await db.close();
 }
 
@@ -83,7 +79,6 @@ async function createUserTasklistTable() {
             FOREIGN KEY(tasklistID) REFERENCES TASKLISTS(tasklistID),
             FOREIGN KEY(userID) REFERENCES USERS(userID)
           ) strict;`);
-    console.log('Successfully created USERTASKLISTS ');
     await db.close();
 }
 
@@ -96,7 +91,6 @@ async function createUsersTable() {
             hashedPassword TEXT,
             email TEXT UNIQUE
           ) strict;`);
-    console.log('Successfully created USERS ');
     await db.close();
 }
 
@@ -113,6 +107,5 @@ async function createEventsTable() {
             userID INTEGER NOT NULL,  
 	    FOREIGN KEY(userID) REFERENCES USERS(userID)
           ) strict;`);
-    console.log('Successfully created EVENTS ');
     await db.close();
 }
