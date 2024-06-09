@@ -89,11 +89,8 @@ export async function load(mail: string) {
 
 async function showAllTasklists() {
     taskLists.innerHTML = "";
+    taskListSocket.emit('join-taskList-rooms', globalTasklists.map((list: Tasklist) => list.tasklistID));
     for (const list of globalTasklists) {
-        const collaboratorIDs = await send(tasklistUrl + 'collaborators/count/' + list.tasklistID, 'GET') as number;
-        if (collaboratorIDs > 1) {
-            taskListSocket.emit('join-taskList-room', list.tasklistID);
-        }
         const listEl: HTMLElement = await showTasklist(list);
         taskLists.appendChild(listEl);
     }

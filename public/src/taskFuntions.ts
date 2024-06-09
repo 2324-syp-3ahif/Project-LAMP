@@ -200,8 +200,10 @@ export async function loadTasks(taskList: Tasklist, taskContainer: HTMLDivElemen
         taskDescription.addEventListener('blur', (event) => {
             // Handle the change
             const target = event.target as HTMLTextAreaElement;
-            task.description = target.value;
-            processDescription(task);
+            if (task.description !== target.value){
+                task.description = target.value;
+                processDescription(task);
+            }
         });
 
         window.addEventListener("click", (event) => {

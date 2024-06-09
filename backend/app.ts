@@ -57,8 +57,8 @@ const options = { extensions: ["html", "js"] }; // , "css"
 app.use(express.static(path, options));
 
 io.on('connection', async (socket) => {
-   socket.on('join-taskList-room', (taskListID: number) => {
-        socket.join(taskListID.toString());
+   socket.on('join-taskList-rooms', (taskListIDs: string[]) => {
+        socket.join(taskListIDs);
    });
     socket.on('delete-taskList', (taskListID: number) => {
         socket.to(taskListID.toString()).emit('onDeletedTaskList', taskListID);
