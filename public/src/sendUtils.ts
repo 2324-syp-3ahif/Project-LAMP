@@ -8,6 +8,13 @@ export function generateWarningPopUp(errorCode: number, errorName: string, error
 
 export const LOGIN_ROUTE = baseURL + "/api/login";
 export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", data?: object): Promise<any> {
+    let options: RequestInit = setupOptions(method, data);
+    const res = await fetch(route, options);
+    return handleResponse(res, route, method, data);
+}
+
+
+function setupOptions(method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", data?: object): RequestInit {
     let options: RequestInit = {method};
     options.headers = {"Content-Type": "application/json"};
     const jwt = localStorage.getItem('jwt');
@@ -17,44 +24,57 @@ export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATC
     if (data) {
         options.body = JSON.stringify(data);
     }
-    const res = await fetch(route, options);
+    return options;
+}
+
+async function handleResponse(res: Response, route: string, method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", data?: object): Promise<any> {
     if (res.status === 429) {
-        const retryAfter = res.headers.get('Retry-After');
-        const delay = retryAfter ? parseInt(retryAfter) * 1000 : Math.pow(2, retryCount) * 1000;
-        retryCount++;
-        return new Promise((resolve) => {
-           setTimeout(async () => {
-               const result = await send(route, method, data);
-                resolve(result);
-           }, delay);
-        });
+        return handleRateLimit(res, route, method, data);
     }
     else if (res.status === 401 && route !== LOGIN_ROUTE) {
-        retryCount = 0;
-        const refreshTokenRes = await fetch( baseURL + "/api/token/refresh", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            credentials: 'include' // Include cookies in the request
-        });
-        if (refreshTokenRes.ok) {
-            const newToken = await refreshTokenRes.json();
-            localStorage.setItem('jwt', newToken.accessToken);
-            return send(route, method, data);
-        } else {
-            const errorMessage = await refreshTokenRes.text();
-            console.error('Error:', errorMessage);
-            // generateWarningPopUp(refreshTokenRes.status, refreshTokenRes.statusText, errorMessage);
-
-            logout();
-            // Redirect the user to the login page
-            window.location.href = "/";
-            return refreshTokenRes;
-        }
+        return handleUnauthorized(res, route, method, data);
     } else if (!res.ok) {
-        retryCount = 0;
-        console.log(res.statusText);
-        generateWarningPopUp(res.status, res.statusText, await res.text());
+        return handleUnsuccessfulResponse(res);
     }
     retryCount = 0;
     return res;
+}
+
+async function handleRateLimit(res: Response, route: string, method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", data?: object): Promise<any> {
+    const retryAfter = res.headers.get('Retry-After');
+    const delay = retryAfter ? parseInt(retryAfter) * 1000 : Math.pow(2, retryCount) * 1000;
+    retryCount++;
+    return new Promise((resolve) => {
+        setTimeout(async () => {
+            const result = await send(route, method, data);
+            resolve(result);
+        }, delay);
+    });
+}
+
+async function handleUnauthorized(res: Response, route: string, method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", data?: object): Promise<any> {
+    retryCount = 0;
+    const refreshTokenRes = await fetch( baseURL + "/api/token/refresh", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        credentials: 'include' // Include cookies in the request
+    });
+    if (refreshTokenRes.ok) {
+        const newToken = await refreshTokenRes.json();
+        localStorage.setItem('jwt', newToken.accessToken);
+        return send(route, method, data);
+    } else {
+        const errorMessage = await refreshTokenRes.text();
+        console.error('Error:', errorMessage);
+        logout();
+        // Redirect the user to the login page
+        window.location.href = "/";
+        return refreshTokenRes;
+    }
+}
+
+async function handleUnsuccessfulResponse(res: Response): Promise<any> {
+    retryCount = 0;
+    console.log(res.statusText);
+    generateWarningPopUp(res.status, res.statusText, await res.text());
 }
