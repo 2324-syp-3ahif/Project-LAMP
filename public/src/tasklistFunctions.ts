@@ -1,7 +1,6 @@
 import {baseURL, send} from './sendUtils';
 import {Tasklist} from './model/Tasklist';
 import {Tag} from './model/Tag';
-import {checkMailFormat} from "./utils";
 import {handlePageLoad} from "./loginFunctions";
 import {checkBoxes, closePLS, createNewTask, loadTasks, setClosePLS} from "./taskFuntions";
 import {User} from "./model/User";
@@ -10,18 +9,7 @@ const tagUrl: string = baseURL + '/api/tag/';
 
 const taskLists = document.getElementById('tasklists') as HTMLElement;
 const createTasklistButton = document.getElementById('create-tasklist-btn') as HTMLButtonElement;
-const globalTagsButton = document.getElementById('show-global-tags-btn') as HTMLButtonElement;
-const orderPriorityButton = document.getElementById('order-priority') as HTMLButtonElement;
-const orderViewButton = document.getElementById('order-view') as HTMLButtonElement;
-const orderCreateButton = document.getElementById('order-creation') as HTMLButtonElement;
-const filterButton = document.getElementById('filter-btn') as HTMLButtonElement;
 const createForm = document.getElementById('create-tasklist-form') as HTMLFormElement;
-const submitButton = document.getElementById('submit-tasklist-btn') as HTMLButtonElement;
-const inviteUserBtn = document.getElementById('invite-user-btn') as HTMLButtonElement;
-const deleteTasklistBtn = document.getElementById('delete-tasklist-btn') as HTMLButtonElement;
-const deleteModal = document.getElementById('delete-modal') as HTMLElement;
-const addTagsButton = document.getElementById('add-tags-btn') as HTMLButtonElement;
-const globalTagsList = document.getElementById('global-tags-list') as HTMLElement;
 
 export let listElements: HTMLInputElement[] = [];
 let globalDeleteTasklistID = -1;
@@ -29,6 +17,7 @@ let globalTasklists: Tasklist[] = [];
 let globalTags: Tag[] = [];
 let globalMail: string = "";
 const globalUsersToInvite: User[] = [];
+const globalActiveFilters: Tag[] = [];
 
 window.onload = async function() {
     await handlePageLoad(load);
@@ -52,6 +41,7 @@ export async function load(mail: string) {
         createForm.style.display = 'flex';
     });
 
+    const orderPriorityButton = document.getElementById('order-priority') as HTMLButtonElement;
     orderPriorityButton.addEventListener('click', async () => {
         globalTasklists.sort((a: Tasklist, b: Tasklist) => {
             return b.priority - a.priority;
@@ -59,6 +49,7 @@ export async function load(mail: string) {
         await showAllTasklists();
     });
 
+    const orderViewButton = document.getElementById('order-view') as HTMLButtonElement;
     orderViewButton.addEventListener('click', async () => {
         /*lists.sort((a: Tasklist, b: Tasklist) => {
             //return b.lastView.getTime() - a.lastView.getTime();
@@ -66,6 +57,7 @@ export async function load(mail: string) {
         await showAllTasklists();
     });
 
+    const orderCreateButton = document.getElementById('order-creation') as HTMLButtonElement;
     orderCreateButton.addEventListener('click', async () => {
         globalTasklists.sort((a: Tasklist, b: Tasklist) => {
             return a.tasklistID - b.tasklistID;
@@ -73,15 +65,29 @@ export async function load(mail: string) {
         await showAllTasklists();
     });
 
+    addListeners();
+}
+
+function addListeners() {
+    const globalTagsButton = document.getElementById('show-global-tags-btn') as HTMLButtonElement;
     globalTagsButton.addEventListener('click', showEditGlobalTags);
-    deleteTasklistBtn.addEventListener('click', deleteTaskList);
-    submitButton.addEventListener('click', createTasklist);
-    inviteUserBtn.addEventListener('click', invite);
+
+    const filterButton = document.getElementById('filter-btn') as HTMLButtonElement;
     filterButton.addEventListener('click', filterTasklists);
+
+    const submitButton = document.getElementById('submit-tasklist-btn') as HTMLButtonElement;
+    submitButton.addEventListener('click', createTasklist);
+
+    const inviteUserBtn = document.getElementById('invite-user-btn') as HTMLButtonElement;
+    inviteUserBtn.addEventListener('click', invite);
+
+    const deleteTasklistBtn = document.getElementById('delete-tasklist-btn') as HTMLButtonElement;
+    deleteTasklistBtn.addEventListener('click', deleteTaskList);
 
     const addTagBtn = document.getElementById('add-tag-btn') as HTMLButtonElement;
     addTagBtn.addEventListener('click', addTag);
 }
+
 
 async function showAllTasklists() {
     taskLists.innerHTML = "";
@@ -128,7 +134,7 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
     listElement.appendChild(description);
     listElement.appendChild(tags);
     listElement.addEventListener('click', (e) => {
-        if (listElement.classList.contains("extended") || e.target === deleteTasklistBtn){
+        if (listElement.classList.contains("extended")){
             return;
         }
         checkBoxes.forEach(checkbox => {
@@ -262,7 +268,7 @@ async function addTag() {
 }
 
 async function showEditGlobalTags() {
-    console.log(globalTags);
+    const globalTagsList = document.getElementById('global-tags-list') as HTMLElement;
     globalTagsList.innerHTML = "";
     globalTags.forEach((tag: Tag) => {
         const tagElement = document.createElement('input');
@@ -300,11 +306,13 @@ async function closeTasklist(list: Tasklist, listEl: HTMLElement, tasksEl: HTMLE
         await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
 }
 
-async function deleteTaskList() {
+async function deleteTaskList(e: Event) {
+    e.stopPropagation();
     if (globalDeleteTasklistID !== -1) {
         globalTasklists.splice(globalTasklists.findIndex((list: Tasklist) => list.tasklistID === globalDeleteTasklistID), 1);
         await send(tasklistUrl + globalDeleteTasklistID, 'DELETE');
         globalDeleteTasklistID = -1;
+        const deleteModal = document.getElementById('delete-modal') as HTMLElement;
         deleteModal.style.display = "hide";
         await showAllTasklists();
     }
@@ -372,32 +380,32 @@ async function createTasklist() {
     await showAllTasklists();
 }
 
-const activeFilters: Tag[] = [];
 
 async function filterTasklists() {
     const filterTagsList = document.getElementById('filter-tags-list') as HTMLElement;
-    const activeFilters: Tag[] = [];
     filterTagsList.innerHTML = "";
+
     for (const tag of globalTags) {
         const tagElement = document.createElement('div');
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
+        checkbox.checked = globalActiveFilters.some((activeTag: Tag) => activeTag.tagID === tag.tagID);
         checkbox.addEventListener('change', async () => {
             if (checkbox.checked) {
                 tagElement.classList.add('active');
-                activeFilters.push(tag);
+                globalActiveFilters.push(tag);
             } else {
                 tagElement.classList.remove('active');
-                activeFilters.splice(activeFilters.indexOf(tag), 1);
+                globalActiveFilters.splice(globalActiveFilters.indexOf(tag), 1);
             }
+            taskLists.innerHTML = "";
             for (const list of globalTasklists) {
-                taskLists.innerHTML = "";
                 const tagsOfList: Tag[] = await (await send(tagUrl + list.tasklistID, 'GET')).json();
-                if (activeFilters.length === 0) {
+                if (globalActiveFilters.length === 0) {
                     await showAllTasklists();
                 } else {
                     let showCurrent = true;
-                    for (const filterTag of activeFilters) {
+                    for (const filterTag of globalActiveFilters) {
                         if (!tagInTasklistTags(filterTag.tagID, tagsOfList)) {
                             showCurrent = false;
                         }
@@ -415,11 +423,4 @@ async function filterTasklists() {
     }
 }
 
-function tagInTasklistTags(tagID: number, tasklistTags: Tag[]): boolean {
-    for (const tasklistTag of tasklistTags) {
-        if (tasklistTag.tagID === tagID) {
-            return true;
-        }
-    }
-    return false;
-}
+const tagInTasklistTags = (tagID: number, tasklistTags: Tag[]) => tasklistTags.some(tasklistTag => tasklistTag.tagID === tagID);
