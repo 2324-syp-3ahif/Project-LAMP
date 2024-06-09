@@ -83,30 +83,6 @@ export async function load(mail: string) {
     const addTagBtn = document.getElementById('add-tag-btn') as HTMLButtonElement;
     addTagBtn.addEventListener('click', addTag);
 }
-/*
-async function showAddTagsModal() {
-    console.log("HERE");
-    const addTagsModal = document.getElementById('add-tags-modal') as HTMLElement;
-    const tags = document.getElementById('tags') as HTMLElement;
-    tags.innerHTML = "";
-    addTagsModal.style.display = 'block';
-    for (const tag of globalTags) {
-        const tagElement = document.createElement('button');
-        tagElement.classList.add('tag-btn');
-        tagElement.classList.add('btn');
-        tagElement.innerHTML = tag.name;
-        tagElement.addEventListener('click', async () => {
-            if (tagElement.classList.contains('active')) {
-                tagElement.classList.remove('active');
-            } else {
-                tagElement.classList.add('active');
-            }
-        });
-        tags.appendChild(tagElement);
-    }
-    addTagsModal.style.display = 'block';
-}
- */
 
 async function showAllTasklists() {
     taskLists.innerHTML = "";
@@ -176,16 +152,6 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
         await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
         listEl.classList.add("extended");
 
-        const tagsEl = document.createElement('div');
-        tagsEl.classList.add('tags');
-        /* tag creation must be implemented for this
-        const allTags: Tag[] = await (await send(tagUrl + list.tasklistID, 'GET')).json;
-        allTags.forEach((tag: Tag) => {
-            const tagElement = document.createElement('span');
-            tagElement.innerHTML = tag.name;
-            tagsEl.appendChild(tagElement);
-        }); */
-
         const tasksEl = document.createElement('div');
         await loadTasks(list, tasksEl);
 
@@ -208,11 +174,36 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
         tagButton.id = "tag-button";
         tagButton.innerHTML = "Tags";
 
+        const tasklistTagsModal = document.getElementById('tags-tasklist-list') as HTMLElement;
         tagButton.classList.add('btn');
         tagButton.setAttribute('data-bs-toggle', 'modal');
-        tagButton.setAttribute('data-bs-target', '#tag-modal');
-        tagButton.addEventListener('click', () => {
-
+        tagButton.setAttribute('data-bs-target', '#tasklist-tags-modal');
+        tagButton.addEventListener('click', async () => {
+            const tagsEl = document.createElement('div');
+            tagsEl.classList.add('tags');
+            const tasklistTags: Tag[] =  await (await send(tagUrl + list.tasklistID, 'GET')).json();
+            globalTags.forEach((tag: Tag) => {
+                const tagElement = document.createElement('div');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = tasklistTags.includes(tag);
+                checkbox.addEventListener('change', async () => {
+                    if (checkbox.checked) {
+                        tagElement.classList.add('active');
+                        tasklistTags.push(tag);
+                        await send(tagUrl + tag.tagID + "/" + tag.name, 'PUT');
+                    } else {
+                        tagElement.classList.remove('active');
+                        await send(tagUrl + tag.tagID + "/" + tag.name, 'PUT');
+                        tasklistTags.splice(tasklistTags.indexOf(tag), 1);
+                    }
+                });
+                tagElement.appendChild(checkbox);
+                tagElement.appendChild(document.createTextNode(" " + tag.name));
+                tasklistTagsModal.appendChild(tagElement);
+            });
+            const tagElement = document.createElement('div');
+            tagsEl.appendChild(tagElement);
         });
 
         const buttonDiv = document.createElement('div');
@@ -222,7 +213,6 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
         buttonDiv.appendChild(deleteButton);
         buttonDiv.appendChild(tagButton);
 
-        listEl.appendChild(tagsEl);
         listEl.appendChild(tasksEl);
         listEl.appendChild(buttonDiv);
 
@@ -241,11 +231,11 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
                     return
                 }
             });
-            closeTasklist(list, listEl, tagsEl, tasksEl, deleteButton);
+            closeTasklist(list, listEl, tasksEl, deleteButton);
         });
 
         setTimeout(() => {
-            closeTasklist(list, listEl, tagsEl, tasksEl, deleteButton)
+            closeTasklist(list, listEl, tasksEl, deleteButton)
         }, 120000); // close automatically after 2 minutes
     }
 }
@@ -296,12 +286,10 @@ async function showEditGlobalTags() {
     });
 }
 
-async function closeTasklist(list: Tasklist, listEl: HTMLElement, tagsEl: HTMLElement, tasksEl: HTMLElement, deleteButton: HTMLElement) {
-        listEl.removeChild(tagsEl);
+async function closeTasklist(list: Tasklist, listEl: HTMLElement, tasksEl: HTMLElement, deleteButton: HTMLElement) {
         listEl.removeChild(tasksEl);
         listEl.removeChild(deleteButton);
         listEl.classList.remove("extended");
-
         list.isLocked = 0;
         globalTasklists[globalTasklists.findIndex((tasklist: Tasklist) => tasklist.tasklistID === list.tasklistID)] = list;
         await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
