@@ -41,6 +41,7 @@
                 </div>
             </div>
             <button class="btn btn-design" id="create-tasklist-btn">Create Tasklist</button>
+            <button class="btn btn-design" id="show-global-tags-btn" data-bs-toggle="modal" data-bs-target="#global-tags-modal">Tags</button>
             <button class="btn" type="button" id="filter-btn" data-bs-toggle="modal" data-bs-target="#filter-modal">
                 <img src="./img/filter.png" id="filter-img" alt="filter img"/>
             </button>
@@ -217,6 +218,28 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="global-tags-modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">All Tags</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <label for="tag-input" class="form-label">Create Tag</label>
+                            <input type="text" class="form-control" id="tag-input" >
+                            <button type="button" class="btn btn-primary" id="submit-tag-btn">Add</button>
+                        </div>
+                        <div id="tags-list"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="submit-tags-btn">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="popupBackdrop" class="hidden"></div>
         <div id="footer"></div>
     </body>
 </html>

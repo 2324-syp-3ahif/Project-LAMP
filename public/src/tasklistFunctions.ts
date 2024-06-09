@@ -9,6 +9,7 @@ const tagUrl: string = 'http://localhost:2000/api/tag/';
 
 const taskLists = document.getElementById('tasklists') as HTMLElement;
 const createTasklistButton = document.getElementById('create-tasklist-btn') as HTMLButtonElement;
+const globalTagsButton = document.getElementById('show-global-tags-btn') as HTMLButtonElement;
 const orderPriorityButton = document.getElementById('order-priority') as HTMLButtonElement;
 const orderViewButton = document.getElementById('order-view') as HTMLButtonElement;
 const orderCreateButton = document.getElementById('order-creation') as HTMLButtonElement;
@@ -20,6 +21,8 @@ const inviteUserBtn = document.getElementById('invite-user-btn') as HTMLButtonEl
 const deleteTasklistBtn = document.getElementById('delete-tasklist-btn') as HTMLButtonElement;
 const deleteModal = document.getElementById('delete-modal') as HTMLElement;
 const addTagsButton = document.getElementById('add-tags-btn') as HTMLButtonElement;
+const globalTagsList = document.getElementById('tags-list') as HTMLElement;
+
 export let listElements: HTMLInputElement[] = [];
 let globalDeleteTasklistID = -1;
 let globalTasklists: Tasklist[] = [];
@@ -65,6 +68,7 @@ export async function load(mail: string) {
         await showAllTasklists();
     });
 
+    globalTagsButton.addEventListener('click', showEditGlobalTags);
     deleteTasklistBtn.addEventListener('click', deleteTaskList);
     submitButton.addEventListener('click', createTasklist);
     inviteUserBtn.addEventListener('click', invite);
@@ -199,9 +203,27 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
             globalDeleteTasklistID = list.tasklistID;
         });
 
+        const tagButton = document.createElement('button');
+        tagButton.id = "tag-button";
+        tagButton.innerHTML = "Tags";
+
+        tagButton.classList.add('btn');
+        tagButton.setAttribute('data-bs-toggle', 'modal');
+        tagButton.setAttribute('data-bs-target', '#tag-modal');
+        tagButton.addEventListener('click', () => {
+
+        });
+
+        const buttonDiv = document.createElement('div');
+        buttonDiv.classList.add('d-flex');
+        buttonDiv.classList.add('flex-row');
+        buttonDiv.classList.add('justify-content-between');
+        buttonDiv.appendChild(deleteButton);
+        buttonDiv.appendChild(tagButton);
+
         listEl.appendChild(tagsEl);
         listEl.appendChild(tasksEl);
-        listEl.appendChild(deleteButton);
+        listEl.appendChild(buttonDiv);
 
         listEl.addEventListener('click', (e) => {
             if (e.target === deleteButton || !closePLS) {
@@ -225,6 +247,24 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
             closeTasklist(list, listEl, tagsEl, tasksEl, deleteButton)
         }, 120000); // close automatically after 2 minutes
     }
+}
+
+async function showEditGlobalTags() {
+    globalTags.forEach((tag: Tag) => {
+        const tagElement = document.createElement('input');
+        tagElement.innerHTML = tag.name;
+        tagElement.addEventListener('click', async () => {
+            if (tagElement.classList.contains('active')) {
+                tagElement.classList.remove('active');
+                globalTags.splice(globalTags.indexOf(tag), 1);
+            } else {
+                tagElement.classList.add('active');
+                globalTags.push(tag);
+            }
+        });
+        globalTagsList.appendChild(tagElement);
+    });
+
 }
 
 async function closeTasklist(list: Tasklist, listEl: HTMLElement, tagsEl: HTMLElement, tasksEl: HTMLElement, deleteButton: HTMLElement) {
