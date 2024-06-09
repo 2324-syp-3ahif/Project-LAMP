@@ -45,6 +45,7 @@
                 </div>
             </div>
             <button class="btn btn-design" id="create-tasklist-btn">Create Tasklist</button>
+            <button class="btn btn-design" id="show-global-tags-btn" data-bs-toggle="modal" data-bs-target="#global-tags-modal">Tags</button>
             <button class="btn" type="button" id="filter-btn" data-bs-toggle="modal" data-bs-target="#filter-modal">
                 <img src="./img/filter.png" id="filter-img" alt="filter img"/>
             </button>
@@ -56,7 +57,7 @@
                         <h5 class="modal-title">Filter by Tags</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body" id="filter-tags-modal">
+                    <div class="modal-body" id="filter-tags-list">
 
                     </div>
                     <div class="modal-footer">
@@ -80,8 +81,8 @@
                     <button type="button" class="btn btn-primary" id="invite-btn" data-bs-toggle="modal" data-bs-target="#invite-modal">Invite!</button>
                 </div>
                 <div class="mb-2">
-                    <label for="tags-btn" class="form-label">Add tags to find your tasklist easier</label>
-                    <button type="button" class="btn btn-primary" id="tags-btn">Add Tags</button>
+                    <label for="add-tags-btn" class="form-label">Add tags to find your tasklist easier</label>
+                    <button type="button" class="btn btn-primary" id="add-tags-btn" data-bs-toggle="modal" data-bs-target="#add-tags-modal">Add Tags</button>
                 </div>
                 <select class="form-select" aria-label="Select priority" id="priority-input">
                     <option selected>Select Priority</option>
@@ -107,6 +108,36 @@
                     <div class="modal-body" id="invite-users-modal">
                         <input type="email" class="form-control" id="email-input" aria-label="invite-input" placeholder="example@email.com">
                         <button type="button" class="btn btn-primary" id="invite-user-btn">Invite</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="filter-by-tags-modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Filter tasklists by tags</h5>
+                    </div>
+                    <div class="modal-body" id="tags-modal-body">
+                        <div id="tags-list"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="tasklist-tags-modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Tags of this tasklist</h5>
+                    </div>
+                    <div class="modal-body" id="tags-tasklist-body">
+                        <div id="tags-tasklist-list"></div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -196,7 +227,28 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No!</button>
-                        <button type="button" class="btn btn-primary" id="delete-tasklist-btn">Yes, delete!</button>
+                        <button type="button" class="btn btn-primary" id="delete-tasklist-btn" data-bs-dismiss="modal">Yes, delete!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="global-tags-modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">All Tags</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2 create-tag">
+                            <label for="tag-input"></label>
+                            <input type="text" class="form-control" id="tag-input" placeholder="Create Tag ...">
+                            <button type="button" class="btn btn-primary" id="add-tag-btn">Add</button>
+                        </div>
+                        <div id="global-tags-list"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="submit-tags-btn" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>

@@ -1,7 +1,6 @@
 import {baseURL, send} from './sendUtils';
 import {Tasklist} from './model/Tasklist';
 import {Tag} from './model/Tag';
-import {checkMailFormat} from "./utils";
 import {handlePageLoad} from "./loginFunctions";
 import {checkBoxes, closePLS, createNewTask, loadTasks, setClosePLS} from "./taskFuntions";
 import {User} from "./model/User";
@@ -10,22 +9,15 @@ const tagUrl: string = baseURL + '/api/tag/';
 
 const taskLists = document.getElementById('tasklists') as HTMLElement;
 const createTasklistButton = document.getElementById('create-tasklist-btn') as HTMLButtonElement;
-const orderPriorityButton = document.getElementById('order-priority') as HTMLButtonElement;
-const orderViewButton = document.getElementById('order-view') as HTMLButtonElement;
-const orderCreateButton = document.getElementById('order-creation') as HTMLButtonElement;
-const filterButton = document.getElementById('filter-btn') as HTMLButtonElement;
-const filterTagsModal = document.getElementById('filter-tags-modal') as HTMLElement;
 const createForm = document.getElementById('create-tasklist-form') as HTMLFormElement;
-const submitButton = document.getElementById('submit-tasklist-btn') as HTMLButtonElement;
-const inviteUserBtn = document.getElementById('invite-user-btn') as HTMLButtonElement;
-const deleteTasklistBtn = document.getElementById('delete-tasklist-btn') as HTMLButtonElement;
-const deleteModal = document.getElementById('delete-modal') as HTMLElement;
+
 export let listElements: HTMLInputElement[] = [];
 let globalDeleteTasklistID = -1;
 let globalTasklists: Tasklist[] = [];
 let globalTags: Tag[] = [];
 let globalMail: string = "";
 const globalUsersToInvite: User[] = [];
+const globalActiveFilters: Tag[] = [];
 
 window.onload = async function() {
     await handlePageLoad(load);
@@ -49,6 +41,7 @@ export async function load(mail: string) {
         createForm.style.display = 'flex';
     });
 
+    const orderPriorityButton = document.getElementById('order-priority') as HTMLButtonElement;
     orderPriorityButton.addEventListener('click', async () => {
         globalTasklists.sort((a: Tasklist, b: Tasklist) => {
             return b.priority - a.priority;
@@ -56,6 +49,7 @@ export async function load(mail: string) {
         await showAllTasklists();
     });
 
+    const orderViewButton = document.getElementById('order-view') as HTMLButtonElement;
     orderViewButton.addEventListener('click', async () => {
         globalTasklists.sort((a: Tasklist, b: Tasklist) => {
             return b.lastViewed - a.lastViewed;
@@ -63,6 +57,7 @@ export async function load(mail: string) {
         await showAllTasklists();
     });
 
+    const orderCreateButton = document.getElementById('order-creation') as HTMLButtonElement;
     orderCreateButton.addEventListener('click', async () => {
         globalTasklists.sort((a: Tasklist, b: Tasklist) => {
             return a.tasklistID - b.tasklistID;
@@ -70,11 +65,29 @@ export async function load(mail: string) {
         await showAllTasklists();
     });
 
-    deleteTasklistBtn.addEventListener('click', deleteTaskList);
-    submitButton.addEventListener('click', createTasklist);
-    inviteUserBtn.addEventListener('click', invite);
-    filterButton.addEventListener('click', filterTasklists);
+    addListeners();
 }
+
+function addListeners() {
+    const globalTagsButton = document.getElementById('show-global-tags-btn') as HTMLButtonElement;
+    globalTagsButton.addEventListener('click', showEditGlobalTags);
+
+    const filterButton = document.getElementById('filter-btn') as HTMLButtonElement;
+    filterButton.addEventListener('click', filterTasklists);
+
+    const submitButton = document.getElementById('submit-tasklist-btn') as HTMLButtonElement;
+    submitButton.addEventListener('click', createTasklist);
+
+    const inviteUserBtn = document.getElementById('invite-user-btn') as HTMLButtonElement;
+    inviteUserBtn.addEventListener('click', invite);
+
+    const deleteTasklistBtn = document.getElementById('delete-tasklist-btn') as HTMLButtonElement;
+    deleteTasklistBtn.addEventListener('click', deleteTaskList);
+
+    const addTagBtn = document.getElementById('add-tag-btn') as HTMLButtonElement;
+    addTagBtn.addEventListener('click', addTag);
+}
+
 
 async function showAllTasklists() {
     taskLists.innerHTML = "";
@@ -120,9 +133,8 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
     listElement.appendChild(titleButtonElement);
     listElement.appendChild(description);
     listElement.appendChild(tags);
-
     listElement.addEventListener('click', (e) => {
-        if (listElement.classList.contains("extended") || e.target === deleteTasklistBtn){
+        if (listElement.classList.contains("extended")){
             return;
         }
         checkBoxes.forEach(checkbox => {
@@ -165,8 +177,26 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
             globalDeleteTasklistID = list.tasklistID;
         });
 
+        const tagButton = document.createElement('button');
+        tagButton.id = "tag-button";
+        tagButton.innerHTML = "Tags";
+
+        tagButton.classList.add('btn');
+        tagButton.setAttribute('data-bs-toggle', 'modal');
+        tagButton.setAttribute('data-bs-target', '#tasklist-tags-modal');
+        tagButton.addEventListener('click', async () => {
+            await showTasklistTags(list);
+        });
+
+        const buttonDiv = document.createElement('div');
+        buttonDiv.classList.add('d-flex');
+        buttonDiv.classList.add('flex-row');
+        buttonDiv.classList.add('justify-content-between');
+        buttonDiv.appendChild(deleteButton);
+        buttonDiv.appendChild(tagButton);
+
         listEl.appendChild(tasksEl);
-        listEl.appendChild(deleteButton);
+        listEl.appendChild(buttonDiv);
 
         listEl.addEventListener('click', (e) => {
             if (e.target === deleteButton || !closePLS) {
@@ -175,38 +205,119 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
             }
             checkBoxes.forEach(checkbox => {
                if(e.target === checkbox) {
-                   return
+                   return;
                }
             });
             listElements.forEach(listEl => {
                 if(e.target === listEl) {
-                    return
+                    return;
                 }
             });
-            closeTasklist(list, listEl, tasksEl, deleteButton);
+            closeTasklist(list, listEl, tasksEl, buttonDiv);
         });
 
         setTimeout(() => {
-            closeTasklist(list, listEl, tasksEl, deleteButton)
+            closeTasklist(list, listEl, tasksEl, buttonDiv)
         }, 120000); // close automatically after 2 minutes
     }
 }
 
-async function closeTasklist(list: Tasklist, listEl: HTMLElement, tasksEl: HTMLElement, deleteButton: HTMLElement) {
-        listEl.removeChild(tasksEl);
-        listEl.removeChild(deleteButton);
-        listEl.classList.remove("extended");
+async function showTasklistTags(list: Tasklist) {
+    const tasklistTagList = document.getElementById('tags-tasklist-list') as HTMLElement;
+    const tagsEl = document.createElement('div');
+    tagsEl.classList.add('tags');
+    const tasklistTags: Tag[] =  await (await send(tagUrl + list.tasklistID, 'GET')).json();
+    tasklistTagList.innerHTML = "";
+    globalTags.forEach((tag: Tag) => {
+        const tagElement = document.createElement('div');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = tagInTasklistTags(tag.tagID, tasklistTags);
 
+        checkbox.addEventListener('change', async () => {
+            if (checkbox.checked) {
+                tagElement.classList.add('active');
+                tasklistTags.push(tag);
+                await send(tagUrl + "tasklistAdd/" + list.tasklistID + "/" + tag.tagID, 'PUT');
+            } else {
+                tagElement.classList.remove('active');
+                tasklistTags.splice(tasklistTags.indexOf(tag), 1);
+                await send(tagUrl + "tasklistRemove/" + list.tasklistID + "/" + tag.tagID, 'PUT');
+            }
+        });
+        tagElement.appendChild(checkbox);
+        tagElement.appendChild(document.createTextNode(" " + tag.name));
+        tasklistTagList.appendChild(tagElement);
+    });
+    const tagElement = document.createElement('div');
+    tagsEl.appendChild(tagElement);
+}
+
+async function addTag() {
+    const tagNameEl = document.getElementById('tag-input') as HTMLInputElement;
+    for (const tag of globalTags) {
+        if (tagNameEl.value === tag.name) {
+            alert('This tag name already exists');
+            return;
+        }
+    }
+    const tag: Tag = await (await send(tagUrl + globalMail + "/" + tagNameEl.value, 'POST')).json();
+    globalTags.push(tag);
+    tagNameEl.value = "";
+    await showEditGlobalTags();
+}
+
+async function showEditGlobalTags() {
+    const globalTagsList = document.getElementById('global-tags-list') as HTMLElement;
+    globalTagsList.innerHTML = "";
+    globalTags.forEach((tag: Tag) => {
+        const tagElement = document.createElement('input');
+        tagElement.value = tag.name;
+
+        const saveButton = document.createElement('button');
+        saveButton.innerHTML = "Save";
+        saveButton.classList.add('btn');
+        saveButton.addEventListener('click', async () => {
+            globalTags.forEach((tag: Tag) => {
+                if (tagElement.value === tag.name) {
+                    alert('This tag name already exists');
+                    return;
+                }
+            });
+            tag.name = tagElement.value;
+            await send(tagUrl + tag.tagID + "/" + tag.name, 'PUT');
+        });
+
+        const deleteButton = document.createElement('button');
+        deleteButton.innerHTML = "Delete";
+        deleteButton.classList.add('btn', 'btn-danger');
+        deleteButton.addEventListener('click', async () => {
+            await send(tagUrl + tag.tagID, 'DELETE');
+            globalTags.splice(globalTags.indexOf(tag), 1);
+            await showEditGlobalTags();
+        })
+        globalTagsList.appendChild(tagElement);
+        globalTagsList.appendChild(saveButton);
+        globalTagsList.appendChild(deleteButton);
+    });
+}
+
+async function closeTasklist(list: Tasklist, listEl: HTMLElement, tasksEl: HTMLElement, buttonDiv: HTMLElement) {
+        listEl.removeChild(tasksEl);
+        listEl.removeChild(buttonDiv);
+        listEl.classList.remove("extended");
         list.isLocked = 0;
         globalTasklists[globalTasklists.findIndex((tasklist: Tasklist) => tasklist.tasklistID === list.tasklistID)] = list;
         await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
 }
 
-async function deleteTaskList() {
+async function deleteTaskList(e: Event) {
+    e.stopPropagation();
     if (globalDeleteTasklistID !== -1) {
         globalTasklists.splice(globalTasklists.findIndex((list: Tasklist) => list.tasklistID === globalDeleteTasklistID), 1);
         await send(tasklistUrl + globalDeleteTasklistID, 'DELETE');
         globalDeleteTasklistID = -1;
+        const deleteModal = document.getElementById('delete-modal') as HTMLElement;
         deleteModal.style.display = "hide";
         await showAllTasklists();
     }
@@ -281,31 +392,45 @@ function handleClickOutside(event: MouseEvent) {
 }
 
 async function filterTasklists() {
-    console.log('filter');
-    const activeFilters: Tag[] = [];
+    const filterTagsList = document.getElementById('filter-tags-list') as HTMLElement;
+    filterTagsList.innerHTML = "";
+
     for (const tag of globalTags) {
-        const tagElement = document.createElement('button');
-        tagElement.classList.add('tag-btn');
-        tagElement.classList.add('btn');
-        tagElement.innerHTML = tag.name;
-        tagElement.addEventListener('click', async () => {
-            if (tagElement.classList.contains('active')) {
-                tagElement.classList.remove('active');
-                activeFilters.splice(activeFilters.indexOf(tag), 1);
-            } else {
+        const tagElement = document.createElement('div');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = globalActiveFilters.some((activeTag: Tag) => activeTag.tagID === tag.tagID);
+        checkbox.addEventListener('change', async () => {
+            if (checkbox.checked) {
                 tagElement.classList.add('active');
-                activeFilters.push(tag);
+                globalActiveFilters.push(tag);
+            } else {
+                tagElement.classList.remove('active');
+                globalActiveFilters.splice(globalActiveFilters.indexOf(tag), 1);
             }
+            taskLists.innerHTML = "";
             for (const list of globalTasklists) {
-                taskLists.innerHTML = "";
-                const tagsOfList: Tag[] = (await send(tagUrl + list.tasklistID, 'GET')).json;
-                if (activeFilters.length === 0) {
+                const tagsOfList: Tag[] = await (await send(tagUrl + list.tasklistID, 'GET')).json();
+                if (globalActiveFilters.length === 0) {
                     await showAllTasklists();
-                } else if (activeFilters.every((tag: Tag) => tagsOfList.includes(tag))) {
-                    await showTasklist(list);
+                } else {
+                    let showCurrent = true;
+                    for (const filterTag of globalActiveFilters) {
+                        if (!tagInTasklistTags(filterTag.tagID, tagsOfList)) {
+                            showCurrent = false;
+                        }
+                    }
+                    if (showCurrent) {
+                        const listEl: HTMLElement = await showTasklist(list);
+                        taskLists.appendChild(listEl);
+                    }
                 }
             }
         });
-        filterTagsModal.appendChild(tagElement);
+        tagElement.appendChild(checkbox);
+        tagElement.appendChild(document.createTextNode(" " + tag.name));
+        filterTagsList.appendChild(tagElement);
     }
 }
+
+const tagInTasklistTags = (tagID: number, tasklistTags: Tag[]) => tasklistTags.some(tasklistTag => tasklistTag.tagID === tagID);
