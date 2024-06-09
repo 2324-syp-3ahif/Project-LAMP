@@ -345,14 +345,6 @@ async function createTasklist() {
     const priority = (document.getElementById('priority-input') as HTMLInputElement).value;
     const sortingOrder = (document.getElementById('sorting-order-input') as HTMLInputElement).value;
 
-    if (title.length > 50) {
-        alert('Title is too long, must be less than 50 characters');
-        return;
-    } else if (description.length > 255) {
-        alert('Description is too long, must be less than 255 characters');
-        return;
-    }
-
     const data = {
         title: title,
         description: description,

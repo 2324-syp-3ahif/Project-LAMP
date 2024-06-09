@@ -75,7 +75,6 @@ tagRouter.put("/:tagID/:name", isAuthenticated, async (req, res) => {
         return;
     }
     if (!checkStringFormat(name) || name.length > 50 || name.length < 3) {
-        console.log(name.length);
         res.status(StatusCodes.BAD_REQUEST).send("The name must be plain text and between 3 and 50 characters long.");
         return;
     }
@@ -94,7 +93,6 @@ tagRouter.put("/:tagID/:name", isAuthenticated, async (req, res) => {
 
 tagRouter.delete("/:tagID", isAuthenticated, async (req, res) => {
     const tagID = parseInt(req.params.tagID);
-    console.log(tagID);
     if (isNaN(tagID) || tagID < 1) {
         res.status(StatusCodes.BAD_REQUEST).send("The tagID must be a number.");
         return;
