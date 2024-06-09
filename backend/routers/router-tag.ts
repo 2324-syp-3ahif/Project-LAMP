@@ -46,10 +46,17 @@ tagRouter.post("/:email/:name", isAuthenticated, async (req, res) => {
         return;
     }
     if (!isPlainText(name) || name.length > 50 || name.length < 1) {
-        res.status(StatusCodes.BAD_REQUEST).send("The ame must be plain text and between 1 and 50 characters long.");
+        res.status(StatusCodes.BAD_REQUEST).send("The tag name must be plain text and between 1 and 50 characters long.");
         return;
     }
     try {
+        const tags: Tag[] = await selectTagsByEmail(email);
+        tags.forEach(tag => {
+            if (tag.name === name) {
+                res.status(StatusCodes.BAD_REQUEST).send("This tag name already exists.");
+                return;
+            }
+        })
         const id = await insertTag(name, email);
         res.status(StatusCodes.CREATED).send({tagID: id, name: name});
     } catch(err: any) {
@@ -66,8 +73,9 @@ tagRouter.put("/:tagID/:name", isAuthenticated, async (req, res) => {
         res.status(StatusCodes.BAD_REQUEST).send("The tagID must be a number.");
         return;
     }
-    if (!checkStringFormat(name) || name.length > 50 || name.length < 1) {
-        res.status(StatusCodes.BAD_REQUEST).send("The name must be plain text and between 1 and 50 characters long.");
+    if (!checkStringFormat(name) || name.length > 50 || name.length < 3) {
+        console.log(name.length);
+        res.status(StatusCodes.BAD_REQUEST).send("The name must be plain text and between 3 and 50 characters long.");
         return;
     }
     try {
@@ -85,6 +93,7 @@ tagRouter.put("/:tagID/:name", isAuthenticated, async (req, res) => {
 
 tagRouter.delete("/:tagID", isAuthenticated, async (req, res) => {
     const tagID = parseInt(req.params.tagID);
+    console.log(tagID);
     if (isNaN(tagID) || tagID < 1) {
         res.status(StatusCodes.BAD_REQUEST).send("The tagID must be a number.");
         return;
@@ -94,7 +103,7 @@ tagRouter.delete("/:tagID", isAuthenticated, async (req, res) => {
         res.status(StatusCodes.OK).send("tag deleted");
     } catch(err: any) {
         if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("No user found.");
+            res.status(StatusCodes.BAD_REQUEST).send("No Tag with this id found.");
         }
     }
 });

@@ -22,7 +22,7 @@ const inviteUserBtn = document.getElementById('invite-user-btn') as HTMLButtonEl
 const deleteTasklistBtn = document.getElementById('delete-tasklist-btn') as HTMLButtonElement;
 const deleteModal = document.getElementById('delete-modal') as HTMLElement;
 const addTagsButton = document.getElementById('add-tags-btn') as HTMLButtonElement;
-const globalTagsList = document.getElementById('tags-list') as HTMLElement;
+const globalTagsList = document.getElementById('global-tags-list') as HTMLElement;
 
 export let listElements: HTMLInputElement[] = [];
 let globalDeleteTasklistID = -1;
@@ -79,7 +79,9 @@ export async function load(mail: string) {
     submitButton.addEventListener('click', createTasklist);
     inviteUserBtn.addEventListener('click', invite);
     filterButton.addEventListener('click', filterTasklists);
-    //addTagsButton.addEventListener('click', showAddTagsModal);
+
+    const addTagBtn = document.getElementById('add-tag-btn') as HTMLButtonElement;
+    addTagBtn.addEventListener('click', addTag);
 }
 /*
 async function showAddTagsModal() {
@@ -111,13 +113,10 @@ async function showAllTasklists() {
     for (const list of globalTasklists) {
         const listEl: HTMLElement = await showTasklist(list);
         taskLists.appendChild(listEl);
-        console.log(listEl);
-        console.log(list);
     }
 }
 
 async function showTasklist(list: Tasklist): Promise<HTMLElement> {
-    console.log("in show singular tasklist");
     const listElement: HTMLElement = document.createElement('div');
     listElement.classList.add('tasklist');
     listElement.classList.add('card-body');
@@ -153,7 +152,6 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
     listElement.appendChild(titleButtonElement);
     listElement.appendChild(description);
     listElement.appendChild(tags);
-    console.log("added everything");
     listElement.addEventListener('click', (e) => {
         if (listElement.classList.contains("extended") || e.target === deleteTasklistBtn){
             return;
@@ -165,7 +163,6 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
         });
         extendTasklist(listElement, list);
     });
-    console.log("return listelement");
     return listElement;
 }
 
@@ -253,22 +250,50 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
     }
 }
 
+async function addTag() {
+    const tagNameEl = document.getElementById('tag-input') as HTMLInputElement;
+    for (const tag of globalTags) {
+        if (tagNameEl.value === tag.name) {
+            alert('This tag name already exists');
+            return;
+        }
+    }
+    const tag: Tag = await (await send(tagUrl + globalMail + "/" + tagNameEl.value, 'POST')).json();
+    console.log('added tag');
+    console.log(tag);
+    globalTags.push(tag);
+    tagNameEl.value = "";
+    await showEditGlobalTags();
+}
+
 async function showEditGlobalTags() {
+    console.log(globalTags);
+    globalTagsList.innerHTML = "";
     globalTags.forEach((tag: Tag) => {
         const tagElement = document.createElement('input');
-        tagElement.innerHTML = tag.name;
-        tagElement.addEventListener('click', async () => {
-            if (tagElement.classList.contains('active')) {
-                tagElement.classList.remove('active');
-                globalTags.splice(globalTags.indexOf(tag), 1);
-            } else {
-                tagElement.classList.add('active');
-                globalTags.push(tag);
-            }
+        tagElement.value = tag.name;
+        tagElement.addEventListener('input', async () => {
+            globalTags.forEach((tag: Tag) => {
+                if (tagElement.value === tag.name) {
+                    alert('This tag name already exists');
+                    return;
+                }
+            });
+            tag.name = tagElement.value;
+            await send(tagUrl + tag.tagID + "/" + tag.name, 'PUT');
+        });
+
+        const deleteButton = document.createElement('button');
+        deleteButton.innerHTML = "Delete";
+        deleteButton.classList.add('btn', 'btn-danger');
+        deleteButton.addEventListener('click', async () => {
+            await send(tagUrl + tag.tagID, 'DELETE');
+            globalTags.splice(globalTags.indexOf(tag), 1);
+            await showEditGlobalTags();
         });
         globalTagsList.appendChild(tagElement);
+        globalTagsList.appendChild(deleteButton);
     });
-
 }
 
 async function closeTasklist(list: Tasklist, listEl: HTMLElement, tagsEl: HTMLElement, tasksEl: HTMLElement, deleteButton: HTMLElement) {

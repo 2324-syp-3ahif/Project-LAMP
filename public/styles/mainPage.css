@@ -128,6 +128,20 @@ body {
     z-index: 99;
 }
 
+/* Tags */
+.create-tag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#global-tags-list {
+    display: table;
+    vertical-align: center;
+    margin-bottom: 20px;
+}
+
+
 /* Task */
 .TaskOverlay{
     position: fixed;

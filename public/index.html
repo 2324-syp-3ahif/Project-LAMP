@@ -115,17 +115,13 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="add-tags-modal" tabindex="-1">
+        <div class="modal fade" id="filter-by-tags-modal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Add tags to filter tasklists</h5>
+                        <h5 class="modal-title">Filter tasklists by tags</h5>
                     </div>
                     <div class="modal-body" id="tags-modal-body">
-                        <div id="add-tag">
-                            <input type="email" class="form-control" id="add-tag-modal-input" aria-label="tag-input">
-                            <button type="button" class="btn btn-primary" id="add-tag-modal-btn">Add Tag</button>
-                        </div>
                         <div id="tags-list">
                     </div>
                     <div class="modal-footer">
@@ -217,7 +213,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No!</button>
-                        <button type="button" class="btn btn-primary" id="delete-tasklist-btn">Yes, delete!</button>
+                        <button type="button" class="btn btn-primary" id="delete-tasklist-btn" data-bs-dismiss="modal">Yes, delete!</button>
                     </div>
                 </div>
             </div>
@@ -230,15 +226,15 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-2">
-                            <label for="tag-input" class="form-label">Create Tag</label>
-                            <input type="text" class="form-control" id="tag-input" >
-                            <button type="button" class="btn btn-primary" id="submit-tag-btn">Add</button>
+                        <div class="mb-2 create-tag">
+                            <label for="tag-input"></label>
+                            <input type="text" class="form-control" id="tag-input" placeholder="Create Tag ...">
+                            <button type="button" class="btn btn-primary" id="add-tag-btn">Add</button>
                         </div>
-                        <div id="tags-list"></div>
+                        <div id="global-tags-list"></div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="submit-tags-btn">Submit</button>
+                        <button type="button" class="btn btn-primary" id="submit-tags-btn" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
