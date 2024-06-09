@@ -7,7 +7,7 @@ import {Tag} from "../interfaces/model/Tag";
 import {StringWrongFormatError} from "../interfaces/errors/StringWrongFormatError";
 import {deleteTag, updateTag, insertTag, selectTagsByEmail, selectTagsByTasklistID} from "../database-functions/tag-functions";
 import {isAuthenticated} from "../middleware/auth-handlers";
-import {addTagToTasklist} from "../database-functions/tagtasklist-functions";
+import {addTagToTasklist, removeTagFromTasklist} from "../database-functions/tagtasklist-functions";
 
 export const tagRouter = express.Router();
 
@@ -142,7 +142,7 @@ tagRouter.put("/tasklistRemove/:tasklistID/:tagID", isAuthenticated, async (req,
         return;
     }
     try {
-        await addTagToTasklist(tasklistID, tagID);
+        await removeTagFromTasklist(tasklistID, tagID);
         res.status(StatusCodes.OK).send("Tag removed from tasklist.");
     } catch(err: any) {
         if (err instanceof IdNotFoundError) {

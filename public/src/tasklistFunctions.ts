@@ -15,7 +15,6 @@ const orderPriorityButton = document.getElementById('order-priority') as HTMLBut
 const orderViewButton = document.getElementById('order-view') as HTMLButtonElement;
 const orderCreateButton = document.getElementById('order-creation') as HTMLButtonElement;
 const filterButton = document.getElementById('filter-btn') as HTMLButtonElement;
-const filterTagsModal = document.getElementById('filter-tags-modal') as HTMLElement;
 const createForm = document.getElementById('create-tasklist-form') as HTMLFormElement;
 const submitButton = document.getElementById('submit-tasklist-btn') as HTMLButtonElement;
 const inviteUserBtn = document.getElementById('invite-user-btn') as HTMLButtonElement;
@@ -174,36 +173,11 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
         tagButton.id = "tag-button";
         tagButton.innerHTML = "Tags";
 
-        const tasklistTagsModal = document.getElementById('tags-tasklist-list') as HTMLElement;
         tagButton.classList.add('btn');
         tagButton.setAttribute('data-bs-toggle', 'modal');
         tagButton.setAttribute('data-bs-target', '#tasklist-tags-modal');
         tagButton.addEventListener('click', async () => {
-            const tagsEl = document.createElement('div');
-            tagsEl.classList.add('tags');
-            const tasklistTags: Tag[] =  await (await send(tagUrl + list.tasklistID, 'GET')).json();
-            globalTags.forEach((tag: Tag) => {
-                const tagElement = document.createElement('div');
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.checked = tasklistTags.includes(tag);
-                checkbox.addEventListener('change', async () => {
-                    if (checkbox.checked) {
-                        tagElement.classList.add('active');
-                        tasklistTags.push(tag);
-                        await send(tagUrl + tag.tagID + "/" + tag.name, 'PUT');
-                    } else {
-                        tagElement.classList.remove('active');
-                        await send(tagUrl + tag.tagID + "/" + tag.name, 'PUT');
-                        tasklistTags.splice(tasklistTags.indexOf(tag), 1);
-                    }
-                });
-                tagElement.appendChild(checkbox);
-                tagElement.appendChild(document.createTextNode(" " + tag.name));
-                tasklistTagsModal.appendChild(tagElement);
-            });
-            const tagElement = document.createElement('div');
-            tagsEl.appendChild(tagElement);
+            await showTasklistTags(list);
         });
 
         const buttonDiv = document.createElement('div');
@@ -231,13 +205,44 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
                     return
                 }
             });
-            closeTasklist(list, listEl, tasksEl, deleteButton);
+            closeTasklist(list, listEl, tasksEl, buttonDiv);
         });
 
         setTimeout(() => {
-            closeTasklist(list, listEl, tasksEl, deleteButton)
+            closeTasklist(list, listEl, tasksEl, buttonDiv)
         }, 120000); // close automatically after 2 minutes
     }
+}
+
+async function showTasklistTags(list: Tasklist) {
+    const tasklistTagList = document.getElementById('tags-tasklist-list') as HTMLElement;
+    const tagsEl = document.createElement('div');
+    tagsEl.classList.add('tags');
+    const tasklistTags: Tag[] =  await (await send(tagUrl + list.tasklistID, 'GET')).json();
+    tasklistTagList.innerHTML = "";
+    globalTags.forEach((tag: Tag) => {
+        const tagElement = document.createElement('div');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = tagInTasklistTags(tag.tagID, tasklistTags);
+
+        checkbox.addEventListener('change', async () => {
+            if (checkbox.checked) {
+                tagElement.classList.add('active');
+                tasklistTags.push(tag);
+                await send(tagUrl + "tasklistAdd/" + list.tasklistID + "/" + tag.tagID, 'PUT');
+            } else {
+                tagElement.classList.remove('active');
+                tasklistTags.splice(tasklistTags.indexOf(tag), 1);
+                await send(tagUrl + "tasklistRemove/" + list.tasklistID + "/" + tag.tagID, 'PUT');
+            }
+        });
+        tagElement.appendChild(checkbox);
+        tagElement.appendChild(document.createTextNode(" " + tag.name));
+        tasklistTagList.appendChild(tagElement);
+    });
+    const tagElement = document.createElement('div');
+    tagsEl.appendChild(tagElement);
 }
 
 async function addTag() {
@@ -286,9 +291,9 @@ async function showEditGlobalTags() {
     });
 }
 
-async function closeTasklist(list: Tasklist, listEl: HTMLElement, tasksEl: HTMLElement, deleteButton: HTMLElement) {
+async function closeTasklist(list: Tasklist, listEl: HTMLElement, tasksEl: HTMLElement, buttonDiv: HTMLElement) {
         listEl.removeChild(tasksEl);
-        listEl.removeChild(deleteButton);
+        listEl.removeChild(buttonDiv);
         listEl.classList.remove("extended");
         list.isLocked = 0;
         globalTasklists[globalTasklists.findIndex((tasklist: Tasklist) => tasklist.tasklistID === list.tasklistID)] = list;
@@ -370,8 +375,9 @@ async function createTasklist() {
 const activeFilters: Tag[] = [];
 
 async function filterTasklists() {
-    console.log('filter');
+    const filterTagsList = document.getElementById('filter-tags-list') as HTMLElement;
     const activeFilters: Tag[] = [];
+    filterTagsList.innerHTML = "";
     for (const tag of globalTags) {
         const tagElement = document.createElement('div');
         const checkbox = document.createElement('input');
@@ -389,13 +395,22 @@ async function filterTasklists() {
                 const tagsOfList: Tag[] = (await send(tagUrl + list.tasklistID, 'GET')).json;
                 if (activeFilters.length === 0) {
                     await showAllTasklists();
-                } else if (activeFilters.every((tag: Tag) => tagsOfList.includes(tag))) {
+                } else if (activeFilters.every((tag: Tag) => tagInTasklistTags(tag.tagID, tagsOfList))) {
                     await showTasklist(list);
                 }
             }
         });
         tagElement.appendChild(checkbox);
         tagElement.appendChild(document.createTextNode(" " + tag.name));
-        filterTagsModal.appendChild(tagElement);
+        filterTagsList.appendChild(tagElement);
     }
+}
+
+function tagInTasklistTags(tagID: number, tasklistTags: Tag[]): boolean {
+    for (const tasklistTag of tasklistTags) {
+        if (tasklistTag.tagID === tagID) {
+            return true;
+        }
+    }
+    return false;
 }
