@@ -392,11 +392,20 @@ async function filterTasklists() {
             }
             for (const list of globalTasklists) {
                 taskLists.innerHTML = "";
-                const tagsOfList: Tag[] = (await send(tagUrl + list.tasklistID, 'GET')).json;
+                const tagsOfList: Tag[] = await (await send(tagUrl + list.tasklistID, 'GET')).json();
                 if (activeFilters.length === 0) {
                     await showAllTasklists();
-                } else if (activeFilters.every((tag: Tag) => tagInTasklistTags(tag.tagID, tagsOfList))) {
-                    await showTasklist(list);
+                } else {
+                    let showCurrent = true;
+                    for (const filterTag of activeFilters) {
+                        if (!tagInTasklistTags(filterTag.tagID, tagsOfList)) {
+                            showCurrent = false;
+                        }
+                    }
+                    if (showCurrent) {
+                        const listEl: HTMLElement = await showTasklist(list);
+                        taskLists.appendChild(listEl);
+                    }
                 }
             }
         });
