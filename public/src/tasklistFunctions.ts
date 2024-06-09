@@ -57,9 +57,9 @@ export async function load(mail: string) {
     });
 
     orderViewButton.addEventListener('click', async () => {
-        /*lists.sort((a: Tasklist, b: Tasklist) => {
-            //return b.lastView.getTime() - a.lastView.getTime();
-        });*/
+        globalTasklists.sort((a: Tasklist, b: Tasklist) => {
+            return b.lastViewed - a.lastViewed;
+        });
         await showAllTasklists();
     });
 
@@ -142,18 +142,10 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
         alert('This tasklist is locked');
     } else {
         list.isLocked = 1;
+        list.lastViewed = Date.now();
+
         await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
         listEl.classList.add("extended");
-
-        const tagsEl = document.createElement('div');
-        tagsEl.classList.add('tags');
-        /* tag creation must be implemented for this
-        const allTags: Tag[] = await (await send(tagUrl + list.tasklistID, 'GET')).json;
-        allTags.forEach((tag: Tag) => {
-            const tagElement = document.createElement('span');
-            tagElement.innerHTML = tag.name;
-            tagsEl.appendChild(tagElement);
-        }); */
 
         const tasksEl = document.createElement('div');
         await loadTasks(list, tasksEl);
@@ -173,7 +165,6 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
             globalDeleteTasklistID = list.tasklistID;
         });
 
-        listEl.appendChild(tagsEl);
         listEl.appendChild(tasksEl);
         listEl.appendChild(deleteButton);
 
@@ -192,17 +183,16 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
                     return
                 }
             });
-            closeTasklist(list, listEl, tagsEl, tasksEl, deleteButton);
+            closeTasklist(list, listEl, tasksEl, deleteButton);
         });
 
         setTimeout(() => {
-            closeTasklist(list, listEl, tagsEl, tasksEl, deleteButton)
+            closeTasklist(list, listEl, tasksEl, deleteButton)
         }, 120000); // close automatically after 2 minutes
     }
 }
 
-async function closeTasklist(list: Tasklist, listEl: HTMLElement, tagsEl: HTMLElement, tasksEl: HTMLElement, deleteButton: HTMLElement) {
-        listEl.removeChild(tagsEl);
+async function closeTasklist(list: Tasklist, listEl: HTMLElement, tasksEl: HTMLElement, deleteButton: HTMLElement) {
         listEl.removeChild(tasksEl);
         listEl.removeChild(deleteButton);
         listEl.classList.remove("extended");
@@ -261,8 +251,6 @@ async function createTasklist() {
         return;
     }
 
-    console.log("sorting order: " + sortingOrder);
-
     const data = {
         title: title,
         description: description,
@@ -282,6 +270,14 @@ async function createTasklist() {
 
     createForm.style.display = 'none';
     await showAllTasklists();
+}
+
+document.addEventListener('mousedown', handleClickOutside);
+
+function handleClickOutside(event: MouseEvent) {
+    if (createForm && !createForm.contains(event.target as Node)) {
+        createForm.style.display = "none";
+    }
 }
 
 async function filterTasklists() {
