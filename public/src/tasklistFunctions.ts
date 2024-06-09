@@ -205,12 +205,12 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
             }
             checkBoxes.forEach(checkbox => {
                if(e.target === checkbox) {
-                   return
+                   return;
                }
             });
             listElements.forEach(listEl => {
                 if(e.target === listEl) {
-                    return
+                    return;
                 }
             });
             closeTasklist(list, listEl, tasksEl, buttonDiv);
@@ -262,8 +262,6 @@ async function addTag() {
         }
     }
     const tag: Tag = await (await send(tagUrl + globalMail + "/" + tagNameEl.value, 'POST')).json();
-    console.log('added tag');
-    console.log(tag);
     globalTags.push(tag);
     tagNameEl.value = "";
     await showEditGlobalTags();
@@ -275,7 +273,11 @@ async function showEditGlobalTags() {
     globalTags.forEach((tag: Tag) => {
         const tagElement = document.createElement('input');
         tagElement.value = tag.name;
-        tagElement.addEventListener('input', async () => {
+
+        const saveButton = document.createElement('button');
+        saveButton.innerHTML = "Save";
+        saveButton.classList.add('btn');
+        saveButton.addEventListener('click', async () => {
             globalTags.forEach((tag: Tag) => {
                 if (tagElement.value === tag.name) {
                     alert('This tag name already exists');
@@ -293,8 +295,9 @@ async function showEditGlobalTags() {
             await send(tagUrl + tag.tagID, 'DELETE');
             globalTags.splice(globalTags.indexOf(tag), 1);
             await showEditGlobalTags();
-        });
+        })
         globalTagsList.appendChild(tagElement);
+        globalTagsList.appendChild(saveButton);
         globalTagsList.appendChild(deleteButton);
     });
 }
