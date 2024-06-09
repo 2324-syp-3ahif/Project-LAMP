@@ -7,6 +7,7 @@ import {Tag} from "../interfaces/model/Tag";
 import {StringWrongFormatError} from "../interfaces/errors/StringWrongFormatError";
 import {deleteTag, updateTag, insertTag, selectTagsByEmail, selectTagsByTasklistID} from "../database-functions/tag-functions";
 import {isAuthenticated} from "../middleware/auth-handlers";
+import {addTagToTasklist} from "../database-functions/tagtasklist-functions";
 
 export const tagRouter = express.Router();
 
@@ -108,6 +109,44 @@ tagRouter.delete("/:tagID", isAuthenticated, async (req, res) => {
     }
 });
 
+tagRouter.put("/tasklistAdd/:tasklistID/:tagID", isAuthenticated, async (req, res) => {
+    const tasklistID = parseInt(req.params.tasklistID);
+    const tagID = parseInt(req.params.tagID);
+    if (isNaN(tasklistID) || tasklistID < 1) {
+        res.status(StatusCodes.BAD_REQUEST).send("The tasklistID must be a number.");
+        return;
+    }
+    if (isNaN(tagID) || tagID < 1) {
+        res.status(StatusCodes.BAD_REQUEST).send("The tagID must be a number.");
+        return;
+    }
+    try {
+        await addTagToTasklist(tasklistID, tagID);
+        res.status(StatusCodes.OK).send("Tag added to tasklist.");
+    } catch(err: any) {
+        if (err instanceof IdNotFoundError) {
+            res.status(StatusCodes.BAD_REQUEST).send("No Tag with this id found.");
+        }
+    }
+});
 
-
-
+tagRouter.put("/tasklistRemove/:tasklistID/:tagID", isAuthenticated, async (req, res) => {
+    const tasklistID = parseInt(req.params.tasklistID);
+    const tagID = parseInt(req.params.tagID);
+    if (isNaN(tasklistID) || tasklistID < 1) {
+        res.status(StatusCodes.BAD_REQUEST).send("The tasklistID must be a number.");
+        return;
+    }
+    if (isNaN(tagID) || tagID < 1) {
+        res.status(StatusCodes.BAD_REQUEST).send("The tagID must be a number.");
+        return;
+    }
+    try {
+        await addTagToTasklist(tasklistID, tagID);
+        res.status(StatusCodes.OK).send("Tag removed from tasklist.");
+    } catch(err: any) {
+        if (err instanceof IdNotFoundError) {
+            res.status(StatusCodes.BAD_REQUEST).send("No Tag with this id found.");
+        }
+    }
+});
