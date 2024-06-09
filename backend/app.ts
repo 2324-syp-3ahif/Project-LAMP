@@ -22,7 +22,7 @@ export const port = process.env.PORT || 2000;
 
 const limiter = RateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    limit: 100 // limit each IP to 100 requests per windowMs
+    limit: 300 // limit each IP to 100 requests per windowMs
 });
 
 async function startUp() {
