@@ -10,11 +10,7 @@ const taskContainer = document.getElementById('task-container') as HTMLDivElemen
 const createTaskBtn = document.getElementById('submit-task-btn');
 const popupBackdrop = document.getElementById("popupBackdrop") as HTMLDivElement;
 export let checkBoxes: HTMLInputElement[] = [];
-export let closePLS: boolean = true;
 
-export function setClosePLS(bool: boolean){
-    closePLS = bool;
-}
 // taskOverlay.className = "TaskOverlay"
 // taskOverlay.style.display = "none";
 // document.appendChild(taskOverlay);
@@ -152,20 +148,9 @@ export async function createTaskHTMLElement(task: Task, taskContainer: HTMLDivEl
     dropdownMenuDiv.className = 'dropdown-menu';
 
     // Create dropdown items
-    const priority1 = document.createElement('a');
-    priority1.className = 'dropdown-item';
-    priority1.setAttribute('id', 'priority-1');
-    priority1.textContent = '1';
-
-    const priority2 = document.createElement('a');
-    priority2.className = 'dropdown-item';
-    priority2.setAttribute('id', 'priority-2');
-    priority2.textContent = '2';
-
-    const priority3 = document.createElement('a');
-    priority3.className = 'dropdown-item';
-    priority3.setAttribute('id', 'priority-3');
-    priority3.textContent = '3';
+    const priority1 = createPriority(1);
+    const priority2 = createPriority(2);
+    const priority3 = createPriority(3);
 
     priority1.addEventListener('click', async (event) => {
         event.stopPropagation();
@@ -226,6 +211,14 @@ export async function createTaskHTMLElement(task: Task, taskContainer: HTMLDivEl
     });
 }
 
+function createPriority(priorityNr: number): HTMLElement {
+    const priority = document.createElement('a');
+    priority.className = 'dropdown-item';
+    priority.setAttribute('id', 'priority-' + priorityNr);
+    priority.textContent = priorityNr.toString();
+    return priority;
+}
+
 export async function createNewTask(tasklistID: number){
     taskContainer.classList.remove('hidden');
     popupBackdrop.classList.remove("hidden");
@@ -243,18 +236,17 @@ popupBackdrop.addEventListener('click', () => {
 });
 
 async function processTask(tasklistID: number){
-
     const title = (document.getElementById('name-input-task') as HTMLInputElement).value;
     const description = (document.getElementById('description-input-task') as HTMLInputElement).value;
     const date = (document.getElementById('date-input-task') as HTMLInputElement).value;
     const priority = (document.getElementById('priority-input-task') as HTMLSelectElement).value;
 
-    const obj: object = {
+    const obj: Object = {
         title: title,
         description: description,
         dueDate: (new Date(date)).toUTCString(),
         priority: parseInt(priority),
-        email: localStorage.getItem('mail')
+        email: localStorage.getItem('mail'),
     }
     const newTask = await send(taskUrl + tasklistID, 'POST', obj) as Task;
     taskListSocket.emit('new-task', tasklistID, newTask);

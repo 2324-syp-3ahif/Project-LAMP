@@ -44,7 +44,6 @@ taskRouter.get("/tasklistID/:tasklistID", isAuthenticated, async (req, res) => {
 
 taskRouter.post("/:tasklistID", isAuthenticated, async (req, res) => {
     const email = req.body.email;
-    console.log(email);
     const tasklistID = parseInt(req.params.tasklistID);
     if (tasklistID === undefined || isNaN(tasklistID) || tasklistID < 1) {
         console.log("this is the tasklistID: " + tasklistID);
