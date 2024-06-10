@@ -225,6 +225,7 @@ export async function createNewTask(tasklistID: number){
 
     createTaskBtn!.addEventListener('click', async () =>{
         await processTask(tasklistID);
+        console.log("processed task");
         taskContainer.classList.add('hidden');
         popupBackdrop.classList.add("hidden");
     });
@@ -241,16 +242,15 @@ async function processTask(tasklistID: number){
     const date = (document.getElementById('date-input-task') as HTMLInputElement).value;
     const priority = (document.getElementById('priority-input-task') as HTMLSelectElement).value;
 
-    const obj: Object = {
+    const obj: object = {
         title: title,
         description: description,
-        dueDate: (new Date(date)).toUTCString(),
+        dueDate: Date.parse((new Date(date)).toUTCString()),
         priority: parseInt(priority),
         email: localStorage.getItem('mail'),
     }
-    const newTask = await send(taskUrl + tasklistID, 'POST', obj) as Task;
+    const newTask: Task = await (await send(taskUrl + tasklistID, 'POST', obj)).json();
     taskListSocket.emit('new-task', tasklistID, newTask);
-    return;
 }
 
 async function processPriority(priority: number, task: Task) {
@@ -278,7 +278,7 @@ function formatDate(date: Date): string {
     return `${day}.${month}.${year}`;
 }
 
-
+/*
 function stringToDateAsNumber(timeString: string, dateString: string) {
     const time = timeString.split(":").map((x) => parseInt(x)).reduce((x, y) => (x * 60 + y) * 60000);
     const dateArray = dateString.split(".").map((x) => parseInt(x));
@@ -288,4 +288,4 @@ function stringToDateAsNumber(timeString: string, dateString: string) {
     const date = new Date(dateArray[2], dateArray[1] - 1, dateArray[0]);
     return time + date.valueOf();
 }
-
+*/
