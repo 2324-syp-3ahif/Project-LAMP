@@ -1,8 +1,20 @@
-export function generateWarningPopUp(message: string, errorCode: number): void{
-    alert("Error " + errorCode + ": " + message);
+import {logout} from "./loginFunctions";
+
+export const baseURL = "http://localhost:2000";
+let retryCount = 0;
+export function generateWarningPopUp(errorCode: number, errorName: string, errorMessage: string): void {
+    alert("Error " + errorCode + ": " + errorName + "\n" + errorMessage);
 }
-export const LOGIN_ROUTE = "http://localhost:2000/api/login";
+
+export const LOGIN_ROUTE = baseURL + "/api/login";
 export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", data?: object): Promise<any> {
+    let options: RequestInit = setupOptions(method, data);
+    const res = await fetch(route, options);
+    return handleResponse(res, route, method, data);
+}
+
+
+function setupOptions(method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", data?: object): RequestInit {
     let options: RequestInit = {method};
     options.headers = {"Content-Type": "application/json"};
     const jwt = localStorage.getItem('jwt');
@@ -12,29 +24,42 @@ export async function send(route: string, method: "GET" | "POST" | "PUT" | "PATC
     if (data) {
         options.body = JSON.stringify(data);
     }
-    const res = await fetch(route, options);
+    return options;
+}
+
+async function handleResponse(res: Response, route: string, method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", data?: object): Promise<any> {
     if (res.status === 401 && route !== LOGIN_ROUTE) {
-        const refreshTokenRes = await fetch("http://localhost:2000/api/token/refresh", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            credentials: 'include' // Include cookies in the request
-        });
-        if (refreshTokenRes.ok) {
-            const newToken = await refreshTokenRes.json();
-            localStorage.setItem('jwt', newToken.accessToken);
-            return send(route, method, data);
-        } else {
-            console.error('Error:', await refreshTokenRes.text());
-            generateWarningPopUp(await refreshTokenRes.text(), refreshTokenRes.status);
-            // Redirect the user to the login page
-            window.location.href = "/";
-            return refreshTokenRes;
-        }
+        return handleUnauthorized(res, route, method, data);
     } else if (!res.ok) {
-        const error = await res.text();
-        console.log(res.body);
-        console.error("Error: " + error);
-        generateWarningPopUp(error, res.status);
+        return handleUnsuccessfulResponse(res);
     }
+    retryCount = 0;
     return res;
+}
+
+async function handleUnauthorized(res: Response, route: string, method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", data?: object): Promise<any> {
+    retryCount = 0;
+    const refreshTokenRes = await fetch( baseURL + "/api/token/refresh", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        credentials: 'include' // Include cookies in the request
+    });
+    if (refreshTokenRes.ok) {
+        const newToken = await refreshTokenRes.json();
+        localStorage.setItem('jwt', newToken.accessToken);
+        return send(route, method, data);
+    } else {
+        const errorMessage = await refreshTokenRes.text();
+        console.error('Error:', errorMessage);
+        logout();
+        // Redirect the user to the login page
+        window.location.href = "/";
+        return refreshTokenRes;
+    }
+}
+
+async function handleUnsuccessfulResponse(res: Response): Promise<any> {
+    retryCount = 0;
+    console.log(res.statusText);
+    generateWarningPopUp(res.status, res.statusText, await res.text());
 }

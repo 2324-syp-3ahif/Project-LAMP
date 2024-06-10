@@ -16,6 +16,7 @@ import {StringToLongError} from "../interfaces/errors/StringToLongError";
 import {checkMailFormat} from "../utils";
 import {NotAValidNumberError} from "../interfaces/errors/NotAValidNumberError";
 import {isAuthenticated} from "../middleware/auth-handlers";
+import {getCollaboratorCount} from "../database-functions/usertaklist-functions";
 
 export const tasklistRouter = express.Router();
 
@@ -29,11 +30,15 @@ tasklistRouter.get("/email/:email", isAuthenticated, async (req, res) => {
         const tasklists: Tasklist[] = await selectTasklistsByEmail(email);
         res.status(StatusCodes.OK).send(tasklists);
     } catch(err) {
-        console.log(err);
         if (err instanceof IdNotFoundError) {
             res.status(StatusCodes.BAD_REQUEST).send("No user found");
         }
     }
+});
+tasklistRouter.get("/collaborators/count/:tasklistID", isAuthenticated, async (req, res) => {
+    const tasklistID = parseInt(req.params.tasklistID);
+    const collaboratorIDs = await getCollaboratorCount(tasklistID);
+    res.status(StatusCodes.OK).send(collaboratorIDs);
 });
 
 tasklistRouter.post("/:email", isAuthenticated, async (req, res) => {
@@ -59,7 +64,7 @@ tasklistRouter.post("/:email", isAuthenticated, async (req, res) => {
         res.status(StatusCodes.OK).send(await selectTasklistByTasklistID(tasklistID));
     } catch(err) {
         if (err instanceof Error) {
-            res.status(StatusCodes.BAD_REQUEST).send(err.message);
+            res.status(StatusCodes.BAD_REQUEST).send("An error occurred during the creation of the tasklist.");
         }
     }
 });
@@ -109,17 +114,17 @@ tasklistRouter.put("/:email/:tasklistID", isAuthenticated, async (req, res) => {
             if (err instanceof DateExpiredError) {
                 res.status(StatusCodes.BAD_REQUEST).send("Date is in the past!");
             } else if (err instanceof IdNotFoundError) {
-                res.status(StatusCodes.BAD_REQUEST).send("wrongID: " + err.message);
+                res.status(StatusCodes.BAD_REQUEST).send("ID was not found");
             } else if (err instanceof DateFormatError) {
                 res.status(StatusCodes.BAD_REQUEST).send("Date is in a wrong format!")
             } else if (err instanceof StringToLongError) {
-                res.status(StatusCodes.BAD_REQUEST).send(err.message);
+                res.status(StatusCodes.BAD_REQUEST).send("String was too long!");
             } else if (err instanceof NotAValidNumberError) {
                 res.status(StatusCodes.BAD_REQUEST).send("Number was not in a valid range!");
             }
         });
     }).catch((err: Error) => {
-        res.status(StatusCodes.BAD_REQUEST).send(err.message);
+        res.status(StatusCodes.BAD_REQUEST).send("No tasklist found.");
     });
 });
 

@@ -8,6 +8,7 @@ import {generateTokens, verifyToken} from "./tokenUtils";
 import {isAuthenticated} from "../middleware/auth-handlers";
 import { IdAlreadyExistsError } from '../interfaces/errors/IdAlreadyExistsError';
 import {generateRandomVerificationCode, sendVerificationMail} from "../repositories/mail-repo";
+import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
 
 dotenv.config();
 export const loginRouter = express.Router();
@@ -24,8 +25,11 @@ loginRouter.post("/login", async (req, res) => {
         res.cookie('refreshToken', refreshToken, { httpOnly: true, path: '/api/token/refresh' });
         res.json({ accessToken });
     } catch (e) {
-        console.error(e);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("An error occurred during login.");
+        if (e instanceof IdNotFoundError) {
+            res.status(StatusCodes.NOT_FOUND).send("ID was not found");
+        } else {
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("An error occurred during login.");
+        }
     }
 });
 
@@ -37,9 +41,8 @@ loginRouter.post("/register", async (req, res) => {
         res.cookie('refreshToken', refreshToken, { httpOnly: true, path: '/api/token/refresh' });
         res.status(StatusCodes.CREATED).json({ accessToken });
     } catch (e) {
-        console.error(e);
         if (e instanceof IdAlreadyExistsError) {
-            res.status(StatusCodes.BAD_REQUEST).send(e.message);
+            res.status(StatusCodes.BAD_REQUEST).send("ID already exists.");
         } else {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("An error occurred during registration.");
         }
@@ -68,7 +71,6 @@ loginRouter.post('/token/refresh', async (req, res) => {
                 res.json({ accessToken } );
             }
         } catch (err) {
-            console.error(err);
             res.sendStatus(StatusCodes.FORBIDDEN);
         }
     } else {

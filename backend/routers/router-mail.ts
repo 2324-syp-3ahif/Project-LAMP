@@ -3,8 +3,12 @@ import { sendInviteMail } from "../repositories/mail-repo";
 import {isAuthenticated} from "../middleware/auth-handlers";
 import {addCollaboratorToTasklist} from "../database-functions/usertaklist-functions";
 import jwt from 'jsonwebtoken';
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const mailRouter = express.Router();
+export const baseURL = process.env.PORT == undefined ? "http://project-lamp.duckdns.org" : "http://localhost:" + process.env.PORT;
 
 mailRouter.post("/invite/:receiver/:listID", isAuthenticated, (req, res) => {
     const receiver: string = req.params.receiver;
@@ -17,7 +21,7 @@ mailRouter.post("/invite/:receiver/:listID", isAuthenticated, (req, res) => {
     }
 
     const token: string = jwt.sign({ receiver, listID }, secretKey, { expiresIn: '24h' });
-    const confirmationLink: string = `http://localhost:${process.env.port}/api/mail/confirm?token=${token}`; // TODO change Link to real server
+    const confirmationLink: string = `${baseURL}/api/mail/confirm?token=${token}`; // TODO change Link to real server
 
     console.log(`Send this link to ${receiver}: ${confirmationLink}`);
     sendInviteMail(req.params.receiver, confirmationLink);
@@ -47,7 +51,7 @@ mailRouter.get('/confirm', async (req, res) => {
 
         await addCollaboratorToTasklist(parseInt(listID), receiver);
 
-        res.redirect(`http://localhost:${process.env.port}/success`);
+        res.redirect(`${baseURL}/success`);
     } catch (error) {
         res.status(400).send('Invalid or expired token');
     }

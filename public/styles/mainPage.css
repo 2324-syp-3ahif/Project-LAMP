@@ -58,7 +58,7 @@ body {
 
 #filter-btn:hover {
     background-color: #EEEEEE !important;
-    color: #00C2DD !important;
+    color: #3aafa9 !important;
     border: solid 2px #3751AD;
 }
 
@@ -128,6 +128,29 @@ body {
     z-index: 99;
 }
 
+/* Tags */
+.create-tag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#global-tags-list {
+    display: table;
+    vertical-align: center;
+    margin-bottom: 20px;
+}
+
+#filter-tags-modal {
+    display: flex;
+    flex-direction: column;
+    color: #EEEEEE;
+}
+
+#filter-tags-modal .active {
+    background-color: #3aafa9;
+}
+
 /* Task */
 .TaskOverlay{
     position: fixed;
@@ -152,5 +175,6 @@ body {
     border-radius: 20px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
 }
+
 
 
