@@ -1,7 +1,8 @@
 import {send} from "./sendUtils";
 import {Event} from "./model/Event";
-import { handlePageLoad } from "./loginFunctions";
+import {handlePageLoad} from "./loginFunctions";
 import {Task} from "./model/Task";
+import {Tasklist} from "./model/Tasklist";
 
 let events: Event[] = [];
 let tasks: Task[] = [];
@@ -11,9 +12,11 @@ const mappedEvents: Map<HTMLElement, Event> = new Map();
 const mappedTasks: Map<HTMLElement, Task> = new Map();
 let selectedEvent: Event | undefined;
 let selectedTask: Task | undefined;
+let mode: "event" | "task" = "event";
 
 const ELEMENTS = {
     eventContainer: document.getElementById("event-container") as HTMLElement,
+    taskContainer: document.getElementById("task-container") as HTMLElement,
     eventHeader: document.getElementById("event-header") as HTMLElement,
     eventNameInput: document.getElementById("name-input-event") as HTMLInputElement,
     eventDescriptionInput: document.getElementById("description-input-event") as HTMLInputElement,
@@ -24,26 +27,35 @@ const ELEMENTS = {
     eventSubmitButton: document.getElementById("submit-event-btn") as HTMLButtonElement,
     addEventBtn: document.getElementById("add-event-btn") as HTMLButtonElement,
     addTaskBtn: document.getElementById("add-task-btn") as HTMLButtonElement,
+    taskHeader: document.getElementById("task-header") as HTMLElement,
+    taskNameInput: document.getElementById("name-input-task") as HTMLInputElement,
+    taskDescriptionInput: document.getElementById("description-input-task") as HTMLInputElement,
+    taskDateInput: document.getElementById("date-input-task") as HTMLInputElement,
+    taskPriorityInput: document.getElementById("priority-input-task") as HTMLInputElement,
+    taskTimeInput: document.getElementById("time-input-task") as HTMLInputElement,
+    taskSubmitButton: document.getElementById("submit-task-btn") as HTMLButtonElement,
+    tasklistSelect: document.getElementById("tasklist-input-task") as HTMLSelectElement,
     backDrop: document.getElementById("popupBackdrop") as HTMLDivElement,
     changeWeekBeforeBtn: document.getElementById("change-viewed-week-before") as HTMLButtonElement,
     changeWeekAfterBtn: document.getElementById("change-viewed-week-after") as HTMLButtonElement,
     weekViewed: document.getElementById("week-viewed") as HTMLElement,
+
 }
 
 function getWeekstart() {
-    let caldate = new Date(Date.now() + 2 * 24 * 60* 60*1000);
+    let caldate = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
     let offset = caldate.getDay();
     if (offset === 0) {
         offset = 7;
     }
-
     return new Date(caldate.valueOf() - (offset - 1) * 24 * 60 * 60 * 1000);
 }
+
 let caldate = getWeekstart();
 ELEMENTS.weekViewed.innerText = `${caldate.getDate()}.${caldate.getMonth() + 1}.${caldate.getFullYear()} - ${caldate.getDate() + 6}.${caldate.getMonth() + 1}.${caldate.getFullYear()}`
 console.log(caldate.valueOf());
 ELEMENTS.changeWeekAfterBtn.addEventListener("click", async () => {
-   caldate = new Date(caldate.valueOf() + 7 * 24 * 60 * 60 * 1000);
+    caldate = new Date(caldate.valueOf() + 7 * 24 * 60 * 60 * 1000);
     ELEMENTS.weekViewed.innerText = `${caldate.getDate()}.${caldate.getMonth() + 1}.${caldate.getFullYear()} - ${caldate.getDate() + 6}.${caldate.getMonth() + 1}.${caldate.getFullYear()}`
     await handleWeekChange();
 });
@@ -60,7 +72,8 @@ async function handleWeekChange() {
     for (const value of eve) {
         value.remove();
         mappedEvents.delete(value);
-    } for(const value of tas) {
+    }
+    for (const value of tas) {
         value.remove();
         mappedTasks.delete(value);
     }
@@ -74,6 +87,7 @@ async function handleWeekChange() {
 
 
 ELEMENTS.addEventBtn.addEventListener("click", () => {
+    mode = "event";
     clearEventInput();
     ELEMENTS.eventHeader.innerText = "Create Event";
     ELEMENTS.eventSubmitButton.innerText = "Create Event";
@@ -82,8 +96,13 @@ ELEMENTS.addEventBtn.addEventListener("click", () => {
 });
 
 ELEMENTS.backDrop.addEventListener("click", () => {
-   ELEMENTS.eventContainer.classList.add("hidden");
-   ELEMENTS.backDrop.classList.add("hidden");
+    if (mode === "event") {
+        ELEMENTS.eventContainer.classList.add("hidden");
+    } else {
+        ELEMENTS.taskContainer.classList.add("hidden");
+    }
+    ELEMENTS.backDrop.classList.add("hidden");
+
 });
 
 ELEMENTS.eventSubmitButton.addEventListener("click", async () => {
@@ -92,40 +111,83 @@ ELEMENTS.eventSubmitButton.addEventListener("click", async () => {
 
     [hours, minutes] = ELEMENTS.eventEndTimeInput.value.split(':').map(x => parseInt(x));
     const endDate = new Date(ELEMENTS.eventDateInput.value).setHours(hours, minutes);
-   if (ELEMENTS.eventHeader.innerText === "Create Event") {
+    if (ELEMENTS.eventHeader.innerText === "Create Event") {
 
-       let event: Event = {
-           eventID: 0,
-           name: ELEMENTS.eventNameInput.value,
-           description: ELEMENTS.eventDescriptionInput.value,
-           startTime: startDate,
-           endTime: endDate,
-           fullDay: ELEMENTS.eventFullDayInput.checked,
-           userID: 0,
-       };
-       const res = await send("http://localhost:2000/api/event/" + localStorage.getItem('mail'), "POST", event);
-       event = await res.json() as Event;
-       addEvent(event);
-       window.location.reload();
-   } else {
-       let event: Event = {
-           eventID: selectedEvent?.eventID as number,
-           name: ELEMENTS.eventNameInput.value !== "" ? ELEMENTS.eventNameInput.value : undefined!,
-           description: ELEMENTS.eventDescriptionInput.value !== "" ? ELEMENTS.eventDescriptionInput.value : undefined!,
-           startTime: startDate,
-           endTime: endDate,
-           fullDay: ELEMENTS.eventFullDayInput.checked,
-           userID: undefined!,
-       };
-       const res = await send("http://localhost:2000/api/event/" + localStorage.getItem('mail'), "PUT", event);
-       event = await res.json() as Event;
-       updateEvent(event);
-       window.location.reload();
-   }
+        let event: Event = {
+            eventID: 0,
+            name: ELEMENTS.eventNameInput.value,
+            description: ELEMENTS.eventDescriptionInput.value,
+            startTime: startDate,
+            endTime: endDate,
+            fullDay: ELEMENTS.eventFullDayInput.checked,
+            userID: 0,
+        };
+        const res = await send("http://localhost:2000/api/event/" + localStorage.getItem('mail'), "POST", event);
+        event = await res.json() as Event;
+        addEvent(event);
+    } else {
+        let event: Event = {
+            eventID: selectedEvent?.eventID as number,
+            name: ELEMENTS.eventNameInput.value !== "" ? ELEMENTS.eventNameInput.value : undefined!,
+            description: ELEMENTS.eventDescriptionInput.value !== "" ? ELEMENTS.eventDescriptionInput.value : undefined!,
+            startTime: startDate,
+            endTime: endDate,
+            fullDay: ELEMENTS.eventFullDayInput.checked,
+            userID: undefined!,
+        };
+        const res = await send("http://localhost:2000/api/event/" + localStorage.getItem('mail'), "PUT", event);
+        event = await res.json() as Event;
+        updateEvent(event);
+    }
+    ELEMENTS.backDrop.classList.add("hidden");
+    ELEMENTS.eventContainer.classList.add("hidden");
 });
 
+ELEMENTS.taskSubmitButton.addEventListener("click", async () => {
+    let [hours, minutes] = ELEMENTS.taskTimeInput.value.split(':').map(x => parseInt(x));
+    const date = new Date(ELEMENTS.taskDateInput.value).setHours(hours, minutes);
+    console.log(selectedTask?.taskID);
+    let task: Task = {
+        taskID: selectedTask?.taskID!,
+        title: ELEMENTS.taskNameInput.value === "" ? undefined! : ELEMENTS.taskNameInput.value,
+        description: ELEMENTS.eventDescriptionInput.value,
+        dueDate: date,
+        isComplete: 0,
+        priority: parseInt(ELEMENTS.taskPriorityInput.value),
+        tasklistID: parseInt(ELEMENTS.tasklistSelect.value),
+    };
+    const data = {
+        taskID: task.taskID,
+        title: task.title,
+        description: task.description,
+        dueDate: task.dueDate,
+        priority: task.priority,
+        tasklistID: task.tasklistID,
+        email: localStorage.getItem("mail")
+    }
+    console.log(data.email);
+
+    if (ELEMENTS.taskHeader.innerText === "Create Task") {
+        const res = await send("http://localhost:2000/api/task/" + task.tasklistID, "POST", data);
+        task = await res.json() as Task;
+        addTask(task);
+    } else {
+        const res = await send("http://localhost:2000/api/task/" + task.taskID, "PUT", data);
+        task = await res.json() as Task;
+        updateTask(task);
+    }
+    ELEMENTS.backDrop.classList.add("hidden");
+    ELEMENTS.taskContainer.classList.add("hidden");
+});
+
+async function getTasklistIDs(): Promise<number[]> {
+    const result = await send("http://localhost:2000/api/tasklist/email/" + localStorage.getItem('mail'), "GET");
+    console.log(result);
+    const tasklists = await result.json();
+    return tasklists.map((tasklist: Tasklist) => tasklist.tasklistID);
+}
+
 function clearEventInput() {
-    console.log("Hallo");
     ELEMENTS.eventNameInput.value = "";
     ELEMENTS.eventDescriptionInput.value = "";
     ELEMENTS.eventDateInput.value = "";
@@ -134,8 +196,20 @@ function clearEventInput() {
     ELEMENTS.eventEndTimeInput.value = "";
 }
 
-ELEMENTS.addTaskBtn.addEventListener("click", () => {
+function clearTaskInput() {
+    ELEMENTS.taskNameInput.value = "";
+    ELEMENTS.taskDescriptionInput.value = "";
+    ELEMENTS.taskDateInput.value = "";
+    ELEMENTS.taskTimeInput.value = "";
+}
 
+ELEMENTS.addTaskBtn.addEventListener("click", () => {
+    mode = "task";
+    clearTaskInput();
+    ELEMENTS.taskHeader.innerText = "Create Task";
+    ELEMENTS.taskSubmitButton.innerText = "Create Task";
+    ELEMENTS.taskContainer.classList.remove("hidden");
+    ELEMENTS.backDrop.classList.remove("hidden");
 });
 
 window.onload = async function onload() {
@@ -145,7 +219,19 @@ window.onload = async function onload() {
 async function handleEventPageLoad() {
     await getEvents();
     await getTasks();
+    await setTasklistOptions();
     ELEMENTS.weekViewed.innerText = `${caldate.getDate()}.${caldate.getMonth() + 1}.${caldate.getFullYear()} - ${caldate.getDate() + 6}.${caldate.getMonth() + 1}.${caldate.getFullYear()}`
+}
+
+async function setTasklistOptions() {
+    ELEMENTS.tasklistSelect.innerHTML = "";
+    const tasklistIDs = await getTasklistIDs();
+    tasklistIDs.forEach(id => {
+        const option = document.createElement("option");
+        option.value = id.toString();
+        option.innerText = id.toString();
+        ELEMENTS.tasklistSelect.appendChild(option);
+    });
 }
 
 async function getEvents() {
@@ -195,6 +281,28 @@ function addTask(task: Task) {
         divToAddTo.appendChild(taskDiv);
         mappedTasks.set(taskDiv, task);
         tasks.push(task);
+        divToAddTo.addEventListener("click", (sender) => {
+            mode = "task";
+            sender.stopPropagation();
+            let target = sender.target as HTMLElement;
+            if (target === undefined) return;
+            while (!((target) as HTMLElement).classList.contains("task-container")) {
+                if (target) {
+                    target = target.parentElement!;
+                }
+            }
+            selectedTask = mappedTasks.get(target);
+            ELEMENTS.taskHeader.innerText = "Edit Event";
+            ELEMENTS.taskSubmitButton.innerText = "Edit Event";
+
+            ELEMENTS.taskNameInput.value = selectedTask?.title as string;
+            ELEMENTS.taskDescriptionInput.value = selectedTask?.description as string;
+            const time = new Date(selectedTask?.dueDate as number);
+            ELEMENTS.taskTimeInput.value = `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`;
+            ELEMENTS.taskDateInput.value = `${time.getFullYear()}-${(time.getMonth() + 1).toString().padStart(2, '0')}-${time.getDate().toString().padStart(2, '0')}`;
+            ELEMENTS.backDrop.classList.remove("hidden");
+            ELEMENTS.taskContainer.classList.remove("hidden");
+        });
     }
 }
 
@@ -215,10 +323,11 @@ function addEvent(event: Event) {
         mappedEvents.set(eventDiv, event);
         divToAddTo.appendChild(eventDiv);
         divToAddTo.addEventListener("click", (sender) => {
+            mode = "event";
             sender.stopPropagation();
             let target = sender.target as HTMLElement;
             if (target === undefined) return;
-            while(!((target) as HTMLElement).classList.contains("event-container")) {
+            while (!((target) as HTMLElement).classList.contains("event-container")) {
                 if (target) {
                     target = target.parentElement!;
                 }
@@ -238,7 +347,6 @@ function addEvent(event: Event) {
             ELEMENTS.eventDateInput.value = `${startTime.getFullYear()}-${(startTime.getMonth() + 1).toString().padStart(2, '0')}-${startTime.getDate().toString().padStart(2, '0')}`;
             ELEMENTS.backDrop.classList.remove("hidden");
             ELEMENTS.eventContainer.classList.remove("hidden");
-
         });
     }
 }

@@ -42,9 +42,12 @@ taskRouter.get("/tasklistID/:tasklistID", isAuthenticated, async (req, res) => {
     }
 });
 
-taskRouter.post("/:tasklistID", /*isAuthenticated,*/ async (req, res) => {
+taskRouter.post("/:tasklistID", isAuthenticated, async (req, res) => {
+    const email = req.body.email;
+    console.log(email);
     const tasklistID = parseInt(req.params.tasklistID);
     if (tasklistID === undefined || isNaN(tasklistID) || tasklistID < 1) {
+        console.log("this is the tasklistID: " + tasklistID);
         res.status(StatusCodes.BAD_REQUEST).send("UserID must be a positive number.");
         return;
     }
@@ -80,7 +83,7 @@ taskRouter.post("/:tasklistID", /*isAuthenticated,*/ async (req, res) => {
             tasklistID: tasklistID
     };
     try {
-        result.taskID = await insertTask(result.title, result.description, result.dueDate, result.priority, result.tasklistID, 'luca.stinkt@hodenkobold.com');
+        result.taskID = await insertTask(result.title, result.description, result.dueDate, result.priority, result.tasklistID, email);
         res.status(StatusCodes.CREATED).send(result);
     } catch(err) {
         if (err instanceof DateExpiredError) {
