@@ -19,6 +19,7 @@
     justify-content: space-between;
     height: auto;
     min-height: 30px;
+    margin-bottom: 10px;
 }
 
 #task-description {
@@ -39,7 +40,7 @@
 }
 .checked {
     background-color: #838093 !important;
-    text-decoration: line-through;
+    text-decoration: line-through !important;
 }
 .task-title {
   align-self: flex-end;
@@ -50,8 +51,27 @@
     margin: 10px;
 }
 
+body {
+    font-family: Arial, sans-serif;
+}
+
 .hidden {
     display: none !important;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.popup-content {
+    padding: 20px;
+    text-align: center;
 }
 
 #popupBackdrop {
@@ -63,3 +83,18 @@
     background: rgba(0, 0, 0, 0.5);
     z-index: 999;
 }
+
+.create-container {
+    width: 40%;
+    max-width: 325px;
+    padding: 20px;
+    /*align-items: center;*/
+    /*justify-content: center;*/
+    margin-top: 20px;
+    background-color: #00c2dd;
+    color: #eeeeee;
+    border-radius: 20px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+}
+
+

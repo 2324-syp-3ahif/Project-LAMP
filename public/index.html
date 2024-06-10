@@ -187,35 +187,7 @@
                 </p>
             </form>
         </div>
-        <div class="wrapper" id="create-task-form">
-            <form>
-                <div class="mb-2">
-                    <label for="name-task-input" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="name-task-input">
-                </div>
-                <div class="d-flex flex-row">
-                    <div class="mb-2" id="date-task-input-div">
-                        <label for="date-task-input" class="form-label">Date</label>
-                        <input type="text" class="form-control" id="date-task-input">
-                    </div>
-                    <select class="form-select" aria-label="Select priority" id="priority-task-input">
-                        <option selected>Select Priority</option>
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                    </select>
-<!--                    <div class="mb-2" id="time-task-input-div">-->
-<!--                        <label for="time-task-input" class="form-label">Time</label>-->
-<!--                        <input type="text" class="form-control" id="time-task-input">-->
-<!--                    </div>-->
-                </div>
-                <div class="mb-2">
-                    <label for="description-task-input" class="form-label">Add description</label>
-                    <input type="text" class="form-control" id="description-task-input">
-                </div>
-                <button type="button" class="btn btn-primary" id="submit-task-btn">Create Task</button>
-            </form>
-        </div>
+
 
         <div id="tasklists"></div>
         <div class="modal fade" id="delete-modal" tabindex="-1">
@@ -256,4 +228,41 @@
         <div id="popupBackdrop" class="hidden"></div>
         <div id="footer"></div>
     </body>
+
+<div class="popup hidden create-container" id="task-container">
+    <p id="task-header">Create Task</p>
+    <form>
+        <div class="mb-2">
+            <label for="name-input-task" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name-input-task">
+        </div>
+        <div class="d-flex flex-row">
+            <div class="mb-2" id="date-input-task-div">
+                <label for="date-input-task" class="form-label">Date</label>
+                <input type="date" class="form-control" id="date-input-task">
+            </div>
+        </div>
+<!--        <div class="d-flex flex-row" id="time-input-div">-->
+<!--            <div id="start-time-input-task-div" class="mb-2">-->
+<!--                <label for="start-time-input-task" class="form-label">Start Time</label>-->
+<!--                <input type="time" class="form-control" id="start-time-input-task">-->
+<!--            </div>-->
+<!--            <div id="end-time-input-task-div" class="mb-2">-->
+<!--                <label for="end-time-input-task" class="form-label">End Time</label>-->
+<!--                <input type="time" class="form-control" id="end-time-input-task">-->
+<!--            </div>-->
+<!--        </div>-->
+        <select class="form-select" aria-label="Select priority" id="priority-input-task">
+            <option selected>Select Priority</option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+        </select>
+        <div class="mb-2">
+            <label for="description-input-task" class="form-label">Description</label>
+            <textarea class="form-control" id="description-input-task"></textarea>
+        </div>
+        <button type="button" class="btn btn-primary" id="submit-task-btn">Create Task</button>
+    </form>
+</div>
 </html>

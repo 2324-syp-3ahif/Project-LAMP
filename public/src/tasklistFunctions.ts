@@ -2,7 +2,7 @@ import {baseURL, send} from './sendUtils';
 import {Tasklist} from './model/Tasklist';
 import {Tag} from './model/Tag';
 import {handlePageLoad} from "./loginFunctions";
-import {checkBoxes, closePLS, createNewTask, loadTasks, setClosePLS} from "./taskFuntions";
+import {checkBoxes, createNewTask, loadTasks} from "./taskFuntions";
 import {User} from "./model/User";
 const tasklistUrl: string = baseURL + '/api/tasklist/';
 const tagUrl: string = baseURL + '/api/tag/';
@@ -118,7 +118,8 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
 
     const newTaskButton = document.createElement('button');
     newTaskButton.classList.add('round-Button')
-    newTaskButton.addEventListener('click', async () => {
+    newTaskButton.addEventListener('click', async (e) => {
+        e.stopPropagation();
         await createNewTask(list.tasklistID);
     });
     const tags = document.createElement('div');
@@ -199,8 +200,7 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
         listEl.appendChild(buttonDiv);
 
         listEl.addEventListener('click', (e) => {
-            if (e.target === deleteButton || !closePLS) {
-                setClosePLS(true);
+            if (e.target === deleteButton) {
                 return;
             }
             checkBoxes.forEach(checkbox => {
