@@ -188,57 +188,42 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
         globalDeleteTasklistID = list.tasklistID;
     });
 
-    listEl.appendChild(tasksEl);
-    listEl.appendChild(deleteButton);
+    const tagButton = document.createElement('button');
+    tagButton.id = "tag-button";
+    tagButton.innerHTML = "Tags";
 
-    listEl.addEventListener('click', (e) => {
+    tagButton.classList.add('btn');
+    tagButton.setAttribute('data-bs-toggle', 'modal');
+    tagButton.setAttribute('data-bs-target', '#tasklist-tags-modal');
+    tagButton.addEventListener('click', async () => {
+        await showTasklistTags(list);
+    });
+
+    const buttonDiv = document.createElement('div');
+    buttonDiv.classList.add('d-flex');
+    buttonDiv.classList.add('flex-row');
+    buttonDiv.classList.add('justify-content-between');
+    buttonDiv.appendChild(deleteButton);
+    buttonDiv.appendChild(tagButton);
+
+    listEl.appendChild(tasksEl);
+    listEl.appendChild(buttonDiv);
+
+    listEl.addEventListener('click', async (e) => {
         if (e.target === deleteButton) {
             return;
         }
         checkBoxes.forEach(checkbox => {
            if(e.target === checkbox) {
-               return
+               return;
            }
         });
-
-        const tagButton = document.createElement('button');
-        tagButton.id = "tag-button";
-        tagButton.innerHTML = "Tags";
-
-        tagButton.classList.add('btn');
-        tagButton.setAttribute('data-bs-toggle', 'modal');
-        tagButton.setAttribute('data-bs-target', '#tasklist-tags-modal');
-        tagButton.addEventListener('click', async () => {
-            await showTasklistTags(list);
-        });
-
-        const buttonDiv = document.createElement('div');
-        buttonDiv.classList.add('d-flex');
-        buttonDiv.classList.add('flex-row');
-        buttonDiv.classList.add('justify-content-between');
-        buttonDiv.appendChild(deleteButton);
-        buttonDiv.appendChild(tagButton);
-
-        listEl.appendChild(tasksEl);
-        listEl.appendChild(buttonDiv);
-
-        listEl.addEventListener('click', (e) => {
-            if (e.target === deleteButton) {
+        listElements.forEach(listEl => {
+            if(e.target === listEl) {
                 return;
             }
-            checkBoxes.forEach(checkbox => {
-               if(e.target === checkbox) {
-                   return;
-               }
-            });
-            listElements.forEach(listEl => {
-                if(e.target === listEl) {
-                    return;
-                }
-            });
-            closeTasklist(list, listEl, tasksEl, buttonDiv);
         });
-        closeTasklist(list, listEl, tasksEl, buttonDiv);
+        await closeTasklist(list, listEl, tasksEl, buttonDiv);
     });
 }
 
