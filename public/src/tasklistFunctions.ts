@@ -4,12 +4,14 @@ import {Tag} from './model/Tag';
 import {handlePageLoad} from "./loginFunctions";
 import {checkBoxes, createNewTask, loadTasks} from "./taskFuntions";
 import {User} from "./model/User";
+declare const io: any;
 const tasklistUrl: string = baseURL + '/api/tasklist/';
 const tagUrl: string = baseURL + '/api/tag/';
 
 const taskLists = document.getElementById('tasklists') as HTMLElement;
 const createTasklistButton = document.getElementById('create-tasklist-btn') as HTMLButtonElement;
 const createForm = document.getElementById('create-tasklist-form') as HTMLFormElement;
+const deleteModal = document.getElementById('delete-modal') as HTMLElement;
 
 export let listElements: HTMLInputElement[] = [];
 let globalDeleteTasklistID = -1;
@@ -17,8 +19,18 @@ let globalTasklists: Tasklist[] = [];
 let globalTags: Tag[] = [];
 let globalMail: string = "";
 const globalUsersToInvite: User[] = [];
+const baseWebSocketUrl = 'ws://localhost:2000'
+export const taskListSocket = io(baseWebSocketUrl);
 const globalActiveFilters: Tag[] = [];
 
+taskListSocket.on('onDeletedTaskList', async (taskListID: number) => {
+    globalDeleteTasklistID = taskListID;
+    globalTasklists.splice(globalTasklists.findIndex((list: Tasklist) => list.tasklistID === globalDeleteTasklistID), 1);
+    await send(tasklistUrl + globalDeleteTasklistID, 'DELETE');
+    globalDeleteTasklistID = -1;
+    deleteModal.style.display = "hide";
+    await showAllTasklists();
+});
 window.onload = async function() {
     await handlePageLoad(load);
 }
@@ -91,6 +103,7 @@ function addListeners() {
 
 async function showAllTasklists() {
     taskLists.innerHTML = "";
+    taskListSocket.emit('join-taskList-rooms', globalTasklists.map((list: Tasklist) => list.tasklistID));
     for (const list of globalTasklists) {
         const listEl: HTMLElement = await showTasklist(list);
         taskLists.appendChild(listEl);
@@ -149,77 +162,69 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
 }
 
 export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
-    if (list.isLocked) {
-        list.isLocked = 0; // just for testing purposes
-        await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
-        alert('This tasklist is locked');
-    } else {
-        list.isLocked = 1;
-        list.lastViewed = Date.now();
+    await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
+    listEl.classList.add("extended");
+    list.lastViewed = Date.now();
 
-        await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
-        listEl.classList.add("extended");
+    await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
+    listEl.classList.add("extended");
 
-        const tasksEl = document.createElement('div');
-        await loadTasks(list, tasksEl);
+    const tasksEl = document.createElement('div');
+    tasksEl.id = "taskListTasks-" + list.tasklistID;
+    await loadTasks(list, tasksEl);
 
-        const deleteButton = document.createElement('button');
-        deleteButton.id = "delete-button";
-        const binImg = document.createElement('img');
-        binImg.alt = 'filter img';
-        binImg.src = "./img/bin_icon.png";
-        binImg.id = 'filter-img';
-        deleteButton.appendChild(binImg);
+    const deleteButton = document.createElement('button');
+    deleteButton.id = "delete-button";
+    const binImg = document.createElement('img');
+    binImg.alt = 'filter img';
+    binImg.src = "./img/bin_icon.png";
+    binImg.id = 'filter-img';
+    deleteButton.appendChild(binImg);
 
-        deleteButton.classList.add('btn');
-        deleteButton.setAttribute('data-bs-toggle', 'modal');
-        deleteButton.setAttribute('data-bs-target', '#delete-modal');
-        deleteButton.addEventListener('click', () => {
-            globalDeleteTasklistID = list.tasklistID;
+    deleteButton.classList.add('btn');
+    deleteButton.setAttribute('data-bs-toggle', 'modal');
+    deleteButton.setAttribute('data-bs-target', '#delete-modal');
+    deleteButton.addEventListener('click', () => {
+        globalDeleteTasklistID = list.tasklistID;
+    });
+
+    const tagButton = document.createElement('button');
+    tagButton.id = "tag-button";
+    tagButton.innerHTML = "Tags";
+
+    tagButton.classList.add('btn');
+    tagButton.setAttribute('data-bs-toggle', 'modal');
+    tagButton.setAttribute('data-bs-target', '#tasklist-tags-modal');
+    tagButton.addEventListener('click', async () => {
+        await showTasklistTags(list);
+    });
+
+    const buttonDiv = document.createElement('div');
+    buttonDiv.classList.add('d-flex');
+    buttonDiv.classList.add('flex-row');
+    buttonDiv.classList.add('justify-content-between');
+    buttonDiv.appendChild(deleteButton);
+    buttonDiv.appendChild(tagButton);
+
+    listEl.appendChild(tasksEl);
+    listEl.appendChild(buttonDiv);
+
+    listEl.addEventListener('click', async (e) => {
+        if (e.target === deleteButton) {
+            return;
+        }
+        checkBoxes.forEach(checkbox => {
+           if(e.target === checkbox) {
+               return;
+           }
         });
-
-        const tagButton = document.createElement('button');
-        tagButton.id = "tag-button";
-        tagButton.innerHTML = "Tags";
-
-        tagButton.classList.add('btn');
-        tagButton.setAttribute('data-bs-toggle', 'modal');
-        tagButton.setAttribute('data-bs-target', '#tasklist-tags-modal');
-        tagButton.addEventListener('click', async () => {
-            await showTasklistTags(list);
-        });
-
-        const buttonDiv = document.createElement('div');
-        buttonDiv.classList.add('d-flex');
-        buttonDiv.classList.add('flex-row');
-        buttonDiv.classList.add('justify-content-between');
-        buttonDiv.appendChild(deleteButton);
-        buttonDiv.appendChild(tagButton);
-
-        listEl.appendChild(tasksEl);
-        listEl.appendChild(buttonDiv);
-
-        listEl.addEventListener('click', (e) => {
-            if (e.target === deleteButton) {
+        listElements.forEach(listEl => {
+            if(e.target === listEl) {
                 return;
             }
-            checkBoxes.forEach(checkbox => {
-               if(e.target === checkbox) {
-                   return;
-               }
-            });
-            listElements.forEach(listEl => {
-                if(e.target === listEl) {
-                    return;
-                }
-            });
-            closeTasklist(list, listEl, tasksEl, buttonDiv);
         });
-
-        setTimeout(() => {
-            closeTasklist(list, listEl, tasksEl, buttonDiv)
-        }, 120000); // close automatically after 2 minutes
-    }
+        await closeTasklist(list, listEl, tasksEl, buttonDiv);
+    });
 }
 
 async function showTasklistTags(list: Tasklist) {
@@ -316,8 +321,8 @@ async function deleteTaskList(e: Event) {
     if (globalDeleteTasklistID !== -1) {
         globalTasklists.splice(globalTasklists.findIndex((list: Tasklist) => list.tasklistID === globalDeleteTasklistID), 1);
         await send(tasklistUrl + globalDeleteTasklistID, 'DELETE');
+        taskListSocket.emit('delete-taskList', globalDeleteTasklistID);
         globalDeleteTasklistID = -1;
-        const deleteModal = document.getElementById('delete-modal') as HTMLElement;
         deleteModal.style.display = "hide";
         await showAllTasklists();
     }
