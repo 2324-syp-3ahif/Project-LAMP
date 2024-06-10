@@ -32,7 +32,6 @@ const ELEMENTS = {
     taskDescriptionInput: document.getElementById("description-input-task") as HTMLInputElement,
     taskDateInput: document.getElementById("date-input-task") as HTMLInputElement,
     taskPriorityInput: document.getElementById("priority-input-task") as HTMLInputElement,
-    taskTimeInput: document.getElementById("time-input-task") as HTMLInputElement,
     taskSubmitButton: document.getElementById("submit-task-btn") as HTMLButtonElement,
     tasklistSelect: document.getElementById("tasklist-input-task") as HTMLSelectElement,
     backDrop: document.getElementById("popupBackdrop") as HTMLDivElement,
@@ -53,7 +52,6 @@ function getWeekstart() {
 
 let caldate = getWeekstart();
 ELEMENTS.weekViewed.innerText = `${caldate.getDate()}.${caldate.getMonth() + 1}.${caldate.getFullYear()} - ${caldate.getDate() + 6}.${caldate.getMonth() + 1}.${caldate.getFullYear()}`
-console.log(caldate.valueOf());
 ELEMENTS.changeWeekAfterBtn.addEventListener("click", async () => {
     caldate = new Date(caldate.valueOf() + 7 * 24 * 60 * 60 * 1000);
     ELEMENTS.weekViewed.innerText = `${caldate.getDate()}.${caldate.getMonth() + 1}.${caldate.getFullYear()} - ${caldate.getDate() + 6}.${caldate.getMonth() + 1}.${caldate.getFullYear()}`
@@ -144,14 +142,12 @@ ELEMENTS.eventSubmitButton.addEventListener("click", async () => {
 });
 
 ELEMENTS.taskSubmitButton.addEventListener("click", async () => {
-    let [hours, minutes] = ELEMENTS.taskTimeInput.value.split(':').map(x => parseInt(x));
-    const date = new Date(ELEMENTS.taskDateInput.value).setHours(hours, minutes);
-    console.log(selectedTask?.taskID);
+    const date = new Date(ELEMENTS.taskDateInput.value);
     let task: Task = {
         taskID: selectedTask?.taskID!,
         title: ELEMENTS.taskNameInput.value === "" ? undefined! : ELEMENTS.taskNameInput.value,
         description: ELEMENTS.eventDescriptionInput.value,
-        dueDate: date,
+        dueDate: date.valueOf(),
         isComplete: 0,
         priority: parseInt(ELEMENTS.taskPriorityInput.value),
         tasklistID: parseInt(ELEMENTS.tasklistSelect.value),
@@ -165,7 +161,6 @@ ELEMENTS.taskSubmitButton.addEventListener("click", async () => {
         tasklistID: task.tasklistID,
         email: localStorage.getItem("mail")
     }
-    console.log(data.email);
 
     if (ELEMENTS.taskHeader.innerText === "Create Task") {
         const res = await send("http://localhost:2000/api/task/" + task.tasklistID, "POST", data);
@@ -180,13 +175,6 @@ ELEMENTS.taskSubmitButton.addEventListener("click", async () => {
     ELEMENTS.taskContainer.classList.add("hidden");
 });
 
-async function getTasklistIDs(): Promise<number[]> {
-    const result = await send("http://localhost:2000/api/tasklist/email/" + localStorage.getItem('mail'), "GET");
-    console.log(result);
-    const tasklists = await result.json();
-    return tasklists.map((tasklist: Tasklist) => tasklist.tasklistID);
-}
-
 function clearEventInput() {
     ELEMENTS.eventNameInput.value = "";
     ELEMENTS.eventDescriptionInput.value = "";
@@ -200,7 +188,6 @@ function clearTaskInput() {
     ELEMENTS.taskNameInput.value = "";
     ELEMENTS.taskDescriptionInput.value = "";
     ELEMENTS.taskDateInput.value = "";
-    ELEMENTS.taskTimeInput.value = "";
 }
 
 ELEMENTS.addTaskBtn.addEventListener("click", () => {
@@ -223,13 +210,21 @@ async function handleEventPageLoad() {
     ELEMENTS.weekViewed.innerText = `${caldate.getDate()}.${caldate.getMonth() + 1}.${caldate.getFullYear()} - ${caldate.getDate() + 6}.${caldate.getMonth() + 1}.${caldate.getFullYear()}`
 }
 
+async function getTasklists(): Promise<Tasklist[]> {
+    const result = await send("http://localhost:2000/api/tasklist/email/" + localStorage.getItem('mail'), "GET");
+    return await result.json();
+}
+
 async function setTasklistOptions() {
     ELEMENTS.tasklistSelect.innerHTML = "";
-    const tasklistIDs = await getTasklistIDs();
-    tasklistIDs.forEach(id => {
+    const tasklists: Tasklist[] = await getTasklists();
+    tasklists.forEach(tasklist => {
         const option = document.createElement("option");
-        option.value = id.toString();
-        option.innerText = id.toString();
+        if (selectedTask?.tasklistID === tasklist.tasklistID) {
+            option.selected = true;
+        }
+        option.value = tasklist.tasklistID.toString();
+        option.innerText = tasklist.title;
         ELEMENTS.tasklistSelect.appendChild(option);
     });
 }
@@ -276,29 +271,29 @@ function addTask(task: Task) {
         taskDiv.innerHTML += `
                 <p class="task-data">${task.title}</p>
                 <hr class="parting-line">
-                <p class="task-data">${dueDate.getHours()}:${dueDate.getMinutes()}</p>
+                <p class="task-data">${dueDate.getHours().toString().padStart(2, '0')}:${dueDate.getMinutes().toString().padStart(2, '0')}</p>
             `;
         divToAddTo.appendChild(taskDiv);
         mappedTasks.set(taskDiv, task);
         tasks.push(task);
-        divToAddTo.addEventListener("click", (sender) => {
+        divToAddTo.addEventListener("click", async (sender) => {
             mode = "task";
             sender.stopPropagation();
             let target = sender.target as HTMLElement;
             if (target === undefined) return;
-            while (!((target) as HTMLElement).classList.contains("task-container")) {
+            while ((target as HTMLElement) === null || (target as HTMLElement).classList === null || !(target as HTMLElement).classList.contains("task-container")) {
                 if (target) {
                     target = target.parentElement!;
                 }
             }
             selectedTask = mappedTasks.get(target);
+            await setTasklistOptions();
             ELEMENTS.taskHeader.innerText = "Edit Event";
             ELEMENTS.taskSubmitButton.innerText = "Edit Event";
 
             ELEMENTS.taskNameInput.value = selectedTask?.title as string;
             ELEMENTS.taskDescriptionInput.value = selectedTask?.description as string;
             const time = new Date(selectedTask?.dueDate as number);
-            ELEMENTS.taskTimeInput.value = `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`;
             ELEMENTS.taskDateInput.value = `${time.getFullYear()}-${(time.getMonth() + 1).toString().padStart(2, '0')}-${time.getDate().toString().padStart(2, '0')}`;
             ELEMENTS.backDrop.classList.remove("hidden");
             ELEMENTS.taskContainer.classList.remove("hidden");
@@ -308,7 +303,7 @@ function addTask(task: Task) {
 
 function addEvent(event: Event) {
     events.push(event);
-    events.sort((a, b) => a.startTime - b.startTime);
+    events.sort((a, b) => a.fullDay ? 1 : a.startTime - b.startTime);
     if (event.startTime > caldate.getTime() && event.startTime < caldate.getTime() + 6 * 24 * 60 * 60 * 1000) {
         const startDate = new Date(event.startTime);
         const endDate = new Date(event.endTime);
@@ -343,7 +338,6 @@ function addEvent(event: Event) {
             const endTime = new Date(selectedEvent?.endTime as number);
             ELEMENTS.eventEndTimeInput.value = `${endTime.getHours().toString().padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}`;
             ELEMENTS.eventFullDayInput.checked = !!selectedEvent?.fullDay;
-            console.log(`${startTime.getDate().toString().padStart(2, '0')}.${(startTime.getMonth() + 1).toString().padStart(2, '0')}.${startTime.getFullYear()}`);
             ELEMENTS.eventDateInput.value = `${startTime.getFullYear()}-${(startTime.getMonth() + 1).toString().padStart(2, '0')}-${startTime.getDate().toString().padStart(2, '0')}`;
             ELEMENTS.backDrop.classList.remove("hidden");
             ELEMENTS.eventContainer.classList.remove("hidden");
@@ -380,4 +374,3 @@ function deleteTask(task: Task) {
         }
     }
 }
-
