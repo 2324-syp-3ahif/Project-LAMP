@@ -28,28 +28,13 @@ function setupOptions(method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", data?
 }
 
 async function handleResponse(res: Response, route: string, method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", data?: object): Promise<any> {
-    if (res.status === 429) {
-        return handleRateLimit(res, route, method, data);
-    }
-    else if (res.status === 401 && route !== LOGIN_ROUTE) {
+    if (res.status === 401 && route !== LOGIN_ROUTE) {
         return handleUnauthorized(res, route, method, data);
     } else if (!res.ok) {
         return handleUnsuccessfulResponse(res);
     }
     retryCount = 0;
     return res;
-}
-
-async function handleRateLimit(res: Response, route: string, method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", data?: object): Promise<any> {
-    const retryAfter = res.headers.get('Retry-After');
-    const delay = retryAfter ? parseInt(retryAfter) * 1000 : Math.pow(2, retryCount) * 1000;
-    retryCount++;
-    return new Promise((resolve) => {
-        setTimeout(async () => {
-            const result = await send(route, method, data);
-            resolve(result);
-        }, delay);
-    });
 }
 
 async function handleUnauthorized(res: Response, route: string, method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", data?: object): Promise<any> {
