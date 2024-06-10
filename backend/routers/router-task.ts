@@ -29,45 +29,24 @@ taskRouter.get("/tasklistID/:tasklistID", isAuthenticated, async (req, res) => {
 });
 
 taskRouter.post("/:tasklistID", /*isAuthenticated,*/ async (req, res) => {
-    const tasklistID = parseInt(req.params.tasklistID);
-    if (tasklistID === undefined || isNaN(tasklistID) || tasklistID < 1) {
-        res.status(StatusCodes.BAD_REQUEST).send("UserID must be a positive number.");
-        return;
+    for (const key in req.body) {
+        if (!req.body.hasOwnProperty(key) || req.body[key] === undefined) {
+            console.log(`${key}: ${req.body[key]}`);
+            res.status(400).send("Wrong input format.");
+        } else {
+            console.log(`${key}: ${req.body[key]}`);
+        }
     }
-
-    if (!utils.checkTitle(req.body.title)) {
-        res.status(StatusCodes.BAD_REQUEST).send("Title must be at least 1 character long.");
-        return;
-    }
-    const dueDate = req.body.dueDate;
-    // if (dueDate === undefined || Date.parse(dueDate) === NaN! ){
-    //     res.status(StatusCodes.BAD_REQUEST).send("date must lie in the future! and have the format dd.mm.yyyy")
-    //     return;
-    // }
-    const title = req.body.title;
-    const description = req.body.description ?? "";
-    const sortingOrder = req.body.sortingOrder ?? 1;
-    const priority = req.body.priority ?? 1;
-    if (!utils.checkSortingOrder(sortingOrder)) {
-        res.status(StatusCodes.BAD_REQUEST).send("SortingOrder must be a positive number.");
-        return;
-    }
-    if (!utils.checkPriority(priority)) {
-        res.status(StatusCodes.BAD_REQUEST).send("Priority must be a positive number.");
-        return;
-    }
-    const result: Task = {
-            taskID: 1,
-            title: title,
-            dueDate: dueDate,
-            priority: priority,
-            description: description,
-            isComplete: 0,
-            tasklistID: tasklistID
-    };
     try {
-        result.taskID = await insertTask(result.title, result.description, result.dueDate, result.priority, result.tasklistID, 'luca.stinkt@hodenkobold.com');
-        res.status(StatusCodes.CREATED).send(result);
+        const result = await insertTask(
+            req.body.title,
+            req.body.description,
+            Date.parse(req.body.dueDate),
+            parseInt(req.body.priority),
+            parseInt(req.params.tasklistID),
+            req.body.email
+        );
+        res.sendStatus(StatusCodes.CREATED).send(result);
     } catch(err) {
         if (err instanceof DateExpiredError) {
             res.status(StatusCodes.BAD_REQUEST).send("Date already was!");

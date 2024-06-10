@@ -24,7 +24,6 @@ loginRouter.post("/login", async (req, res) => {
         res.cookie('refreshToken', refreshToken, { httpOnly: true, path: '/api/token/refresh' });
         res.json({ accessToken });
     } catch (e) {
-        console.error(e);
         if (e instanceof IdNotFoundError) {
             res.status(StatusCodes.NOT_FOUND).send("ID was not found");
         } else {
@@ -41,7 +40,6 @@ loginRouter.post("/register", async (req, res) => {
         res.cookie('refreshToken', refreshToken, { httpOnly: true, path: '/api/token/refresh' });
         res.status(StatusCodes.CREATED).json({ accessToken });
     } catch (e) {
-        console.error(e);
         if (e instanceof IdAlreadyExistsError) {
             res.status(StatusCodes.BAD_REQUEST).send("ID already exists.");
         } else {
@@ -60,7 +58,6 @@ loginRouter.post('/token/refresh', async (req, res) => {
                 res.json({ accessToken } );
             }
         } catch (err) {
-            console.error(err);
             res.sendStatus(StatusCodes.FORBIDDEN);
         }
     } else {

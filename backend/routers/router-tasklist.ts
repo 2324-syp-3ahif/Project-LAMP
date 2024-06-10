@@ -30,7 +30,6 @@ tasklistRouter.get("/email/:email", isAuthenticated, async (req, res) => {
         const tasklists: Tasklist[] = await selectTasklistsByEmail(email);
         res.status(StatusCodes.OK).send(tasklists);
     } catch(err) {
-        console.log(err);
         if (err instanceof IdNotFoundError) {
             res.status(StatusCodes.BAD_REQUEST).send("No user found");
         }

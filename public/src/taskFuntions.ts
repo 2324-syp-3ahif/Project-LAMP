@@ -3,13 +3,14 @@ import {baseURL, send} from "./sendUtils";
 import {Task} from "./model/Task";
 import {extendTasklist} from "./tasklistFunctions";
 import {taskListSocket} from "./tasklistFunctions";
+import * as punycode from "node:punycode";
 
 const taskUrl: string = baseURL + '/api/task/';
-const createForm = document.getElementById('create-task-form') as HTMLFormElement;
-const createTaskBtn = document.getElementById('submit-task-btn')
+const taskContainer = document.getElementById('task-container') as HTMLDivElement;
+const createTaskBtn = document.getElementById('submit-task-btn');
 const popupBackdrop = document.getElementById("popupBackdrop") as HTMLDivElement;
 export let checkBoxes: HTMLInputElement[] = [];
-export let closePLS: boolean = true
+export let closePLS: boolean = true;
 
 export function setClosePLS(bool: boolean){
     closePLS = bool;
@@ -44,7 +45,7 @@ taskListSocket.on('onUpdateTask', async (updatedTask: Task) => {
 });
 
 export async function loadTasks(taskList: Tasklist, taskContainer: HTMLDivElement){
-    const data= await send(baseURL + '/api/task/tasklistID/' + taskList.tasklistID, 'GET');
+    const data = await send(baseURL + '/api/task/tasklistID/' + taskList.tasklistID, 'GET');
     if(!data.ok){
         return;
     }
@@ -60,36 +61,29 @@ export async function createTaskHTMLElement(task: Task, taskContainer: HTMLDivEl
     taskElement.id = 'task-' + task.taskID;
     //Task Header
     const taskHeader = document.createElement('div');
-    taskHeader.classList.add('d-flex');
-    taskHeader.classList.add('flex-row');
-    taskHeader.classList.add('task-header');
+    taskHeader.classList.add('d-flex', 'flex-row', 'task-header');
 
     const taskBody = document.createElement('div');
-    taskBody.classList.add('task-body');
-    taskBody.classList.add('d-flex');
-    taskBody.classList.add('flex-row');
-    taskBody.classList.add('hidden');
+    taskBody.classList.add('task-body', 'd-flex', 'flex-column', 'hidden');
 
     const checkBox_title_div = document.createElement('div');
-    checkBox_title_div.classList.add('checkBox_title_div');
-    checkBox_title_div.classList.add('d-flex');
-    checkBox_title_div.classList.add('flex-row');
+    checkBox_title_div.classList.add('checkBox_title_div', 'd-flex', 'flex-row');
+
     const date_div = document.createElement('div');
-    date_div.classList.add('date_div')
-    date_div.classList.add('d-flex');
-    date_div.classList.add('flex-row');
+    date_div.classList.add('date_div', 'd-flex', 'flex-row');
 
     const checkBox = document.createElement('input');
     checkBox.type = 'checkbox';
     checkBox.classList.add('task-checkbox');
     checkBoxes.push(checkBox);
     checkBox.checked = task.isComplete !== 0;
+
     if (checkBox.checked){
         taskHeader.classList.add('checked');
         taskBody.classList.add('checked');
     } else {
-        taskHeader.classList.remove('checked')
-        taskBody.classList.remove('checked')
+        taskHeader.classList.remove('checked');
+        taskBody.classList.remove('checked');
     }
 
     checkBox.addEventListener('click', async (event) => {
@@ -98,22 +92,38 @@ export async function createTaskHTMLElement(task: Task, taskContainer: HTMLDivEl
             taskHeader.classList.add('checked');
             taskBody.classList.add('checked');
         } else {
-            taskHeader.classList.remove('checked')
-            taskBody.classList.remove('checked')
+            taskHeader.classList.remove('checked');
+            taskBody.classList.remove('checked');
         }
         await processCheckBox(checkBox, task);
     });
+
     const taskTitle = document.createElement('h5');
     taskTitle.classList.add('task-title');
     taskTitle.textContent = task.title;
+    taskTitle.setAttribute('contenteditable', 'true');
+
+    taskTitle.addEventListener('input', async () =>{
+        if(taskTitle.innerText != "") {
+            task.title = taskTitle.innerText;
+            await send(taskUrl + task.taskID, 'PUT', task);
+        }
+    });
+
     const taskDate = document.createElement('h5');
     taskDate.classList.add('task-date');
+    taskDate.setAttribute('contenteditable', 'true');
     taskDate.textContent = formatDate(new Date(task.dueDate));
 
-    checkBox_title_div.appendChild(checkBox)
-    checkBox_title_div.appendChild(taskTitle)
+    taskDate.addEventListener('input', async () =>{
+        if(taskDate.innerText.length == 10) {
+            task.dueDate = Date.parse(taskDate.innerText);
+            await send(taskUrl + task.taskID, 'PUT', task);
+        }
+    });
 
-    date_div.appendChild(taskDate);
+    checkBox_title_div.appendChild(checkBox);
+    checkBox_title_div.appendChild(taskTitle);
 
     taskHeader.appendChild(checkBox_title_div);
     taskHeader.appendChild(date_div);
@@ -125,10 +135,6 @@ export async function createTaskHTMLElement(task: Task, taskContainer: HTMLDivEl
     const taskDescription = document.createElement('textarea');
     taskDescription.setAttribute('id', 'task-description');
     taskDescription.textContent = task.description;
-
-
-
-
 
     const dropdownDiv = document.createElement('div');
     dropdownDiv.className = 'dropdown';
@@ -221,44 +227,36 @@ export async function createTaskHTMLElement(task: Task, taskContainer: HTMLDivEl
 }
 
 export async function createNewTask(tasklistID: number){
+    taskContainer.classList.remove('hidden');
     popupBackdrop.classList.remove("hidden");
-    createForm.style.display = 'block';
 
     createTaskBtn!.addEventListener('click', async () =>{
         await processTask(tasklistID);
-        createForm.style.display = 'none';
+        taskContainer.classList.add('hidden');
         popupBackdrop.classList.add("hidden");
     });
 }
 
+popupBackdrop.addEventListener('click', () => {
+    popupBackdrop.classList.add("hidden");
+    taskContainer.classList.add('hidden');
+});
+
 async function processTask(tasklistID: number){
 
-    const title = (document.getElementById('name-task-input') as HTMLInputElement).value;
-    const description = (document.getElementById('description-task-input') as HTMLInputElement).value;
-    const priority = (document.getElementById('priority-task-input') as HTMLInputElement).value;
-    const date = (document.getElementById('date-task-input') as HTMLInputElement).value;
-    //const time = (document.getElementById('time-task-input') as HTMLInputElement).value;
+    const title = (document.getElementById('name-input-task') as HTMLInputElement).value;
+    const description = (document.getElementById('description-input-task') as HTMLInputElement).value;
+    const date = (document.getElementById('date-input-task') as HTMLInputElement).value;
+    const priority = (document.getElementById('priority-input-task') as HTMLSelectElement).value;
 
-    if (title.length > 50) {
-        alert('Title is too long, must be less than 50 characters');
-        return;
-    } else if (description.length > 255) {
-        alert('Description is too long, must be less than 255 characters');
-        return;
-    }
-    // else if(!checkTimeString(time)){
-    //     alert('Time has wrong format')
-    //     return;
-    // }
-    console.log(`date: ${date}`);
-    const task: object = {
+    const obj: object = {
         title: title,
-        date: date,
-        //time: time,
         description: description,
-        priority: priority
+        dueDate: (new Date(date)).toUTCString(),
+        priority: parseInt(priority),
+        email: localStorage.getItem('mail')
     }
-    const newTask = await send(taskUrl + tasklistID, 'POST', task) as Task;
+    const newTask = await send(taskUrl + tasklistID, 'POST', obj) as Task;
     taskListSocket.emit('new-task', tasklistID, newTask);
     return;
 }
@@ -295,10 +293,7 @@ function stringToDateAsNumber(timeString: string, dateString: string) {
     if (dateArray.length !== 3) {
         throw new Error("Invalid date format");
     }
-    console.log(dateArray[2], dateArray[1], dateArray[0]);
     const date = new Date(dateArray[2], dateArray[1] - 1, dateArray[0]);
-    console.log(time);
-    console.log(time + date.valueOf());
     return time + date.valueOf();
 }
 

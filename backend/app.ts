@@ -35,7 +35,7 @@ const limiter = RateLimit({
 async function startUp() {
     await createTables();
 }
-startUp().then(() => console.log("Tables created"));
+startUp().then(() => (console.log("Tables created.")));
 
 dotenv.config();
 app.use(cors());
