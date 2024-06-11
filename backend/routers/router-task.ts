@@ -9,8 +9,22 @@ import {NotAValidNumberError} from "../interfaces/errors/NotAValidNumberError";
 import {StatusCodes} from "http-status-codes";
 import {Task} from "../interfaces/model/Task";
 import {isAuthenticated} from "../middleware/auth-handlers";
+import {selectTasklistsByEmail} from "../database-functions/tasklist-functions";
 
 export const taskRouter = express.Router();
+
+taskRouter.get('/:email', isAuthenticated, async (req, res) => {
+    try {
+        const tasks: Task[] = [];
+        const tasklists = await selectTasklistsByEmail(req.params.email);
+        for (const tasklist of tasklists) {
+            tasks.push(...(await selectTasksByTasklistID(tasklist.tasklistID)));
+        }
+        res.send(tasks);
+    } catch(e : any) {
+        res.status(StatusCodes.BAD_REQUEST).send("Errorno  tasks found.");
+    }
+});
 
 taskRouter.get("/tasklistID/:tasklistID", isAuthenticated, async (req, res) => {
     const tasklistID = parseInt(req.params.tasklistID);
@@ -28,7 +42,8 @@ taskRouter.get("/tasklistID/:tasklistID", isAuthenticated, async (req, res) => {
     }
 });
 
-taskRouter.post("/:tasklistID", /*isAuthenticated,*/ async (req, res) => {
+taskRouter.post("/:tasklistID", isAuthenticated, async (req, res) => {
+    const email = req.body.email;
     const tasklistID = parseInt(req.params.tasklistID);
     if (tasklistID === undefined || isNaN(tasklistID) || tasklistID < 1) {
         res.status(StatusCodes.BAD_REQUEST).send("UserID must be a positive number.");
@@ -65,18 +80,20 @@ taskRouter.post("/:tasklistID", /*isAuthenticated,*/ async (req, res) => {
             isComplete: 0,
             tasklistID: tasklistID
     };
+    console.log(result);
     try {
-        result.taskID = await insertTask(result.title, result.description, result.dueDate, result.priority, result.tasklistID, 'luca.stinkt@hodenkobold.com');
+        result.taskID = await insertTask(result.title, result.description, result.dueDate, result.priority, result.tasklistID, email);
+        console.log("send BACK");
         res.status(StatusCodes.CREATED).send(result);
     } catch(err) {
         if (err instanceof DateExpiredError) {
             res.status(StatusCodes.BAD_REQUEST).send("Date already was!");
         } else if (err instanceof IdNotFoundError) {
-            res.status(StatusCodes.BAD_REQUEST).send("Wrong ID");
+            res.status(StatusCodes.BAD_REQUEST).send("WrongID: " + err.message);
         } else if (err instanceof DateFormatError) {
             res.status(StatusCodes.BAD_REQUEST).send("Date is wrong format!")
         } else if (err instanceof StringToLongError) {
-            res.status(StatusCodes.BAD_REQUEST).send("String was too long!");
+            res.status(StatusCodes.BAD_REQUEST).send(err.message);
         } else if (err instanceof NotAValidNumberError) {
             res.status(StatusCodes.BAD_REQUEST).send("Number was not in a valid range!");
         }
@@ -100,7 +117,7 @@ taskRouter.put("/:taskID", isAuthenticated, async (req, res) => {
         } else if (err instanceof DateFormatError) {
             res.status(StatusCodes.BAD_REQUEST).send("Date is wrong format!")
         } else if (err instanceof StringToLongError) {
-            res.status(StatusCodes.BAD_REQUEST).send("String was too long!");
+            res.status(StatusCodes.BAD_REQUEST).send(err.message);
         } else if (err instanceof NotAValidNumberError) {
             res.status(StatusCodes.BAD_REQUEST).send("Number was not in a valid range!");
         }

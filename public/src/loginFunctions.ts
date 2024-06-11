@@ -34,7 +34,7 @@ export async function handlePageLoad(func: (mail: string) => Promise<void>) {
     const timestamp = localStorage.getItem('timestamp');
     if (token && timestamp) {
         const currentTime = new Date().getTime();
-        const sessionTime = Number(timestamp) + 2 * 60 * 1000; // 30 minutes
+        const sessionTime = Number(timestamp) + 45 * 60 * 1000; // 30 minutes
         if (currentTime < sessionTime) {
             const isTokenValid = await verifyToken();
             if (isTokenValid) {
@@ -123,7 +123,7 @@ async function setLogoutDetails(email: string, username: string) {
     }
 }
 
-function logout(){
+export function logout(){
     localStorage.removeItem("jwt");
     localStorage.removeItem("mail");
     localStorage.removeItem("timestamp");

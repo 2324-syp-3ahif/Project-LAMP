@@ -17,6 +17,7 @@
     <link href="styles/taskStyle.css" rel="stylesheet">
     <link href="styles/login.css" rel="stylesheet">
 
+    <script src="/socket.io/socket.io.min.js"></script>
     <script type="module" src="./src/tasklistFunctions.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
@@ -45,6 +46,7 @@
                 </div>
             </div>
             <button class="btn btn-design" id="create-tasklist-btn">Create Tasklist</button>
+            <button class="btn btn-design" id="show-global-tags-btn" data-bs-toggle="modal" data-bs-target="#global-tags-modal">Tags</button>
             <button class="btn" type="button" id="filter-btn" data-bs-toggle="modal" data-bs-target="#filter-modal">
                 <img src="./img/filter.png" id="filter-img" alt="filter img"/>
             </button>
@@ -56,7 +58,7 @@
                         <h5 class="modal-title">Filter by Tags</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body" id="filter-tags-modal">
+                    <div class="modal-body" id="filter-tags-list">
 
                     </div>
                     <div class="modal-footer">
@@ -80,8 +82,8 @@
                     <button type="button" class="btn btn-primary" id="invite-btn" data-bs-toggle="modal" data-bs-target="#invite-modal">Invite!</button>
                 </div>
                 <div class="mb-2">
-                    <label for="tags-btn" class="form-label">Add tags to find your tasklist easier</label>
-                    <button type="button" class="btn btn-primary" id="tags-btn">Add Tags</button>
+                    <label for="add-tags-btn" class="form-label">Add tags to find your tasklist easier</label>
+                    <button type="button" class="btn btn-primary" id="add-tags-btn" data-bs-toggle="modal" data-bs-target="#add-tags-modal">Add Tags</button>
                 </div>
                 <select class="form-select" aria-label="Select priority" id="priority-input">
                     <option selected>Select Priority</option>
@@ -107,6 +109,36 @@
                     <div class="modal-body" id="invite-users-modal">
                         <input type="email" class="form-control" id="email-input" aria-label="invite-input" placeholder="example@email.com">
                         <button type="button" class="btn btn-primary" id="invite-user-btn">Invite</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="filter-by-tags-modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Filter tasklists by tags</h5>
+                    </div>
+                    <div class="modal-body" id="tags-modal-body">
+                        <div id="tags-list"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="tasklist-tags-modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Tags of this tasklist</h5>
+                    </div>
+                    <div class="modal-body" id="tags-tasklist-body">
+                        <div id="tags-tasklist-list"></div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -156,36 +188,6 @@
                 </p>
             </form>
         </div>
-        <div class="wrapper" id="create-task-form">
-            <form>
-                <div class="mb-2">
-                    <label for="name-task-input" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="name-task-input">
-                </div>
-                <div class="d-flex flex-row">
-                    <div class="mb-2" id="date-task-input-div">
-                        <label for="date-task-input" class="form-label">Date</label>
-                        <input type="text" class="form-control" id="date-task-input">
-                    </div>
-                    <select class="form-select" aria-label="Select priority" id="priority-task-input">
-                        <option selected>Select Priority</option>
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                    </select>
-<!--                    <div class="mb-2" id="time-task-input-div">-->
-<!--                        <label for="time-task-input" class="form-label">Time</label>-->
-<!--                        <input type="text" class="form-control" id="time-task-input">-->
-<!--                    </div>-->
-                </div>
-                <div class="mb-2">
-                    <label for="description-task-input" class="form-label">Add description</label>
-                    <input type="text" class="form-control" id="description-task-input">
-                </div>
-                <button type="button" class="btn btn-primary" id="submit-task-btn">Create Task</button>
-            </form>
-        </div>
-
         <div id="tasklists"></div>
         <div class="modal fade" id="delete-modal" tabindex="-1">
             <div class="modal-dialog">
@@ -196,12 +198,71 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No!</button>
-                        <button type="button" class="btn btn-primary" id="delete-tasklist-btn">Yes, delete!</button>
+                        <button type="button" class="btn btn-primary" id="delete-tasklist-btn" data-bs-dismiss="modal">Yes, delete!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="global-tags-modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">All Tags</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2 create-tag">
+                            <label for="tag-input"></label>
+                            <input type="text" class="form-control" id="tag-input" placeholder="Create Tag ...">
+                            <button type="button" class="btn btn-primary" id="add-tag-btn">Add</button>
+                        </div>
+                        <div id="global-tags-list"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="submit-tags-btn" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
         </div>
         <div id="popupBackdrop" class="hidden"></div>
         <div id="footer"></div>
+        <div class="popup hidden create-container" id="task-container">
+            <p id="task-header">Create Task</p>
+            <form>
+                <div class="mb-2">
+                    <label for="name-input-task" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name-input-task">
+                </div>
+                <div class="d-flex flex-row">
+                    <div class="mb-2" id="date-input-task-div">
+                        <label for="date-input-task" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="date-input-task">
+                    </div>
+                </div>
+                <!--        <div class="d-flex flex-row" id="time-input-div">-->
+                <!--            <div id="start-time-input-task-div" class="mb-2">-->
+                <!--                <label for="start-time-input-task" class="form-label">Start Time</label>-->
+                <!--                <input type="time" class="form-control" id="start-time-input-task">-->
+                <!--            </div>-->
+                <!--            <div id="end-time-input-task-div" class="mb-2">-->
+                <!--                <label for="end-time-input-task" class="form-label">End Time</label>-->
+                <!--                <input type="time" class="form-control" id="end-time-input-task">-->
+                <!--            </div>-->
+                <!--        </div>-->
+                <select class="form-select" aria-label="Select priority" id="priority-input-task">
+                    <option selected>Select Priority</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                </select>
+                <div class="mb-2">
+                    <label for="description-input-task" class="form-label">Description</label>
+                    <textarea class="form-control" id="description-input-task"></textarea>
+                </div>
+                <button type="button" class="btn btn-primary" id="submit-task-btn">Create Task</button>
+            </form>
+        </div>
     </body>
+
+
 </html>

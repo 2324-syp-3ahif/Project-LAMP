@@ -13,7 +13,6 @@ export async function deleteFromTable(query: string, ...params: any[]): Promise<
 }
 
 export function dateSmallerNowChecker(dueDate: number) {
-    console.log(dueDate - Date.now());
     if (dueDate <= Date.now()) {
         throw new DateExpiredError("Date already happened");
     }

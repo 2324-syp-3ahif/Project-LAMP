@@ -18,7 +18,7 @@
     background-color: #EEEEEE;
     border-radius: 15px;
     width: 100%;
-
+    margin-bottom: 10px;
 }
 
 .card-text {
@@ -29,15 +29,6 @@
 .modal-content {
     color: #EEEEEE;
     background-color: #3751AD;
-}
-#filter-tags-modal {
-    display: flex;
-    flex-direction: column;
-    color: #EEEEEE;
-}
-
-#filter-tags-modal .active {
-    background-color: #00C2DD;
 }
 
 .round-Button {

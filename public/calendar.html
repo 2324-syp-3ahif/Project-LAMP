@@ -34,19 +34,75 @@
 
 </div>
 
-<div id="calendar-header">
-    <div id="change-viewed-week">
-        <button class="change-viewed-week-btn" id="change-viewed-week-before">
-            <img id="arrow-left"  class="arrow" src="img/arrow.png">
-        </button>
-        <p id="week-viewed">Current-Week</p>
-        <button class="change-viewed-week-btn" id="change-viewed-week-after">
-            <img class="arrow" src="img/arrow.png">
-        </button>
+<div id="main-container">
+    <div id="calendar-header">
+        <div id="change-viewed-week">
+            <button class="change-viewed-week-btn" id="change-viewed-week-before">
+                <img id="arrow-left"  class="arrow" src="img/arrow.png">
+            </button>
+            <p id="week-viewed">Current-Week</p>
+            <button class="change-viewed-week-btn" id="change-viewed-week-after">
+                <img class="arrow" src="img/arrow.png">
+            </button>
+        </div>
+        <div id="add-button-container">
+            <button id="add-event-btn" class="btn btn-info add-btn">New Event</button>
+            <button id="add-task-btn" class="btn btn-info add-btn">New Task</button>
+        </div>
     </div>
-    <div>
-        <button id="add-event-btn" class="btn btn-info add-btn">New Event</button>
-        <button id="add-task-btn" class="btn btn-info add-btn">New Task</button>
+
+    <div id="calendar-container">
+        <div id="1-column" class="day-column">
+            <div class="day-name-container">
+                <p class="day-name">Monday</p>
+            </div>
+            <div class="calendar-entities" id="calendar-entities-1">
+
+            </div>
+        </div>
+        <div id="2-column" class="day-column">
+            <div class="day-name-container">
+                <p class="day-name">Tuesday</p>
+            </div>
+            <div class="calendar-entities" id="calendar-entities-2">
+            </div>
+        </div>
+
+        <div id="3-column" class="day-column">
+            <div class="day-name-container">
+                <p class="day-name">Wednesday</p>
+            </div>
+            <div class="calendar-entities" id="calendar-entities-3">
+            </div>
+        </div>
+        <div id="4-column" class="day-column">
+            <div class="day-name-container">
+                <p class="day-name">Thursday</p>
+            </div>
+            <div class="calendar-entities" id="calendar-entities-4">
+            </div>
+        </div>
+        <div id="5-column" class="day-column">
+            <div class="day-name-container">
+                <p class="day-name">Friday</p>
+            </div>
+            <div class="calendar-entities" id="calendar-entities-5">
+            </div>
+        </div>
+        <div id="6-column" class="day-column">
+            <div class="day-name-container">
+                <p class="day-name">Saturday</p>
+            </div>
+            <div class="calendar-entities" id="calendar-entities-6">
+            </div>
+        </div>
+        <div id="0-column" class="day-column">
+            <div class="day-name-container">
+                <p class="day-name">Sunday</p>
+            </div>
+            <div class="calendar-entities" id="calendar-entities-0">
+            </div>
+        </div>
     </div>
 </div>
 
@@ -87,96 +143,46 @@
     </form>
 </div>
 
-<div class="popup hidden create-container" id="create-task-container">
-<p id="add-task-header">Create Task</p>
+<div class="popup hidden create-container" id="task-container">
+<p id="task-header">Create Task</p>
 <form>
     <div class="mb-2">
-        <label for="name-task-input" class="form-label">Name</label>
-        <input type="text" class="form-control" id="name-task-input">
+        <label for="name-input-task" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name-input-task">
     </div>
     <div class="d-flex flex-row">
         <div class="mb-2" id="date-task-input-div">
-            <label for="date-task-input" class="form-label">Date</label>
-            <input type="text" class="form-control" id="date-task-input">
-        </div>
-        <div class="mb-2 form-check" id="fullday-task-input-div">
-            <label for="fullday-task-input" class="form-check-label">Full Day</label>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="fullday-task-input"/>
-            </div>
+            <label for="date-input-task" class="form-label">Date</label>
+            <input type="date" class="form-control" id="date-input-task">
         </div>
     </div>
-    <div class="d-flex flex-row" id="task-time-input-div">
-        <div id="task-start-time-input-div" class="mb-2">
-            <label for="task-start-time-input" class="form-label">Full Day</label>
-            <input type="text" class="form-control" id="task-start-time-input">
-        </div>
-        <div id="task-end-time-input-div" class="mb-2">
-            <label for="task-end-time-input" class="form-label">Full Day</label>
-            <input type="text" class="form-control" id="task-end-time-input">
+    <div class="d-flex flex-row" id="tasklist-input-div">
+        <div class="mb-2">
+            <label for="tasklist-input-task" class="form-label">Tasklist</label>
+            <select id="tasklist-input-task" class="form-control">
+            </select>
+            <label for="priority-input-task" class="form-label">Priority</label>
+            <select id="priority-input-task" class="form-control">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+            </select>
         </div>
     </div>
     <div class="mb-2">
-        <label for="description-task-input" class="form-label">Description</label>
-        <textarea class="form-control" id="description-task-input"></textarea>
+        <label for="description-input-task" class="form-label">Description</label>
+        <textarea class="form-control" id="description-input-task"></textarea>
     </div>
     <button type="button" class="btn btn-primary" id="submit-task-btn">Create Task</button>
 </form>
 </div>
 
-<div id="calendar-container">
-    <div id="1-column" class="day-column">
-        <div class="day-name-container">
-            <p class="day-name">Monday</p>
-        </div>
-        <div class="calendar-entities" id="calendar-entities-1">
-
-        </div>
-    </div>
-    <div id="2-column" class="day-column">
-        <div class="day-name-container">
-            <p class="day-name">Tuesday</p>
-        </div>
-        <div class="calendar-entities" id="calendar-entities-2">
-        </div>
-    </div>
-
-    <div id="3-column" class="day-column">
-        <div class="day-name-container">
-            <p class="day-name">Wednesday</p>
-        </div>
-        <div class="calendar-entities" id="calendar-entities-3">
-        </div>
-    </div>
-    <div id="4-column" class="day-column">
-        <div class="day-name-container">
-            <p class="day-name">Thursday</p>
-        </div>
-        <div class="calendar-entities" id="calendar-entities-4">
-        </div>
-    </div>
-    <div id="5-column" class="day-column">
-        <div class="day-name-container">
-            <p class="day-name">Friday</p>
-        </div>
-        <div class="calendar-entities" id="calendar-entities-5">
-        </div>
-    </div>
-    <div id="6-column" class="day-column">
-        <div class="day-name-container">
-            <p class="day-name">Saturday</p>
-        </div>
-        <div class="calendar-entities" id="calendar-entities-6">
-        </div>
-    </div>
-    <div id="0-column" class="day-column">
-        <div class="day-name-container">
-            <p class="day-name">Sunday</p>
-        </div>
-        <div class="calendar-entities" id="calendar-entities-0">
-        </div>
-</div>
-</div>
 
 <div class="wrapper" id="login-wrapper">
     <h2>Login</h2>

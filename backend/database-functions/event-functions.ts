@@ -42,7 +42,6 @@ export async function insertEvent(name: string, description: string, startTime: 
     await stmt.bind({1: name, 2: startTime, 3: endTime, 4: fullDay ? 1 : 0, 5: description, 6: userID});
     const operationResult = await stmt.run();
     if (operationResult.lastID === undefined) {
-        console.log(operationResult);
         throw new Error('Could not insert event');
     }
 
@@ -75,7 +74,6 @@ export async function updateEvent(event: object): Promise<void> {
         }
     }
     query = query + ` WHERE eventID = ?;`;
-    console.log(query);
     if (values.length === 0) {
         throw new MissingParametersError();
     }

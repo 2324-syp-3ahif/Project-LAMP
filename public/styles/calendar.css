@@ -52,18 +52,29 @@ body {
 }
 
 .add-btn {
-    width: 100%;
+    width: 10rem;
 }
 
-#calendar-container {
+#main-container {
     width: 80%;
     margin-left: auto;
     margin-right: auto;
-    border-radius: 30px;
-    background: #3751AD;
+}
+
+#calendar-container {
     display: flex;
+    background: #3751AD;
     padding: 1rem;
+    border-radius: 30px;
     min-height: 40rem;
+}
+
+#add-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem;
+
 }
 
 .day-name-container {
@@ -133,15 +144,14 @@ body {
 
 #change-viewed-week {
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* Center horizontally */
     align-items: center;
-    margin: 0.5rem;
     background-color: #00c2dd;
+    height: 3rem;
     border-radius: 20px;
 }
 
-#change-viewed-week p {
-
+#change-viewed-week * {
 }
 
 #calendar-header {
@@ -149,7 +159,6 @@ body {
     justify-content: space-between;
     align-items: center;
     margin: 0.5rem;
-
 }
 
 .change-viewed-week-btn {

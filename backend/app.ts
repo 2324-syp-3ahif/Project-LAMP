@@ -16,19 +16,26 @@ import {createTables} from "./database-functions/create-tables";
 import RateLimit from 'express-rate-limit';
 import csrf from 'lusca';
 
+import * as http from 'http';
+import {Server} from 'socket.io';
+import {Task} from "./interfaces/model/Task";
+import {selectTasklistsByEmail} from "./database-functions/tasklist-functions";
+
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
 export const port = process.env.PORT || 2000;
 
 
 const limiter = RateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    limit: 100 // limit each IP to 100 requests per windowMs
+    limit: 900// limit each IP to 100 requests per windowMs
 });
 
 async function startUp() {
     await createTables();
 }
-startUp().then(() => console.log("Tables created"));
+startUp().then(() => (console.log("Tables created.")));
 
 dotenv.config();
 app.use(cors());
@@ -49,6 +56,29 @@ const path = join(__dirname, "../public");
 const options = { extensions: ["html", "js"] }; // , "css"
 app.use(express.static(path, options));
 
-app.listen(port, () => {
+io.on('connection', async (socket) => {
+   socket.on('join-taskList-rooms', (taskListIDs: string[]) => {
+        socket.join(taskListIDs);
+   });
+    socket.on('delete-taskList', (taskListID: number) => {
+        socket.to(taskListID.toString()).emit('onDeletedTaskList', taskListID);
+        io.socketsLeave(taskListID.toString());
+        socket.rooms.delete(taskListID.toString());
+    });
+    socket.on('new-task', (taskListID: number, task: Task) => {
+        socket.to(taskListID.toString()).emit('onNewTask', taskListID, task);
+    });
+    socket.on('update-task', (task: Task) => {
+        socket.to(task.tasklistID.toString()).emit('onUpdateTask', task);
+    })
+    socket.on('disconnect', () => {
+        socket.rooms.forEach(room => {
+           socket.leave(room.toString())
+        });
+       socket.disconnect();
+   });
+});
+
+server.listen(port, () => {
     console.log(`Listening on http://localhost:` + port);
 });
