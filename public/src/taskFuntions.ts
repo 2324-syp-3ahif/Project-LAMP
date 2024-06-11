@@ -167,8 +167,13 @@ export async function loadTasks(taskList: Tasklist, taskContainer: HTMLDivElemen
 
         taskElement.addEventListener('click', async (event) => {
             event.stopPropagation();
-            taskBody.classList.remove('hidden');
-            taskHeader.classList.add('task-header-extended');
+            if(taskBody.classList.contains('hidden')){
+                taskBody.classList.remove('hidden');
+                taskHeader.classList.add('task-header-extended');
+            } else{
+                taskHeader.classList.remove('task-header-extended');
+                taskBody.classList.add('hidden')
+            }
         });
         taskElement.appendChild(taskHeader);
         taskElement.appendChild(taskBody);
