@@ -60,7 +60,7 @@ export async function createTaskHTMLElement(task: Task, taskContainer: HTMLDivEl
     taskHeader.classList.add('d-flex', 'flex-row', 'task-header');
 
     const taskBody = document.createElement('div');
-    taskBody.classList.add('task-body', 'd-flex', 'flex-column', 'hidden');
+    taskBody.classList.add('task-body', 'd-flex', 'flex-row', 'hidden');
 
     const checkBox_title_div = document.createElement('div');
     checkBox_title_div.classList.add('checkBox_title_div', 'd-flex', 'flex-row');
@@ -99,7 +99,8 @@ export async function createTaskHTMLElement(task: Task, taskContainer: HTMLDivEl
     taskTitle.textContent = task.title;
     taskTitle.setAttribute('contenteditable', 'true');
 
-    taskTitle.addEventListener('input', async () =>{
+    taskTitle.addEventListener('input', async (e) =>{
+        e.stopPropagation()
         if(taskTitle.innerText != "") {
             task.title = taskTitle.innerText;
             await send(taskUrl + task.taskID, 'PUT', task);
@@ -111,18 +112,20 @@ export async function createTaskHTMLElement(task: Task, taskContainer: HTMLDivEl
     taskDate.setAttribute('contenteditable', 'true');
     taskDate.textContent = formatDate(new Date(task.dueDate));
 
-    taskDate.addEventListener('input', async () =>{
+    taskDate.addEventListener('input', async (e) =>{
+        e.stopPropagation()
         if(taskDate.innerText.length == 10) {
             task.dueDate = Date.parse(taskDate.innerText);
             await send(taskUrl + task.taskID, 'PUT', task);
         }
     });
-
+    date_div.appendChild(taskDate);
     checkBox_title_div.appendChild(checkBox);
     checkBox_title_div.appendChild(taskTitle);
 
     taskHeader.appendChild(checkBox_title_div);
     taskHeader.appendChild(date_div);
+
 
     const taskDescriptionLabel = document.createElement('label');
     taskDescriptionLabel.setAttribute('for', 'task-description');
@@ -185,10 +188,18 @@ export async function createTaskHTMLElement(task: Task, taskContainer: HTMLDivEl
     taskBody.appendChild(taskDescription);
     taskBody.appendChild(dropdownDiv);
 
-    taskElement.addEventListener('click', async (event) => {
-        event.stopPropagation();
-        taskBody.classList.remove('hidden');
-        taskHeader.classList.add('task-header-extended');
+    taskHeader.addEventListener('click', (e) =>{
+        e.stopPropagation();3
+        if(taskHeader.classList.contains('task-header-extended')){
+            taskBody.classList.add('hidden');
+            taskHeader.classList.remove('task-header-extended');
+        } else {
+            taskBody.classList.remove('hidden');
+            taskHeader.classList.add('task-header-extended');
+        }
+    });
+    taskBody.addEventListener('click', (e)=>{
+        e.stopPropagation()
     });
     taskElement.appendChild(taskHeader);
     taskElement.appendChild(taskBody);
@@ -196,6 +207,7 @@ export async function createTaskHTMLElement(task: Task, taskContainer: HTMLDivEl
 
     taskDescription.addEventListener('blur', (event) => {
         // Handle the change
+        event.stopPropagation()
         const target = event.target as HTMLTextAreaElement;
         if (task.description !== target.value){
             task.description = target.value;
