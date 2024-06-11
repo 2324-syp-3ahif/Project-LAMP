@@ -33,3 +33,16 @@ async function alreadyAdded(tasklistID: number, email: string): Promise<boolean>
         await db.close();
     }
 }
+
+export async function getCollaboratorCount(taskListID: number): Promise<number> {
+    const db = await connectToDatabase();
+    try {
+        const stmt = await db.prepare("SELECT COUNT(userID) FROM USERTASKLISTS WHERE tasklistID = ?;");
+        await stmt.bind(taskListID);
+        const data: number = await stmt.get<number>() as number;
+        await stmt.finalize();
+        return data;
+    } finally {
+        await db.close();
+    }
+}

@@ -123,7 +123,7 @@ async function setLogoutDetails(email: string, username: string) {
     }
 }
 
-function logout(){
+export function logout(){
     localStorage.removeItem("jwt");
     localStorage.removeItem("mail");
     localStorage.removeItem("timestamp");
