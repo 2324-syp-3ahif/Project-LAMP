@@ -38,7 +38,6 @@ const ELEMENTS = {
     changeWeekBeforeBtn: document.getElementById("change-viewed-week-before") as HTMLButtonElement,
     changeWeekAfterBtn: document.getElementById("change-viewed-week-after") as HTMLButtonElement,
     weekViewed: document.getElementById("week-viewed") as HTMLElement,
-
 }
 
 function getWeekstart() {
@@ -267,29 +266,28 @@ function addTask(task: Task) {
         const divToAddTo = document.getElementById(`calendar-entities-${time.getDay()}`) as HTMLDivElement;
         const taskDiv = document.createElement("div");
         taskDiv.className = "calendar-entity task-container";
-        const dueDate = new Date(task.dueDate);
         taskDiv.innerHTML += `
                 <p class="task-data">${task.title}</p>
                 <hr class="parting-line">
-                <p class="task-data">${dueDate.getHours().toString().padStart(2, '0')}:${dueDate.getMinutes().toString().padStart(2, '0')}</p>
+                <p class="task-data">${task.isComplete ? "" : "Not "}Finished</p>
             `;
         divToAddTo.appendChild(taskDiv);
         mappedTasks.set(taskDiv, task);
         tasks.push(task);
-        divToAddTo.addEventListener("click", async (sender) => {
+        taskDiv.addEventListener("click", async (sender) => {
             mode = "task";
             sender.stopPropagation();
             let target = sender.target as HTMLElement;
             if (target === undefined) return;
-            while ((target as HTMLElement) === null || (target as HTMLElement).classList === null || !(target as HTMLElement).classList.contains("task-container")) {
+            while ((target as HTMLElement) !== null && (target as HTMLElement).classList !== null && !(target as HTMLElement).classList.contains("task-container")) {
                 if (target) {
                     target = target.parentElement!;
                 }
             }
             selectedTask = mappedTasks.get(target);
             await setTasklistOptions();
-            ELEMENTS.taskHeader.innerText = "Edit Event";
-            ELEMENTS.taskSubmitButton.innerText = "Edit Event";
+            ELEMENTS.taskHeader.innerText = "Edit Task";
+            ELEMENTS.taskSubmitButton.innerText = "Edit Task";
 
             ELEMENTS.taskNameInput.value = selectedTask?.title as string;
             ELEMENTS.taskDescriptionInput.value = selectedTask?.description as string;
@@ -317,7 +315,7 @@ function addEvent(event: Event) {
             `;
         mappedEvents.set(eventDiv, event);
         divToAddTo.appendChild(eventDiv);
-        divToAddTo.addEventListener("click", (sender) => {
+        eventDiv.addEventListener("click", (sender) => {
             mode = "event";
             sender.stopPropagation();
             let target = sender.target as HTMLElement;
