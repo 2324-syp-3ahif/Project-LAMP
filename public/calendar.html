@@ -34,19 +34,75 @@
 
 </div>
 
-<div id="calendar-header">
-    <div id="change-viewed-week">
-        <button class="change-viewed-week-btn" id="change-viewed-week-before">
-            <img id="arrow-left"  class="arrow" src="img/arrow.png">
-        </button>
-        <p id="week-viewed">Current-Week</p>
-        <button class="change-viewed-week-btn" id="change-viewed-week-after">
-            <img class="arrow" src="img/arrow.png">
-        </button>
+<div id="main-container">
+    <div id="calendar-header">
+        <div id="change-viewed-week">
+            <button class="change-viewed-week-btn" id="change-viewed-week-before">
+                <img id="arrow-left"  class="arrow" src="img/arrow.png">
+            </button>
+            <p id="week-viewed">Current-Week</p>
+            <button class="change-viewed-week-btn" id="change-viewed-week-after">
+                <img class="arrow" src="img/arrow.png">
+            </button>
+        </div>
+        <div id="add-button-container">
+            <button id="add-event-btn" class="btn btn-info add-btn">New Event</button>
+            <button id="add-task-btn" class="btn btn-info add-btn">New Task</button>
+        </div>
     </div>
-    <div>
-        <button id="add-event-btn" class="btn btn-info add-btn">New Event</button>
-        <button id="add-task-btn" class="btn btn-info add-btn">New Task</button>
+
+    <div id="calendar-container">
+        <div id="1-column" class="day-column">
+            <div class="day-name-container">
+                <p class="day-name">Monday</p>
+            </div>
+            <div class="calendar-entities" id="calendar-entities-1">
+
+            </div>
+        </div>
+        <div id="2-column" class="day-column">
+            <div class="day-name-container">
+                <p class="day-name">Tuesday</p>
+            </div>
+            <div class="calendar-entities" id="calendar-entities-2">
+            </div>
+        </div>
+
+        <div id="3-column" class="day-column">
+            <div class="day-name-container">
+                <p class="day-name">Wednesday</p>
+            </div>
+            <div class="calendar-entities" id="calendar-entities-3">
+            </div>
+        </div>
+        <div id="4-column" class="day-column">
+            <div class="day-name-container">
+                <p class="day-name">Thursday</p>
+            </div>
+            <div class="calendar-entities" id="calendar-entities-4">
+            </div>
+        </div>
+        <div id="5-column" class="day-column">
+            <div class="day-name-container">
+                <p class="day-name">Friday</p>
+            </div>
+            <div class="calendar-entities" id="calendar-entities-5">
+            </div>
+        </div>
+        <div id="6-column" class="day-column">
+            <div class="day-name-container">
+                <p class="day-name">Saturday</p>
+            </div>
+            <div class="calendar-entities" id="calendar-entities-6">
+            </div>
+        </div>
+        <div id="0-column" class="day-column">
+            <div class="day-name-container">
+                <p class="day-name">Sunday</p>
+            </div>
+            <div class="calendar-entities" id="calendar-entities-0">
+            </div>
+        </div>
     </div>
 </div>
 
@@ -127,59 +183,6 @@
 </form>
 </div>
 
-<div id="calendar-container">
-    <div id="1-column" class="day-column">
-        <div class="day-name-container">
-            <p class="day-name">Monday</p>
-        </div>
-        <div class="calendar-entities" id="calendar-entities-1">
-
-        </div>
-    </div>
-    <div id="2-column" class="day-column">
-        <div class="day-name-container">
-            <p class="day-name">Tuesday</p>
-        </div>
-        <div class="calendar-entities" id="calendar-entities-2">
-        </div>
-    </div>
-
-    <div id="3-column" class="day-column">
-        <div class="day-name-container">
-            <p class="day-name">Wednesday</p>
-        </div>
-        <div class="calendar-entities" id="calendar-entities-3">
-        </div>
-    </div>
-    <div id="4-column" class="day-column">
-        <div class="day-name-container">
-            <p class="day-name">Thursday</p>
-        </div>
-        <div class="calendar-entities" id="calendar-entities-4">
-        </div>
-    </div>
-    <div id="5-column" class="day-column">
-        <div class="day-name-container">
-            <p class="day-name">Friday</p>
-        </div>
-        <div class="calendar-entities" id="calendar-entities-5">
-        </div>
-    </div>
-    <div id="6-column" class="day-column">
-        <div class="day-name-container">
-            <p class="day-name">Saturday</p>
-        </div>
-        <div class="calendar-entities" id="calendar-entities-6">
-        </div>
-    </div>
-    <div id="0-column" class="day-column">
-        <div class="day-name-container">
-            <p class="day-name">Sunday</p>
-        </div>
-        <div class="calendar-entities" id="calendar-entities-0">
-        </div>
-</div>
-</div>
 
 <div class="wrapper" id="login-wrapper">
     <h2>Login</h2>
