@@ -1,0 +1,180 @@
+body {
+    font-family: sans-serif;
+    background-color: #EEEEEE;
+    padding: 80px 0 0;
+    margin: 0;
+    width: 100%;
+    height: auto;
+    min-width: 50%;
+    justify-content: center;
+}
+
+.btn {
+    background-color: #3751AD;
+    color: #EEEEEE;
+    border: none;
+    border-radius: 15px;
+    padding: 10px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #26397a !important;
+    color: #EEEEEE !important;
+}
+
+/* Top items */
+.top-items {
+    display: flex;
+    width: 100%;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    z-index: 25;
+}
+
+.dropdown-item {
+    cursor: pointer;
+}
+
+#ordering-btn {
+    margin-right: 30px;
+}
+
+#create-tasklist-btn {
+    margin-right: 30px;
+}
+
+#filter-img {
+    height: 30px;
+}
+
+#filter-btn {
+    background: none;
+    box-sizing: border-box;
+    border: solid 2px transparent;
+}
+
+#filter-btn:hover {
+    background-color: #EEEEEE !important;
+    color: #3aafa9 !important;
+    border: solid 2px #3751AD;
+}
+
+/* Create Tasklist Form */
+#create-tasklist-form {
+    display: none;
+    width: 40%;
+    transform: translateX(75%);
+    padding: 20px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    background-color: #3aafa9;
+    color: #eeeeee;
+    border-radius: 20px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+}
+
+#invite-btn #tags-btn {
+    align-self: flex-end;
+}
+
+#tags-btn {
+    float: right;
+}
+
+.form-select {
+    margin: 10px 0;
+    max-height: 37px;
+    align-self: flex-end;
+}
+
+/* Invite Modal */
+#invite-user-btn {
+    margin-top: 10px;
+    background-color: #3aafa9 !important;
+    color: #EEEEEE !important;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#invite-user-btn:hover {
+    background-color: #EEEEEE !important;
+    color: #3aafa9 !important;
+}
+.wrapper {
+    z-index: 100;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -65%);
+    max-width: 540px; /* max-width is now 90% of the viewport width */
+    width: 100%; /* width is now 90% of the parent element's width */
+    background: white;
+    padding: 2vw; /* padding is now 2% of the viewport width */
+    border-radius: 30px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+}
+.overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+}
+
+/* Tags */
+.create-tag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#global-tags-list {
+    display: table;
+    vertical-align: center;
+    margin-bottom: 20px;
+}
+
+#filter-tags-modal {
+    display: flex;
+    flex-direction: column;
+    color: #EEEEEE;
+}
+
+#filter-tags-modal .active {
+    background-color: #3aafa9;
+}
+
+/* Task */
+.TaskOverlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+}
+
+#create-task-form {
+    display: none;
+    width: 40%;
+    max-width: 325px;
+    padding: 20px;
+    /*align-items: center;*/
+    /*justify-content: center;*/
+    margin-top: 20px;
+    background-color: #3aafa9;
+    color: #eeeeee;
+    border-radius: 20px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+}
+
+
+

@@ -1,4 +1,4 @@
-import {send} from "./sendUtils";
+import {baseURL, send} from "./sendUtils";
 import {Event} from "./model/Event";
 import {handlePageLoad} from "./loginFunctions";
 import {Task} from "./model/Task";
@@ -119,7 +119,7 @@ ELEMENTS.eventSubmitButton.addEventListener("click", async () => {
             fullDay: ELEMENTS.eventFullDayInput.checked,
             userID: 0,
         };
-        const res = await send("http://localhost:2000/api/event/" + localStorage.getItem('mail'), "POST", event);
+        const res = await send(baseURL + "/api/event/" + localStorage.getItem('mail'), "POST", event);
         event = await res.json() as Event;
         addEvent(event);
     } else {
@@ -132,7 +132,7 @@ ELEMENTS.eventSubmitButton.addEventListener("click", async () => {
             fullDay: ELEMENTS.eventFullDayInput.checked,
             userID: undefined!,
         };
-        const res = await send("http://localhost:2000/api/event/" + localStorage.getItem('mail'), "PUT", event);
+        const res = await send(baseURL + "/api/event/" + localStorage.getItem('mail'), "PUT", event);
         event = await res.json() as Event;
         updateEvent(event);
     }
@@ -162,11 +162,11 @@ ELEMENTS.taskSubmitButton.addEventListener("click", async () => {
     }
 
     if (ELEMENTS.taskHeader.innerText === "Create Task") {
-        const res = await send("http://localhost:2000/api/task/" + task.tasklistID, "POST", data);
+        const res = await send(baseURL + "/api/task/" + task.tasklistID, "POST", data);
         task = await res.json() as Task;
         addTask(task);
     } else {
-        const res = await send("http://localhost:2000/api/task/" + task.taskID, "PUT", data);
+        const res = await send(baseURL + "/api/task/" + task.taskID, "PUT", data);
         task = await res.json() as Task;
         updateTask(task);
     }
@@ -210,7 +210,7 @@ async function handleEventPageLoad() {
 }
 
 async function getTasklists(): Promise<Tasklist[]> {
-    const result = await send("http://localhost:2000/api/tasklist/email/" + localStorage.getItem('mail'), "GET");
+    const result = await send(baseURL + "/api/tasklist/email/" + localStorage.getItem('mail'), "GET");
     return await result.json();
 }
 
@@ -229,7 +229,7 @@ async function setTasklistOptions() {
 }
 
 async function getEvents() {
-    const res = await send("http://localhost:2000/api/event/" + localStorage.getItem('mail'), "GET");
+    const res = await send(baseURL + "/api/event/" + localStorage.getItem('mail'), "GET");
     if (res.ok) {
         const data = await res.json();
         await loadEvents(data);
@@ -239,7 +239,7 @@ async function getEvents() {
 }
 
 async function getTasks() {
-    const res = await send("http://localhost:2000/api/task/" + localStorage.getItem('mail'), "GET");
+    const res = await send(baseURL + "/api/task/" + localStorage.getItem('mail'), "GET");
     if (res.ok) {
         const data = await res.json();
         await loadTasks(data);

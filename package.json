@@ -7,7 +7,10 @@
     "server-dev": "npx nodemon ./backend/app.ts",
     "start": "npx nodemon ./backend/app.ts",
     "client-dev": "npx tsc --watch --project public",
-    "prestart": "npx tsc --project public"
+    "prestart": "npx tsc --project public",
+    "prebuild": "npx cpx \"./public/**/*.{html,png,jpg,css}\" \"./dist/public\"",
+    "build": "npx tsc --build ./tsconfig.deploy-client.json &  npx tsc --build ./tsconfig.deploy-server.json",
+    "start-deploy": "cd dist & node ./server/app.js"
   },
   "keywords": [],
   "author": "",
@@ -46,6 +49,7 @@
     "@types/nodemailer": "^6.4.15",
     "@types/socket.io": "^3.0.2",
     "cookie-parser": "^1.4.6",
+    "cpx": "^1.5.0",
     "nodemo": "^1.0.0",
     "nodemon": "^3.1.3",
     "ts-node": "^10.9.2",

@@ -1,0 +1,14 @@
+{
+    "exclude": ["backend"],
+    "compilerOptions": {
+        "target": "es2015", // Set the JavaScript language version for emitted JavaScript and include compatible library declarations.
+        "moduleResolution": "node",
+        "module": "ES2015", // Specify what module code is generated.
+        "strict": true, // Enable all strict type-checking options.
+        "sourceMap": false, // Create source map files for emitted JavaScript files.
+        "strictNullChecks": false, // When type checking, dont't take into account null and undefined
+        "outDir": "./dist/public/",
+        "rootDir": "./public/",
+        "esModuleInterop": true // Emit additional JavaScript to ease the use of common patterns.
+    }
+}

@@ -1,6 +1,6 @@
 import {logout} from "./loginFunctions";
 
-export const baseURL = "http://localhost:2000";
+export const baseURL: string = "http://localhost:2000";
 let retryCount = 0;
 export function generateWarningPopUp(errorCode: number, errorName: string, errorMessage: string): void {
     alert("Error " + errorCode + ": " + errorName + "\n" + errorMessage);

@@ -1,0 +1,64 @@
+.navbar {
+    position: fixed;
+    font-size: 18px;
+    z-index: 50;
+    background-color: #6096FC;
+}
+
+.image-navbar {
+    height: 40px;
+    margin: 5px 5px 5px 10px;
+}
+
+#account-picture {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+}
+
+#account-picture:hover {
+    transform: scale(1.10);
+    transition: all 0.3s ease 0s;
+}
+
+.nav-item {
+    text-decoration: none;
+    align-self: center;
+    margin-right: 15px;
+    position: relative;
+    color: #EEEEEE;
+}
+
+.nav-link {
+    color: #EEEEEE;
+}
+/* underline animation */
+.heading{
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+    color: #EEEEEE;
+}
+/* stay color */
+.heading:hover {
+    color: #EEEEEE;
+}
+.heading::after {
+    content: '';
+    position: absolute;
+    width: calc(100% - 10px);
+    transform: scaleX(0);
+    height: 2px;
+    bottom: 5px;
+    left: 5px;
+    background-color: #EEEEEE;
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+}
+
+.heading:hover::after {
+    width: calc(100% - 10px);
+    color: #EEEEEE;
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}

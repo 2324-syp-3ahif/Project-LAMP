@@ -1,0 +1,15 @@
+#success {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+}
+
+#success h2 {
+    margin-bottom: 20px;
+}
+
+#success a {
+    margin-top: 20px;
+}
