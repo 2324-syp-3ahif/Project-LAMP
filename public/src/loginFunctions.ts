@@ -1,5 +1,4 @@
 import {baseURL, generateWarningPopUp, send} from "./sendUtils";
-
 const ELEMENTS = {
     switchModeToLogin: document.getElementById("switch-to-login") as HTMLElement,
     switchModeToSignUp: document.getElementById("switch-to-signup") as HTMLElement,
@@ -154,7 +153,7 @@ async function setLogoutDetails(email: string, username: string) {
 
 async function handleResetPassword(){
     const email = (document.getElementById("reset-password-email") as HTMLInputElement).value;
-    const res = await send("http://localhost:2000/api/resetPassword/mail", "PUT", {email});
+    const res = await send(baseURL + "/api/resetPassword/mail", "PUT", {email});
     if (res.ok) {
         localStorage.setItem('resetMail', email);
         ELEMENTS.resetPasswordWrapper.style.display = "none";
@@ -165,21 +164,21 @@ async function handleResetPassword(){
 }
 async function handleVerificationCode(){
     const code = ELEMENTS.verificationCodeInput.value;
-    const res = await send("http://localhost:2000/api/resetPassword/code/" + localStorage.getItem("resetMail") as string, "GET")
+    const res = await send(baseURL + "/api/resetPassword/code/" + localStorage.getItem("resetMail") as string, "GET")
     const resetCode = await res.text();
     if (code === resetCode) {
         ELEMENTS.verificationCodeWrapper.style.display = "none";
         ELEMENTS.newPasswordWrapper.style.display = "block";
-        await send("http://localhost:2000/api/resetPassword/mail", "DELETE", {email: localStorage.getItem("resetMail") as string});
+        await send(baseURL + "/api/resetPassword/mail", "DELETE", {email: localStorage.getItem("resetMail") as string});
     }
     else {
         generateWarningPopUp(401, "Invalid code", "The code you entered is invalid");
     }
 }
-function handleNewPassword(){
+async function handleNewPassword(){
     const newPassword = ELEMENTS.newPasswordInput.value;
     const email = localStorage.getItem('resetMail');
-    send("http://localhost:2000/api/user/resetPassword", "PATCH", {email: email, password: newPassword}).then(res => {
+    await send(baseURL + "/api/user/resetPassword", "PATCH", {email: email, password: newPassword}).then(res => {
         if (res.ok) {
             ELEMENTS.newPasswordWrapper.style.display = "none";
             ELEMENTS.loginWrapper.style.display = "block";
