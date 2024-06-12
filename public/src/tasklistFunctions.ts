@@ -100,7 +100,6 @@ function addListeners() {
     addTagBtn.addEventListener('click', addTag);
 }
 
-
 async function showAllTasklists() {
     taskLists.innerHTML = "";
     taskListSocket.emit('join-taskList-rooms', globalTasklists.map((list: Tasklist) => list.tasklistID));
@@ -195,7 +194,8 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
     tagButton.classList.add('btn');
     tagButton.setAttribute('data-bs-toggle', 'modal');
     tagButton.setAttribute('data-bs-target', '#tasklist-tags-modal');
-    tagButton.addEventListener('click', async () => {
+    tagButton.addEventListener('click', async (e) => {
+        e.stopPropagation();
         await showTasklistTags(list);
     });
 
@@ -210,18 +210,11 @@ export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
     listEl.appendChild(buttonDiv);
 
     listEl.addEventListener('click', async (e) => {
-        if (e.target === deleteButton) {
-            return;
-        }
+        e.stopPropagation();
         checkBoxes.forEach(checkbox => {
            if(e.target === checkbox) {
                return;
            }
-        });
-        listElements.forEach(listEl => {
-            if(e.target === listEl) {
-                return;
-            }
         });
         await closeTasklist(list, listEl, tasksEl, buttonDiv);
     });
@@ -308,12 +301,11 @@ async function showEditGlobalTags() {
 }
 
 async function closeTasklist(list: Tasklist, listEl: HTMLElement, tasksEl: HTMLElement, buttonDiv: HTMLElement) {
-        listEl.removeChild(tasksEl);
-        listEl.removeChild(buttonDiv);
-        listEl.classList.remove("extended");
-        list.isLocked = 0;
-        globalTasklists[globalTasklists.findIndex((tasklist: Tasklist) => tasklist.tasklistID === list.tasklistID)] = list;
-        await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
+    listEl.removeChild(tasksEl);
+    listEl.removeChild(buttonDiv);
+    listEl.classList.remove("extended");
+    globalTasklists[globalTasklists.findIndex((tasklist: Tasklist) => tasklist.tasklistID === list.tasklistID)] = list;
+    await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
 }
 
 async function deleteTaskList(e: Event) {
@@ -369,14 +361,6 @@ async function createTasklist() {
 
     createForm.style.display = 'none';
     await showAllTasklists();
-}
-
-document.addEventListener('mousedown', handleClickOutside);
-
-function handleClickOutside(event: MouseEvent) {
-    if (createForm && !createForm.contains(event.target as Node)) {
-        createForm.style.display = "none";
-    }
 }
 
 async function filterTasklists() {
