@@ -105,6 +105,13 @@ body {
     text-align: center;
 }
 
+.task-container {
+    height: 3rem;
+    margin-top: 0;
+    padding-bottom: 0;
+    padding-top: 0;
+}
+
 .event-container {
     height: 4rem;
     margin-top: 0;
@@ -144,14 +151,12 @@ body {
 
 #change-viewed-week {
     display: flex;
-    justify-content: center; /* Center horizontally */
+    justify-content: space-between;
     align-items: center;
-    background-color: #00c2dd;
+    background-color: #0dcaf0;
     height: 3rem;
+    width: 20rem;
     border-radius: 20px;
-}
-
-#change-viewed-week * {
 }
 
 #calendar-header {
@@ -165,7 +170,7 @@ body {
     height: 1.5rem;
     border: none;
     margin: 0 1rem;
-    background-color: #00c2dd;
+    background-color: #0dcaf0;
 }
 
 .change-viewed-week-btn > img {

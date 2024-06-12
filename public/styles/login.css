@@ -91,6 +91,7 @@ form .text h3 a:hover{
     cursor: pointer;
     margin-left: 10px;
 }
+<<<<<<< Updated upstream
 #switch-to-reset-password{
     text-decoration: underline;
     color: blue;
@@ -98,6 +99,9 @@ form .text h3 a:hover{
     margin-left: 10px;
 }
 .switch-mode-paragraph{
+=======
+.switch-mode-paragraph {
+>>>>>>> Stashed changes
     justify-content: center;
     display: flex;
 }
