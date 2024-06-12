@@ -187,6 +187,42 @@
                 </p>
             </form>
         </div>
+        <div class="wrapper" id="reset-password-wrapper">
+            <img id="back-button-login" class="backButton" src="img/backButton.png" alt="go back">
+            <h2 class="resetPassword-header">Reset Password</h2>
+            <form action="#">
+                <div class="input-box">
+                    <label for="reset-password-email"></label><input id="reset-password-email" type="text" placeholder="Enter your email" required>
+                </div>
+                <div class="input-box button">
+                    <input id="reset-password-button" type="button" value="Reset Password">
+                </div>
+            </form>
+        </div>
+        <div class="wrapper" id="verification-code-wrapper">
+            <img id="back-button-reset-pass" class="backButton" src="img/backButton.png" alt="go back">
+            <h2 class="resetPassword-header">Verification Code</h2>
+            <form action="#">
+                <div class="input-box">
+                    <label for="verification-code"></label><input id="verification-code" type="text" placeholder="Verification Code" maxlength="6" minlength="6" required>
+                </div>
+                <div class="input-box button">
+                    <input id="verification-code-button" type="button" value="Reset Password">
+                </div>
+            </form>
+        </div>
+        <div class="wrapper" id="new-password-wrapper">
+            <img id="back-button-verification-code" class="backButton" src="img/backButton.png" alt="go back">
+            <h2>New Password</h2>
+            <form action="#">
+                <div class="input-box">
+                    <label for="new-password"></label><input id="new-password" type="password" placeholder="Create password" required>
+                </div>
+                <div class="input-box button">
+                    <input id="new-password-button" type="button" value="Reset Password">
+                </div>
+            </form>
+        </div>
         <div id="tasklists"></div>
         <div class="modal fade" id="delete-modal" tabindex="-1">
             <div class="modal-dialog">

@@ -21,7 +21,10 @@ const ELEMENTS = {
     verificationCodeButton: document.getElementById("verification-code-button") as HTMLInputElement,
     newPasswordWrapper: document.getElementById("new-password-wrapper") as HTMLElement,
     newPasswordInput: document.getElementById("new-password") as HTMLInputElement,
-    newPasswordButton: document.getElementById("new-password-button") as HTMLInputElement
+    newPasswordButton: document.getElementById("new-password-button") as HTMLInputElement,
+    backButtonLogin: document.getElementById("back-button-login") as HTMLElement,
+    backButtonResetPassword: document.getElementById("back-button-reset-pass") as HTMLElement,
+    backButtonVerificationCode: document.getElementById("back-button-verification-code") as HTMLElement
 };
 const overlay = document.createElement("div");
 overlay.className = "overlay";
@@ -36,6 +39,15 @@ ELEMENTS.signupWrapper.addEventListener("keydown", event => event.key === "Enter
 ELEMENTS.resetPasswordButton.addEventListener("click", handleResetPassword);
 ELEMENTS.verificationCodeButton.addEventListener("click", handleVerificationCode);
 ELEMENTS.newPasswordButton.addEventListener("click", handleNewPassword);
+ELEMENTS.backButtonLogin.addEventListener("click", e => window.location.href = "/");
+ELEMENTS.backButtonResetPassword.addEventListener("click", e => {
+    ELEMENTS.verificationCodeWrapper.style.display = "none";
+    switchToResetPassword();
+});
+ELEMENTS.backButtonVerificationCode.addEventListener("click", async e => {
+    ELEMENTS.newPasswordWrapper.style.display = "none";
+    await handleResetPassword();
+});
 let load = async function (mail: string): Promise<void> {
 
 }
@@ -142,10 +154,8 @@ async function setLogoutDetails(email: string, username: string) {
 
 async function handleResetPassword(){
     const email = (document.getElementById("reset-password-email") as HTMLInputElement).value;
-    const res = await send("http://localhost:2000/api/resetPassword/mail", "POST", {email});
+    const res = await send("http://localhost:2000/api/resetPassword/mail", "PUT", {email});
     if (res.ok) {
-        const { code } = await res.json();
-        localStorage.setItem('resetCode', code);
         localStorage.setItem('resetMail', email);
         ELEMENTS.resetPasswordWrapper.style.display = "none";
         ELEMENTS.verificationCodeWrapper.style.display = "block";
@@ -153,12 +163,14 @@ async function handleResetPassword(){
         generateWarningPopUp(res.status, "Reset password failed", res.statusText)
     }
 }
-function handleVerificationCode(){
+async function handleVerificationCode(){
     const code = ELEMENTS.verificationCodeInput.value;
-    const resetCode = localStorage.getItem('resetCode');
+    const res = await send("http://localhost:2000/api/resetPassword/code/" + localStorage.getItem("resetMail") as string, "GET")
+    const resetCode = await res.text();
     if (code === resetCode) {
         ELEMENTS.verificationCodeWrapper.style.display = "none";
         ELEMENTS.newPasswordWrapper.style.display = "block";
+        await send("http://localhost:2000/api/resetPassword/mail", "DELETE", {email: localStorage.getItem("resetMail") as string});
     }
     else {
         generateWarningPopUp(401, "Invalid code", "The code you entered is invalid");
