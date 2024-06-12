@@ -51,14 +51,19 @@ loginRouter.post("/register", async (req, res) => {
 
 loginRouter.post("/resetPassword/mail", async (req, res) => {
    const email = req.body.email;
-    const user = await selectUserByEmail(email);
-    if (user) {
-        const code = generateRandomVerificationCode();
-        sendVerificationMail(email, code);
-        res.status(StatusCodes.OK).json({ code });
-    } else {
-        res.sendStatus(StatusCodes.NOT_FOUND);
-    }
+   try {
+       const user = await selectUserByEmail(email);
+       if (user) {
+           const code = generateRandomVerificationCode();
+           sendVerificationMail(email, code);
+           res.status(StatusCodes.OK).json({code});
+       } else {
+           res.status(StatusCodes.NOT_FOUND).send("User not found.");
+       }
+   } catch(err) {
+       res.status(StatusCodes.NOT_FOUND).send("User not found.");
+       return;
+   }
 });
 
 loginRouter.post('/token/refresh', async (req, res) => {
