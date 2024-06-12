@@ -33,6 +33,12 @@
     color: #EEEEEE;
 }
 /* underline animation */
+.heading{
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+    color: #EEEEEE;
+}
 /* stay color */
 .heading:hover {
     color: #EEEEEE;
@@ -49,21 +55,10 @@
     transform-origin: bottom right;
     transition: transform 0.25s ease-out;
 }
+
 .heading:hover::after {
     width: calc(100% - 10px);
     color: #EEEEEE;
     transform: scaleX(1);
     transform-origin: bottom left;
-}
-
-.heading {
-    color: #EEEEEE;
-    text-decoration: none;
-    display: inline-block;
-    position: relative;
-}
-
-.add-btn {
-    background-color: #00C2DD;
-    color: #212529;
 }
