@@ -138,6 +138,7 @@ ELEMENTS.eventSubmitButton.addEventListener("click", async () => {
     }
     ELEMENTS.backDrop.classList.add("hidden");
     ELEMENTS.eventContainer.classList.add("hidden");
+    window.location.reload();
 });
 
 ELEMENTS.taskSubmitButton.addEventListener("click", async () => {
@@ -172,6 +173,7 @@ ELEMENTS.taskSubmitButton.addEventListener("click", async () => {
     }
     ELEMENTS.backDrop.classList.add("hidden");
     ELEMENTS.taskContainer.classList.add("hidden");
+    window.location.reload();
 });
 
 function clearEventInput() {
@@ -249,12 +251,16 @@ async function getTasks() {
 }
 
 async function loadTasks(tasksLocal: Task[]) {
+    tasks = [];
+    tasksLocal.sort((a, b) => a.dueDate - b.dueDate);
     tasksLocal.forEach(task => {
         addTask(task);
     });
 }
 
 async function loadEvents(eventsLocal: Event[]) {
+    eventsLocal.sort((a, b) => a.fullDay ? -1 : a.startTime - b.startTime);
+    events = [];
     eventsLocal.forEach(event => {
         addEvent(event);
     });
@@ -301,7 +307,6 @@ function addTask(task: Task) {
 
 function addEvent(event: Event) {
     events.push(event);
-    events.sort((a, b) => a.fullDay ? 1 : a.startTime - b.startTime);
     if (event.startTime > caldate.getTime() && event.startTime < caldate.getTime() + 6 * 24 * 60 * 60 * 1000) {
         const startDate = new Date(event.startTime);
         const endDate = new Date(event.endTime);
@@ -313,6 +318,12 @@ function addEvent(event: Event) {
                 <hr class="parting-line">
                 <p class="calendar-entity-data">Start: ${startDate.getHours().toString().padStart(2, '0')}:${startDate.getMinutes().toString().padStart(2, '0')}<br>End: ${endDate.getHours().toString().padStart(2, '0')}:${endDate.getMinutes().toString().padStart(2, '0')}</p>           
             `;
+        if (event.fullDay) {
+            eventDiv.innerHTML = `
+                <p class="calendar-entity-data">${event.name}</p>`
+            eventDiv.className = "calendar-entity event-container-fullday event-container";
+        }
+
         mappedEvents.set(eventDiv, event);
         divToAddTo.appendChild(eventDiv);
         eventDiv.addEventListener("click", (sender) => {
