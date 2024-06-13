@@ -112,6 +112,14 @@ body {
     padding-top: 0;
 }
 
+.event-container-fullday {
+    height: 2rem;
+    margin-top: 0;
+    padding-bottom: 0;
+    padding-top: 0;
+
+}
+
 .calendar-entity-data {
     font-size: 0.8rem;
     margin: 0;
