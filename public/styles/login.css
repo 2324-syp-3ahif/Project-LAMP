@@ -4,24 +4,22 @@
 #signup-wrapper{
     display: none;
 }
+#reset-password-wrapper{
+    display: none;
+}
+#new-password-wrapper{
+    display: none;
+}
+#verification-code-wrapper{
+    display: none;
+}
 .wrapper h2{
     position: relative;
     font-size: 22px;
     font-weight: 600;
     color: #333;
 }
-.wrapper h2::before{
-    margin-top: 10px;
-    margin-left: 10px;
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 3px;
-    width: 28px;
-    border-radius: 15px;
-    background: #00C2DD;
-}
+
 .wrapper form{
     margin-top: 30px;
 }
@@ -93,7 +91,23 @@ form .text h3 a:hover{
     cursor: pointer;
     margin-left: 10px;
 }
+#switch-to-reset-password{
+    text-decoration: underline;
+    color: blue;
+    cursor: pointer;
+    margin-left: 10px;
+}
 .switch-mode-paragraph{
     justify-content: center;
     display: flex;
+}
+.backButton{
+    cursor: pointer;
+    width: 2rem;
+    height: 2rem;
+}
+.resetPassword-header{
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
 }

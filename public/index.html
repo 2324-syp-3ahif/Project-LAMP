@@ -81,10 +81,6 @@
                     <label for="invite-btn" class="form-label">Want to invite a friend? Send an invitation link!</label>
                     <button type="button" class="btn btn-primary" id="invite-btn" data-bs-toggle="modal" data-bs-target="#invite-modal">Invite!</button>
                 </div>
-                <div class="mb-2">
-                    <label for="add-tags-btn" class="form-label">Add tags to find your tasklist easier</label>
-                    <button type="button" class="btn btn-primary" id="add-tags-btn" data-bs-toggle="modal" data-bs-target="#add-tags-modal">Add Tags</button>
-                </div>
                 <select class="form-select" aria-label="Select priority" id="priority-input">
                     <option selected>Select Priority</option>
                     <option value="0">0</option>
@@ -156,7 +152,11 @@
                 <div class="input-box">
                     <label for="login-password"></label><input id="login-password" type="password" placeholder="Enter your password" required>
                 </div>
-
+                <p class="switch-mode-reset-password">
+                    Forgot your
+                    <a id="switch-to-reset-password">password</a>
+                    ?
+                </p>
                 <div class="input-box button">
                     <input id="login-button" type="button" value="Login">
                 </div>
@@ -178,7 +178,6 @@
                 <div class="input-box">
                     <label for="signup-password"></label><input id="signup-password" type="password" placeholder="Create password" required>
                 </div>
-
                 <div class="input-box button">
                     <input id="sign-up-button" type="button" value="Register">
                 </div>
@@ -186,6 +185,42 @@
                     Already have an account?
                     <a id="switch-to-login">Login</a>
                 </p>
+            </form>
+        </div>
+        <div class="wrapper" id="reset-password-wrapper">
+            <img id="back-button-login" class="backButton" src="img/backButton.png" alt="go back">
+            <h2 class="resetPassword-header">Reset Password</h2>
+            <form action="#">
+                <div class="input-box">
+                    <label for="reset-password-email"></label><input id="reset-password-email" type="text" placeholder="Enter your email" required>
+                </div>
+                <div class="input-box button">
+                    <input id="reset-password-button" type="button" value="Reset Password">
+                </div>
+            </form>
+        </div>
+        <div class="wrapper" id="verification-code-wrapper">
+            <img id="back-button-reset-pass" class="backButton" src="img/backButton.png" alt="go back">
+            <h2 class="resetPassword-header">Verification Code</h2>
+            <form action="#">
+                <div class="input-box">
+                    <label for="verification-code"></label><input id="verification-code" type="text" placeholder="Verification Code" maxlength="6" minlength="6" required>
+                </div>
+                <div class="input-box button">
+                    <input id="verification-code-button" type="button" value="Reset Password">
+                </div>
+            </form>
+        </div>
+        <div class="wrapper" id="new-password-wrapper">
+            <img id="back-button-verification-code" class="backButton" src="img/backButton.png" alt="go back">
+            <h2>New Password</h2>
+            <form action="#">
+                <div class="input-box">
+                    <label for="new-password"></label><input id="new-password" type="password" placeholder="Create password" required>
+                </div>
+                <div class="input-box button">
+                    <input id="new-password-button" type="button" value="Reset Password">
+                </div>
             </form>
         </div>
         <div id="tasklists"></div>

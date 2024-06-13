@@ -22,6 +22,20 @@ export async function selectUserByEmail(email: string): Promise<User> {
     await db.close();
     return result;
 }
+export async function selectResetPasswordCode(email: string): Promise<string> {
+    await selectUserByEmail(email);
+    const userId = await getUserID(email);
+    const db = await connectToDatabase();
+    const stmt = await db.prepare('SELECT resetPasswordCode FROM USERS WHERE userID = ?');
+    await stmt.bind(userId);
+    const result = await stmt.get<{resetPasswordCode: string}>();
+    if (result === undefined) {
+        throw new IdNotFoundError('userID');
+    }
+    await stmt.finalize();
+    await db.close();
+    return result.resetPasswordCode;
+}
 
 export async function getUserID(email: string): Promise<number> {
     const db = await connectToDatabase();
@@ -65,6 +79,16 @@ export async function insertUser(email: string, username: string, password: stri
         await db.close();
     }
 }
+export async function insertResetPasswordCode(email: string, code: string): Promise<void> {
+    await selectUserByEmail(email);
+    const userId = await getUserID(email);
+    const db = await connectToDatabase();
+    const stmt = await db.prepare('UPDATE USERS SET resetPasswordCode = ? WHERE USERID = ?');
+    await stmt.bind(code, userId);
+    await stmt.run();
+    await stmt.finalize();
+    await db.close();
+}
 
 export async function updateUser(email: string, password: string): Promise<void> {
     await selectUserByEmail(email);
@@ -74,6 +98,10 @@ export async function updateUser(email: string, password: string): Promise<void>
     await updateSingleColumn('USERS', await getUserID(email), 'userID', 'hashedPassword', await bcrypt.hash(password, 10));
 }
 
+export async function deleteResetPasswordCode(email: string): Promise<void> {
+    await selectUserByEmail(email);
+    await updateSingleColumn('USERS', await getUserID(email), 'userID', 'resetPasswordCode', null);
+}
 export async function deleteUserByEmail(email: string) {
     await selectUserByEmail(email);
     const db = await connectToDatabase();

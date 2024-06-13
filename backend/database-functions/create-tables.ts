@@ -89,7 +89,8 @@ async function createUsersTable() {
             userID INTEGER primary key AUTOINCREMENT,
             username TEXT,
             hashedPassword TEXT,
-            email TEXT UNIQUE
+            email TEXT UNIQUE,
+            resetPasswordCode TEXT
           ) strict;`);
     await db.close();
 }

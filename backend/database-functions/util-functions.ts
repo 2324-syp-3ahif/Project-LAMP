@@ -30,9 +30,9 @@ export function numberChecker(num: number, min: number, max: number, message: st
     }
 }
 
-export async function updateSingleColumn(tablename: string, id: number | string, idName: string, row: string, value: any): Promise<void> {
+export async function updateSingleColumn(tablename: string, id: number | string, idName: string, column: string, value: any): Promise<void> {
     const db = await connectToDatabase();
-    const stmt = await db.prepare(`UPDATE ${tablename} SET ${row} = ? WHERE ${idName} IS ?;`);
+    const stmt = await db.prepare(`UPDATE ${tablename} SET ${column} = ? WHERE ${idName} IS ?;`);
     await stmt.bind(value, id);
     await stmt.run();
     await stmt.finalize();

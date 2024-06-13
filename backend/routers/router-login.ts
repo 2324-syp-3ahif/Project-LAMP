@@ -2,11 +2,17 @@ import express from "express";
 import {JwtPayload} from "jsonwebtoken";
 import {StatusCodes} from "http-status-codes";
 import bcrypt from "bcrypt";
-import {selectUserByEmail, insertUser} from "../database-functions/user-functions";
+import {
+    selectUserByEmail,
+    insertUser,
+    insertResetPasswordCode,
+    deleteResetPasswordCode, selectResetPasswordCode
+} from "../database-functions/user-functions";
 import dotenv from "dotenv";
 import {generateTokens, verifyToken} from "./tokenUtils";
 import {isAuthenticated} from "../middleware/auth-handlers";
 import { IdAlreadyExistsError } from '../interfaces/errors/IdAlreadyExistsError';
+import {generateRandomVerificationCode, sendVerificationMail} from "../repositories/mail-repo";
 import {IdNotFoundError} from "../interfaces/errors/IdNotFoundError";
 
 dotenv.config();
@@ -45,6 +51,49 @@ loginRouter.post("/register", async (req, res) => {
         } else {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("An error occurred during registration.");
         }
+    }
+});
+
+loginRouter.put("/resetPassword/mail", async (req, res) => {
+   const email = req.body.email;
+   try {
+       const user = await selectUserByEmail(email);
+       if (user) {
+           const code = generateRandomVerificationCode();
+           sendVerificationMail(email, code);
+           await insertResetPasswordCode(email, code);
+           res.status(StatusCodes.OK).send("Mail sent.");
+       } else {
+           res.status(StatusCodes.NOT_FOUND).send("User not found.");
+       }
+   } catch(err) {
+       res.status(StatusCodes.NOT_FOUND).send("User not found.");
+       return;
+   }
+});
+
+loginRouter.get("/resetPassword/code/:email", async (req, res) => {
+    const email = req.params.email;
+    try {
+        const user = await selectUserByEmail(email);
+        if (user) {
+            const code = await selectResetPasswordCode(email);
+            res.status(StatusCodes.OK).send(code);
+        } else {
+            res.status(StatusCodes.NOT_FOUND).send("User not found.");
+        }
+    } catch (err) {
+        res.status(StatusCodes.NOT_FOUND).send("User not found.");
+    }
+});
+
+loginRouter.delete("/resetPassword/mail", async (req, res) => {
+    const mail = req.body.email;
+    try {
+        await deleteResetPasswordCode(mail)
+        res.status(StatusCodes.OK).send("Code deleted.");
+    } catch (err) {
+        res.status(StatusCodes.NOT_FOUND).send("User not found.");
     }
 });
 
