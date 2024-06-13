@@ -58,7 +58,7 @@ export async function load(mail: string) {
         globalTasklists.sort((a: Tasklist, b: Tasklist) => {
             return b.priority - a.priority;
         });
-        await showAllTasklists();
+        await filterTasklists();
     });
 
     const orderViewButton = document.getElementById('order-view') as HTMLButtonElement;
@@ -66,7 +66,7 @@ export async function load(mail: string) {
         globalTasklists.sort((a: Tasklist, b: Tasklist) => {
             return b.lastViewed - a.lastViewed;
         });
-        await showAllTasklists();
+        await filterTasklists();
     });
 
     const orderCreateButton = document.getElementById('order-creation') as HTMLButtonElement;
@@ -74,7 +74,7 @@ export async function load(mail: string) {
         globalTasklists.sort((a: Tasklist, b: Tasklist) => {
             return a.tasklistID - b.tasklistID;
         });
-        await showAllTasklists();
+        await filterTasklists();
     });
 
     addListeners();
