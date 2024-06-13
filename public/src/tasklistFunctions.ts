@@ -103,8 +103,15 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
     title.classList.add("card-title");
 
     const newTaskButton = document.createElement('button');
+<<<<<<< Updated upstream
     newTaskButton.classList.add('round-Button')
     newTaskButton.addEventListener('click', async () => {
+=======
+    newTaskButton.classList.add('round-Button');
+    newTaskButton.innerHTML = "<img src='./../img/plusIcon.png' class='add-task-img' alt='plus icon'>";
+    newTaskButton.addEventListener('click', async (e) => {
+        e.stopPropagation();
+>>>>>>> Stashed changes
         await createNewTask(list.tasklistID);
     });
     const tags = document.createElement('div');
