@@ -25,6 +25,7 @@ const ELEMENTS = {
     backButtonResetPassword: document.getElementById("back-button-reset-pass") as HTMLElement,
     backButtonVerificationCode: document.getElementById("back-button-verification-code") as HTMLElement
 };
+
 const overlay = document.createElement("div");
 overlay.className = "overlay";
 
