@@ -8,7 +8,7 @@ services:
     volumes:
       - ./backend/database/database.db:/app/backend/database/database.db
     environment:
-      - EMAIL_PASSWORD='qtkf ayow zakq kcjd'
+      - EMAIL_PASSWORD='wqws wvon rxew woef'
       - SECRET_KEY=e69f73b9e19d4ec080edbf78d023b3bfec0ca7581deae06465cd5c4aa7c18165
       - REFRESH_TOKEN_SECRET=gTooK3x8JwJhqUg291k6b6hxqNblrbU6
       - PORT=80
