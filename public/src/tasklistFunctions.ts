@@ -19,7 +19,7 @@ let globalTasklists: Tasklist[] = [];
 let globalTags: Tag[] = [];
 let globalMail: string = "";
 const globalUsersToInvite: User[] = [];
-const baseWebSocketUrl = 'ws://localhost:2000'
+const baseWebSocketUrl = 'ws://project-lamp.duckdns.org'
 export const taskListSocket = io(baseWebSocketUrl);
 const globalActiveFilters: Tag[] = [];
 
