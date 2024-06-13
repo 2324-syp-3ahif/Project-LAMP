@@ -42,9 +42,9 @@ eventRouter.put("/:email", isAuthenticated, async (req, res) => {
 });
 
 eventRouter.post("/:email", isAuthenticated, async (req, res) => {
+
     for (const key in req.body) {
         if (!req.body.hasOwnProperty(key) || req.body[key] === undefined) {
-            console.log(`${key}: ${req.body[key]}`);
             res.status(400).send("Wrong input format.");
         } else {
             console.log(`${key}: ${req.body[key]}`);

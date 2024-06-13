@@ -99,7 +99,6 @@ ELEMENTS.backDrop.addEventListener("click", () => {
         ELEMENTS.taskContainer.classList.add("hidden");
     }
     ELEMENTS.backDrop.classList.add("hidden");
-
 });
 
 ELEMENTS.eventSubmitButton.addEventListener("click", async () => {
@@ -108,14 +107,16 @@ ELEMENTS.eventSubmitButton.addEventListener("click", async () => {
 
     [hours, minutes] = ELEMENTS.eventEndTimeInput.value.split(':').map(x => parseInt(x));
     const endDate = new Date(ELEMENTS.eventDateInput.value).setHours(hours, minutes);
+    console.log(endDate);
+    console.log(startDate);
     if (ELEMENTS.eventHeader.innerText === "Create Event") {
 
         let event: Event = {
             eventID: 0,
             name: ELEMENTS.eventNameInput.value,
             description: ELEMENTS.eventDescriptionInput.value,
-            startTime: startDate,
-            endTime: endDate,
+            startTime: ELEMENTS.eventFullDayInput.checked ? (new Date(ELEMENTS.eventDateInput.value)).valueOf() : startDate,
+            endTime: ELEMENTS.eventFullDayInput.checked ? (new Date(ELEMENTS.eventDateInput.value)).valueOf() : endDate,
             fullDay: ELEMENTS.eventFullDayInput.checked,
             userID: 0,
         };
@@ -205,8 +206,8 @@ window.onload = async function onload() {
 }
 
 async function handleEventPageLoad() {
-    await getEvents();
     await getTasks();
+    await getEvents();
     await setTasklistOptions();
     ELEMENTS.weekViewed.innerText = `${caldate.getDate()}.${caldate.getMonth() + 1}.${caldate.getFullYear()} - ${caldate.getDate() + 6}.${caldate.getMonth() + 1}.${caldate.getFullYear()}`
 }

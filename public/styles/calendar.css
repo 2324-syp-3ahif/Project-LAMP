@@ -152,14 +152,17 @@ body {
 
 #change-viewed-week {
     display: flex;
-    justify-content: center; /* Center horizontally */
+    justify-content: space-between;
     align-items: center;
     background-color: #00c2dd;
+
+    width: 17rem;
     height: 3rem;
     border-radius: 20px;
 }
 
 #change-viewed-week * {
+    margin: 0;
 }
 
 #calendar-header {
@@ -174,6 +177,7 @@ body {
     border: none;
     margin: 0 1rem;
     background-color: #00c2dd;
+    border-radius: 10px;
 }
 
 .change-viewed-week-btn > img {
