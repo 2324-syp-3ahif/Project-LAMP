@@ -33,8 +33,10 @@ export async function selectEventsByEmail(email: string): Promise<Event[]> {
 export async function insertEvent(name: string, description: string, startTime: number, endTime: number, fullDay: boolean, email: string): Promise<number> {
     stringLengthCheck(name, 50, 'name');
     stringLengthCheck(description, 255, 'description');
-    dateSmallerNowChecker(startTime);
-    dateSmallerNowChecker(endTime);
+    if (!fullDay) {
+        dateSmallerNowChecker(startTime);
+        dateSmallerNowChecker(endTime);
+    }
     const userID = await getUserID(email);
 
     const db = await connectToDatabase();
