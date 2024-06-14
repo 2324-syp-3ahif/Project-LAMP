@@ -4,6 +4,7 @@ import {Task} from "./model/Task";
 import {extendTasklist} from "./tasklistFunctions";
 import {taskListSocket} from "./tasklistFunctions";
 import * as punycode from "node:punycode";
+import {json} from "express";
 
 const taskUrl: string = baseURL + '/api/task/';
 const taskContainer = document.getElementById('task-container') as HTMLDivElement;
@@ -237,9 +238,9 @@ export async function createNewTask(tasklistID: number){
 
     createTaskBtn!.addEventListener('click', async () =>{
         await processTask(tasklistID);
-        console.log("processed task");
         taskContainer.classList.add('hidden');
         popupBackdrop.classList.add("hidden");
+
     });
 }
 
@@ -249,19 +250,24 @@ popupBackdrop.addEventListener('click', () => {
 });
 
 async function processTask(tasklistID: number){
-    const title = (document.getElementById('name-input-task') as HTMLInputElement).value;
-    const description = (document.getElementById('description-input-task') as HTMLInputElement).value;
-    const date = (document.getElementById('date-input-task') as HTMLInputElement).value;
-    const priority = (document.getElementById('priority-input-task') as HTMLSelectElement).value;
+    const title = (document.getElementById('name-input-task') as HTMLInputElement);
+    const description = (document.getElementById('description-input-task') as HTMLInputElement);
+    const date = (document.getElementById('date-input-task') as HTMLInputElement);
+    const priority = (document.getElementById('priority-input-task') as HTMLSelectElement);
 
     const obj: object = {
-        title: title,
-        description: description,
-        dueDate: Date.parse((new Date(date)).toUTCString()),
-        priority: parseInt(priority),
+        title: title.value,
+        description: description.value,
+        dueDate: Date.parse((new Date(date.value)).toUTCString()),
+        priority: parseInt(priority.value),
         email: localStorage.getItem('mail'),
     }
     const newTask: Task = await (await send(taskUrl + tasklistID, 'POST', obj)).json();
+    title.value = '';
+    description.value = '';
+    date.value = '';
+    priority.value = 'Select Priority';
+
     taskListSocket.emit('new-task', tasklistID, newTask);
 }
 
