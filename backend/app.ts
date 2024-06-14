@@ -71,6 +71,9 @@ io.on('connection', async (socket) => {
     socket.on('update-task', (task: Task) => {
         socket.to(task.tasklistID.toString()).emit('onUpdateTask', task);
     })
+    socket.on('delete-task', (task: Task) => {
+        socket.to(task.tasklistID.toString()).emit('onDeleteTask', task);
+    });
     socket.on('disconnect', () => {
         socket.rooms.forEach(room => {
            socket.leave(room.toString())

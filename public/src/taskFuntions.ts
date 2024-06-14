@@ -39,6 +39,10 @@ taskListSocket.on('onUpdateTask', async (updatedTask: Task) => {
     const taskCheckbox = taskElement.querySelector('.task-checkbox') as HTMLInputElement;
     taskCheckbox.checked = updatedTask.isComplete !== 0;
 });
+taskListSocket.on('onDeleteTask', async (task: Task) => {
+    const taskElement = document.getElementById(`task-${task.taskID}`) as HTMLElement;
+    taskElement.remove();
+});
 
 export async function loadTasks(taskList: Tasklist, taskContainer: HTMLDivElement){
     const data = await send(baseURL + '/api/task/tasklistID/' + taskList.tasklistID, 'GET');
@@ -158,6 +162,7 @@ export async function createTaskHTMLElement(task: Task, taskContainer: HTMLDivEl
         event.stopPropagation();
         await send(taskUrl + task.taskID, 'DELETE');
         taskElement.remove();
+        taskListSocket.emit('delete-task', task);
     });
 
     // Create dropdown items

@@ -25,12 +25,12 @@ const globalActiveFilters: Tag[] = [];
 
 taskListSocket.on('onDeletedTaskList', async (taskListID: number) => {
     globalDeleteTasklistID = taskListID;
-    globalTasklists.splice(globalTasklists.findIndex((list: Tasklist) => list.tasklistID === globalDeleteTasklistID), 1);
-    await send(tasklistUrl + globalDeleteTasklistID, 'DELETE');
+    globalTasklists = globalTasklists.splice(globalTasklists.findIndex((list: Tasklist) => list.tasklistID === globalDeleteTasklistID), 1);
     globalDeleteTasklistID = -1;
     deleteModal.style.display = "hide";
     await showAllTasklists();
 });
+
 window.onload = async function() {
     await handlePageLoad(load);
 }
