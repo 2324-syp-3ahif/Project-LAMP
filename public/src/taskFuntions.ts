@@ -150,6 +150,16 @@ export async function createTaskHTMLElement(task: Task, taskContainer: HTMLDivEl
     const dropdownMenuDiv = document.createElement('div');
     dropdownMenuDiv.className = 'dropdown-menu';
 
+    const deleteButton = document.createElement('button');
+    deleteButton.className = 'btn';
+    deleteButton.textContent = 'Delete';
+
+    deleteButton.addEventListener('click', async (event) => {
+        event.stopPropagation();
+        await send(taskUrl + task.taskID, 'DELETE');
+        taskElement.remove();
+    });
+
     // Create dropdown items
     const priority1 = createPriority(1);
     const priority2 = createPriority(2);
@@ -187,6 +197,8 @@ export async function createTaskHTMLElement(task: Task, taskContainer: HTMLDivEl
 
     taskBody.appendChild(taskDescription);
     taskBody.appendChild(dropdownDiv);
+    taskBody.appendChild(deleteButton);
+
 
     taskHeader.addEventListener('click', (e) =>{
         e.stopPropagation();3
