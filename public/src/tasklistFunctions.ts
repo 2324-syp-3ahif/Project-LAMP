@@ -58,7 +58,7 @@ export async function load(mail: string) {
         globalTasklists.sort((a: Tasklist, b: Tasklist) => {
             return b.priority - a.priority;
         });
-        await filterTasklists();
+        await showAllTasklists();
     });
 
     const orderViewButton = document.getElementById('order-view') as HTMLButtonElement;
@@ -66,15 +66,15 @@ export async function load(mail: string) {
         globalTasklists.sort((a: Tasklist, b: Tasklist) => {
             return b.lastViewed - a.lastViewed;
         });
-        await filterTasklists();
+        await showAllTasklists();
     });
 
     const orderCreateButton = document.getElementById('order-creation') as HTMLButtonElement;
     orderCreateButton.addEventListener('click', async () => {
         globalTasklists.sort((a: Tasklist, b: Tasklist) => {
-            return a.tasklistID - b.tasklistID;
+            return b.tasklistID - a.tasklistID;
         });
-        await filterTasklists();
+        await showAllTasklists();
     });
 
     addListeners();
@@ -103,9 +103,19 @@ function addListeners() {
 async function showAllTasklists() {
     taskLists.innerHTML = "";
     taskListSocket.emit('join-taskList-rooms', globalTasklists.map((list: Tasklist) => list.tasklistID));
+
     for (const list of globalTasklists) {
-        const listEl: HTMLElement = await showTasklist(list);
-        taskLists.appendChild(listEl);
+        let showCurrent = true;
+        const tagsOfList: Tag[] = await (await send(tagUrl + list.tasklistID, 'GET')).json();
+        for (const filterTag of globalActiveFilters) {
+            if (!tagInTasklistTags(filterTag.tagID, tagsOfList)) {
+                showCurrent = false;
+            }
+        }
+        if (showCurrent) {
+            const listEl: HTMLElement = await showTasklist(list);
+            taskLists.appendChild(listEl);
+        }
     }
 }
 
@@ -162,12 +172,10 @@ async function showTasklist(list: Tasklist): Promise<HTMLElement> {
 }
 
 export async function extendTasklist(listEl: HTMLElement, list: Tasklist) {
-    await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
     listEl.classList.add("extended");
     list.lastViewed = Date.now();
 
     await send(tasklistUrl + globalMail + "/" + list.tasklistID, 'PUT', list);
-    listEl.classList.add("extended");
 
     const tasksEl = document.createElement('div');
     tasksEl.id = "taskListTasks-" + list.tasklistID;
@@ -382,23 +390,7 @@ async function filterTasklists() {
                 globalActiveFilters.splice(globalActiveFilters.indexOf(tag), 1);
             }
             taskLists.innerHTML = "";
-            for (const list of globalTasklists) {
-                const tagsOfList: Tag[] = await (await send(tagUrl + list.tasklistID, 'GET')).json();
-                if (globalActiveFilters.length === 0) {
-                    await showAllTasklists();
-                } else {
-                    let showCurrent = true;
-                    for (const filterTag of globalActiveFilters) {
-                        if (!tagInTasklistTags(filterTag.tagID, tagsOfList)) {
-                            showCurrent = false;
-                        }
-                    }
-                    if (showCurrent) {
-                        const listEl: HTMLElement = await showTasklist(list);
-                        taskLists.appendChild(listEl);
-                    }
-                }
-            }
+            await showAllTasklists();
         });
         tagElement.appendChild(checkbox);
         tagElement.appendChild(document.createTextNode(" " + tag.name));
