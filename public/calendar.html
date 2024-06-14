@@ -110,7 +110,7 @@
 </div>
 
 <div class="popup hidden create-container" id="event-container">
-    <p id="event-header">Create Event</p>
+        <p id="event-header">Create Event</p>
     <form>
         <div class="mb-2">
             <label for="name-input-event" class="form-label">Name</label>
@@ -142,12 +142,15 @@
             <label for="description-input-event" class="form-label">Description</label>
             <textarea class="form-control" id="description-input-event"></textarea>
         </div>
+        <div class="add-footer">
         <button type="button" class="btn btn-primary" id="submit-event-btn">Create Event</button>
+            <button id="delete-event-btn" class="btn">Delete</button>
+        </div>
     </form>
 </div>
 
 <div class="popup hidden create-container" id="task-container">
-<p id="task-header">Create Task</p>
+    <p id="task-header">Create Task</p>
 <form>
     <div class="mb-2">
         <label for="name-input-task" class="form-label">Name</label>
@@ -166,15 +169,10 @@
             </select>
             <label for="priority-input-task" class="form-label">Priority</label>
             <select id="priority-input-task" class="form-control">
+                <option value="1">0</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
             </select>
         </div>
     </div>
@@ -182,7 +180,11 @@
         <label for="description-input-task" class="form-label">Description</label>
         <textarea class="form-control" id="description-input-task"></textarea>
     </div>
-    <button type="button" class="btn btn-primary" id="submit-task-btn">Create Task</button>
+    <div class="add-footer">
+        <button type="button" class="btn btn-primary" id="submit-task-btn">Create Task</button>
+        <button id="delete-task-btn" class="btn">Delete</button>
+    </div>
+
 </form>
 </div>
 

@@ -15,6 +15,8 @@ let selectedTask: Task | undefined;
 let mode: "event" | "task" = "event";
 
 const ELEMENTS = {
+    taskDeleteBtn: document.getElementById("delete-task-btn") as HTMLButtonElement,
+    eventDeleteBtn: document.getElementById("delete-event-btn") as HTMLButtonElement,
     eventContainer: document.getElementById("event-container") as HTMLElement,
     taskContainer: document.getElementById("task-container") as HTMLElement,
     eventHeader: document.getElementById("event-header") as HTMLElement,
@@ -41,7 +43,11 @@ const ELEMENTS = {
 }
 
 function getWeekstart() {
-    let caldate = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
+    let caldate = new Date(Date.now());
+    caldate.setHours(0);
+    caldate.setMinutes(0);
+    caldate.setSeconds(0);
+    caldate.setMilliseconds(0);
     let offset = caldate.getDay();
     if (offset === 0) {
         offset = 7;
@@ -62,6 +68,28 @@ ELEMENTS.changeWeekBeforeBtn.addEventListener("click", async () => {
     await handleWeekChange();
 });
 
+ELEMENTS.taskDeleteBtn.addEventListener("click", async () => {
+    const res = await send("http://localhost:2000/api/task/" + selectedTask?.taskID, "DELETE");
+    if (res.ok) {
+        deleteTask(selectedTask as Task);
+    } else {
+        alert("Task could not be deleted.");
+    }
+    ELEMENTS.backDrop.classList.add("hidden");
+    ELEMENTS.taskContainer.classList.add("hidden");
+});
+
+ELEMENTS.eventDeleteBtn.addEventListener("click", async () => {
+    const res = await send("http://localhost:2000/api/event/" + selectedEvent?.eventID, "DELETE");
+    if (res.ok) {
+        deleteEvent(selectedEvent as Event);
+    } else {
+        alert("Event could not be deleted.");
+    }
+    ELEMENTS.backDrop.classList.add("hidden");
+    ELEMENTS.eventContainer.classList.add("hidden");
+});
+
 async function handleWeekChange() {
     ELEMENTS.weekViewed.innerText = `${caldate.getDate()}.${caldate.getMonth() + 1}.${caldate.getFullYear()} - ${caldate.getDate() + 6}.${caldate.getMonth() + 1}.${caldate.getFullYear()}`
     const eve = mappedEvents.keys();
@@ -74,18 +102,16 @@ async function handleWeekChange() {
         value.remove();
         mappedTasks.delete(value);
     }
-    helperEvents = Array.from(events);
-    helperTasks = Array.from(tasks);
-    await loadEvents(helperEvents);
-    await loadTasks(helperTasks);
-    events = Array.from(helperEvents);
-    tasks = Array.from(helperTasks);
+
+    await getTasks();
+    await getEvents();
 }
 
 
 ELEMENTS.addEventBtn.addEventListener("click", () => {
     mode = "event";
     clearEventInput();
+    ELEMENTS.eventDeleteBtn.classList.add("hidden");
     ELEMENTS.eventHeader.innerText = "Create Event";
     ELEMENTS.eventSubmitButton.innerText = "Create Event";
     ELEMENTS.eventContainer.classList.remove("hidden");
@@ -195,6 +221,7 @@ function clearTaskInput() {
 ELEMENTS.addTaskBtn.addEventListener("click", () => {
     mode = "task";
     clearTaskInput();
+    ELEMENTS.taskDeleteBtn.classList.add("hidden");
     ELEMENTS.taskHeader.innerText = "Create Task";
     ELEMENTS.taskSubmitButton.innerText = "Create Task";
     ELEMENTS.taskContainer.classList.remove("hidden");
@@ -268,7 +295,7 @@ async function loadEvents(eventsLocal: Event[]) {
 }
 
 function addTask(task: Task) {
-    if (task.dueDate >= caldate.getTime() && task.dueDate < caldate.getTime() + 6 * 24 * 60 * 60 * 1000) {
+    if (task.dueDate >= caldate.valueOf() && task.dueDate - (caldate.valueOf() + 6.5 * 24 * 60 * 60 * 1000) < 0 ) {
         const time: Date = new Date(task.dueDate);
         const divToAddTo = document.getElementById(`calendar-entities-${time.getDay()}`) as HTMLDivElement;
         const taskDiv = document.createElement("div");
@@ -282,6 +309,7 @@ function addTask(task: Task) {
         mappedTasks.set(taskDiv, task);
         tasks.push(task);
         taskDiv.addEventListener("click", async (sender) => {
+            ELEMENTS.taskDeleteBtn.classList.remove("hidden");
             mode = "task";
             sender.stopPropagation();
             let target = sender.target as HTMLElement;
@@ -308,7 +336,7 @@ function addTask(task: Task) {
 
 function addEvent(event: Event) {
     events.push(event);
-    if (event.startTime > caldate.getTime() && event.startTime < caldate.getTime() + 6 * 24 * 60 * 60 * 1000) {
+    if (event.startTime > caldate.getTime() && event.startTime < caldate.getTime() + 6.5 * 24 * 60 * 60 * 1000) {
         const startDate = new Date(event.startTime);
         const endDate = new Date(event.endTime);
         const divToAddTo = document.getElementById(`calendar-entities-${startDate.getDay()}`) as HTMLDivElement;
@@ -328,6 +356,7 @@ function addEvent(event: Event) {
         mappedEvents.set(eventDiv, event);
         divToAddTo.appendChild(eventDiv);
         eventDiv.addEventListener("click", (sender) => {
+            ELEMENTS.eventDeleteBtn.classList.remove("hidden");
             mode = "event";
             sender.stopPropagation();
             let target = sender.target as HTMLElement;
